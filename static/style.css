@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+    /* Primary Color & Variants */
+    --primary-main: #3951AB;
+    --primary-surface: #E6EBF7;
+    --primary-border: #B3C1D9;
+    --primary-focus: #CAD7F0;
+    --primary-hover: #173E94;
+    --primary-pressed: #0B204E;
+
+    /* Neutral Color & Variants */
+    --neutral-primary: #191B22;
+    --neutral-secondary: #213A5F;
+    --neutral-disabled: #8191AC;
+    --neutral-border: #E5E5E5;
+    --neutral-surface: #F4F5F6;
+    --neutral-white: #FFFFFF;
+
+    /* Semantic Colors & Variants */
+    /* Success */
+    --success-main: #2ECC71;
+    --success-surface: #E8F8EE;
+    --success-border: #A1E0C5;
+    --success-focus: rgba(46, 204, 113, 0.2);
+    --success-hover: #28B77D;
+    --success-pressed: #017E54;
+
+    /* Info */
+    --info-main: #3498DB;
+    --info-surface: #E9F5FB;
+    --info-border: #BBE4F7;
+    --info-focus: rgba(52, 152, 219, 0.2);
+    --info-hover: #2A80A6;
+    --info-pressed: #1C607A;
+
+    /* Warning */
+    --warning-main: #F39C12;
+    --warning-surface: #FFF9E6;
+    --warning-border: #FFE6B8;
+    --warning-focus: rgba(243, 156, 18, 0.2);
+    --warning-hover: #D1860D;
+    --warning-pressed: #8C701F;
+
+    /* Danger */
+    --danger-main: #E74C3C;
+    --danger-surface: #FFECEC;
+    --danger-border: #FFBEBF;
+    --danger-focus: rgba(231, 76, 60, 0.2);
+    --danger-hover: #D02E22;
+    --danger-pressed: #8F1F17;
+
+    /* Additional Color */
+    --main: #29939D;
+    --surface: #B4E5E6;
+}
+
+body{
+    font-family: "Poppins", sans-serif;
+}
+
+h1{
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 60px;
+    letter-spacing: 0.5px;
+}
+
+h2{
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 54px;
+    letter-spacing: 0.5px;
+}
+
+h3{
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 44px;
+    letter-spacing: 0.5px;
+}
+
+h4{
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0.5px;    
+}
+
+h5{
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    letter-spacing: 0.5px;   
+}
+
+.body-super-large-semi-bold{
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0px;   
+}
+
+.body-super-large-reguler{
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0px;   
+}
+
+.body-large-semi-bold{
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: 0px;    
+}
+
+.body-large-reguler{
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0px;    
+}
+
+.body-medium-semi-bold{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0px;
+}
+
+.body-medium{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0px;
+}
+
+.body-medium-reguler{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0px;
+}
+
+.body-small-bold{
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0px;
+}
+
+.body-small-semi-bold{
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0px;
+}
+
+.body-small-medium{
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0px;
+}
+
+.body-small-reguler{
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0px;    
+}
+
+.caption-semi-bold{
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    letter-spacing: 0.20000000298023224px;    
+}
+
+.caption-reguler{
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0.20000000298023224px;    
+}
+
+.default-text-input{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.20000000298023224px;
+}
+
+.default-text-medium{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0.20000000298023224px;
+}
+
+input{
+    border-radius: 8px;
+    padding: 14px;
+    gap: 8px;
+    background-color: #F5F6F7;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.20000000298023224px;
+    color: var(--neutral-primary);
+    border: none;
+}
+
+input::placeholder{
+    color: var(--neutral-disabled);
+}
+
+input:focus{
+    background-color: var(--neutral-white);
+    outline: 2px solid #718284;
+}
+
+input:invalid{
+    background-color: var(--neutral-white);
+    outline: 1px solid var(--danger-main);
+}
