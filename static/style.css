@@ -53,45 +53,66 @@
     /* Additional Color */
     --main: #29939D;
     --surface: #B4E5E6;
+    --dark: #333333;
 }
 
 body{
     font-family: "Poppins", sans-serif;
+    margin: 0;
 }
 
-h1{
+.container{
+    width: 100%;
+    padding: 0 140px;
+    margin: 0 auto;
+    max-width: 1160px;
+}
+
+/* Typography Section */
+
+.h1{
     font-size: 52px;
     font-weight: 700;
     line-height: 60px;
     letter-spacing: 0.5px;
+    margin-top: 0;   
+    margin-bottom: 0.5rem;
 }
 
-h2{
+.h2{
     font-size: 44px;
     font-weight: 700;
     line-height: 54px;
     letter-spacing: 0.5px;
+    margin-top: 0;   
+    margin-bottom: 0.5rem;
 }
 
-h3{
+.h3{
     font-size: 36px;
     font-weight: 700;
     line-height: 44px;
     letter-spacing: 0.5px;
+    margin-top: 0;   
+    margin-bottom: 0.5rem;
 }
 
-h4{
+.h4{
     font-size: 28px;
     font-weight: 700;
     line-height: 36px;
-    letter-spacing: 0.5px;    
+    letter-spacing: 0.5px;
+    margin-top: 0;   
+    margin-bottom: 0.5rem;    
 }
 
-h5{
+.h5{
     font-size: 20px;
     font-weight: 700;
     line-height: 28px;
-    letter-spacing: 0.5px;   
+    letter-spacing: 0.5px;
+    margin-top: 0;   
+    margin-bottom: 0.5rem;
 }
 
 .body-super-large-semi-bold{
@@ -199,6 +220,10 @@ h5{
     letter-spacing: 0.20000000298023224px;
 }
 
+/* End of Typography Section */
+
+/* Input Section */
+
 input{
     border-radius: 8px;
     padding: 14px;
@@ -225,3 +250,144 @@ input:invalid{
     background-color: var(--neutral-white);
     outline: 1px solid var(--danger-main);
 }
+
+/* End of Input Section */
+
+/* Navbar Section */
+
+nav{
+    height: 80px;
+}
+
+.navbar-menu{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.navbar-menu-item{
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+
+.navbar-menu-item:hover{
+    cursor: pointer;
+    background-color: var(--neutral-surface);
+}
+
+.navbar-menu-item > a{
+    color: var(--dark);
+    display: block;
+    text-decoration: none;
+}
+
+/* End of Navbar Section */
+
+/* Spacing Section */
+
+.gap-1{
+    gap: 4px;
+}
+
+.gap-2{
+    gap: 8px;
+}
+
+.gap-3{
+    gap: 16px;
+}
+
+.gap-4{
+    gap: 24px;
+}
+
+.gap-5{
+    gap: 32px;
+}
+
+.gap-6{
+    gap: 40px;
+
+}
+
+.flex{
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+.justify-content-center{
+    justify-content: center;
+}
+
+.justify-content-between{
+    justify-content: space-between;
+}
+
+.align-items-center{
+    align-items: center;
+}
+
+/* End of Spacing Section */
+
+/* Button Section */
+
+.btn{
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    gap: 10px;
+    vertical-align: middle;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.btn:hover{
+    cursor: pointer;
+}
+
+.btn-primary{
+    background-color: var(--primary-main);
+    color: var(--neutral-white);
+}
+
+.btn-primary:hover{
+    background-color: var(--primary-hover);
+}
+
+.btn-primary:active{
+    background-color: var(--primary-pressed);
+}
+
+.btn-primary-outline{
+    border: 1px solid var(--primary-main);
+    color: var(--neutral-primary);
+}
+
+.btn-primary-outline:hover{
+    background-color: var(--primary-hover);
+    border: 1px solid var(--primary-hover);
+    color: var(--neutral-white);
+}
+
+.btn-primary-outline:active{
+    background-color: var(--primary-pressed);
+    border: 1px solid var(--primary-pressed);
+    color: var(--neutral-white);
+}
+
+/* End of Button Section */
