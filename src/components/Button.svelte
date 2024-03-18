@@ -1,16 +1,25 @@
 <script>
+	export let type = "button"
+	export let id = ""
 	export let classList = '';
 	export let onClick = () => {};
 	export let disabled = false;
+	export let href = ""
 
 	const handleClick = () => {
 		onClick();
 	};
 </script>
 
-<button class={classList} on:click={handleClick} {disabled}>
+{#if type == "button"}
+<button id="{id}" class={classList} on:click={handleClick} {disabled}>
 	<slot />
 </button>
+{:else if type == "link"}
+<a href="{href}" id="{id}" class={classList} on:click={handleClick} {disabled}>
+	<slot />
+</a>
+{/if}
 
 <style>
 	/* Button Section */
