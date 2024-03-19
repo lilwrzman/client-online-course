@@ -2,7 +2,10 @@
     import Navbar from "@components/Navbar.svelte";
     import Footer from "@components/Footer.svelte";
     import Button from "@components/Button.svelte";
+    import Login from "@components/Login.svelte";
     import InputField from "@components/InputField.svelte";
+
+    let modalShow = false
 </script>
 
 <Navbar/>
@@ -25,12 +28,18 @@
                     <Button classList="btn btn-main">Daftar</Button>
                     <div class="flex justify-content-center gap-1 default-text-input">
                         <p>Sudah punya akun?</p>
-                        <a href="" class="link">Masuk disini</a>
+                        <Button classList="btn btn-no-padding" onClick={() => modalShow = true}>
+                            <p class="link default-text-input">Masuk disini</p>
+                        </Button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
+{#if modalShow}
+	<Login bind:modalShow />
+{/if}
 
 <Footer/>
