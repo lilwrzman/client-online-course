@@ -5,6 +5,7 @@
 	export let onClick = () => {};
 	export let disabled = false;
 	export let href = ""
+	export let custom = ""
 
 	const handleClick = () => {
 		onClick();
@@ -12,11 +13,11 @@
 </script>
 
 {#if type == "button"}
-<button id="{id}" class={classList} on:click={handleClick} {disabled}>
+<button id="{id}" class={classList} on:click={handleClick} {disabled} style="{custom}">
 	<slot />
 </button>
 {:else if type == "link"}
-<a href="{href}" id="{id}" class={classList} on:click={handleClick} {disabled}>
+<a href="{href}" id="{id}" class={classList} on:click={handleClick} {disabled} style="{custom}">
 	<slot />
 </a>
 {/if}
@@ -39,6 +40,10 @@
 		letter-spacing: 0px;
 		text-align: center;
 		box-sizing: border-box;
+	}
+
+	.btn-no-padding{
+		padding: 0 !important;
 	}
 
 	.btn:hover {

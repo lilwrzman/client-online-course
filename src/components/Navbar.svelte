@@ -1,10 +1,15 @@
 <script>
 	import Button from '@components/Button.svelte';
+	import Login from '@components/Login.svelte';
 	import { onMount } from 'svelte';
 
 	export let active
 
 	let isFixed = false
+	let modalShow = false
+
+	let isLoggedIn = false
+	let username = 'John Doe'
 
 	function handleScroll(){
 		isFixed = window.scrollY >= 50
@@ -22,7 +27,9 @@
 <header>
 	<nav class="nav nav-light {isFixed ? 'nav-fixed' : ''} w-100">
 		<div class="container flex justify-content-between align-items-center h-100">
-			<div class="h5">Logo Disini</div>
+			<Button type="link" href="/" classList="btn btn-no-padding">
+				<div class="h5">Logo Disini</div>
+			</Button>
 			<ul class="navbar-menu">
 				<li class="navbar-menu-item {active == 'beranda' ? 'active' : ''}">
 					<a href="/">Beranda</a>
@@ -40,15 +47,34 @@
 					<a href="/artikel">Artikel</a>
 				</li>
 			</ul>
+			{#if isLoggedIn}
+			<div class="flex gap-4 align-items-center">
+				<Button id="notification" classList="btn btn-no-padding">
+					<img src="/icons/bell.svg" alt="icon">
+				</Button>
+				<p class="body-small-medium tc-secondary">Hi, {username}</p>
+				<Button id="profile" classList="btn p-2">
+					<div class="flex align-items-center gap-1">
+						<img src="/icons/person-circle.svg" alt="icon">
+						<img src="/icons/chevron-down.svg" alt="icon">
+					</div>
+				</Button>
+			</div>
+			{:else}
 			<div class="flex gap-2 align-items-center">
-				<Button type="link" href="/registration" classList="btn btn-main-outline">
+				<Button classList="btn btn-main-outline" onClick={() => modalShow = true}>
 					Masuk
 				</Button>
-				<Button classList="btn btn-main">Daftar</Button>
+				<Button type="link" href="/registration" classList="btn btn-main">Daftar</Button>
 			</div>
+			{/if}
 		</div>
 	</nav>
 </header>
+
+{#if modalShow}
+	<Login bind:modalShow />
+{/if}
 
 <style>
 	/* Navbar Section */
