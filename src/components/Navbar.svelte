@@ -1,7 +1,15 @@
 <script>
+	import Bell from "svelte-bootstrap-icons/lib/Bell.svelte"
+	import PersonCircle from "svelte-bootstrap-icons/lib/PersonCircle.svelte"
+	import ChevronDown from "svelte-bootstrap-icons/lib/ChevronDown.svelte"
+
 	import Button from '@components/Button.svelte';
 	import Login from '@components/Login.svelte';
-	import { onMount } from 'svelte';
+	import Toast from "@components/Toast.svelte";
+
+	import { extract } from "$lib/cookie.js"
+	
+	import { afterUpdate, onMount } from 'svelte';
 
 	export let active
 
@@ -17,6 +25,11 @@
 
 	onMount(() => {
 		window.addEventListener('scroll', handleScroll)
+
+		if(extract().username){
+			isLoggedIn = true
+			username = extract().username
+		}
 
 		return () => {
 			window.removeEventListener('scroll', handleScroll)
@@ -50,13 +63,13 @@
 			{#if isLoggedIn}
 			<div class="flex gap-4 align-items-center">
 				<Button id="notification" classList="btn btn-no-padding">
-					<img src="/icons/bell.svg" alt="icon">
+					<Bell width={24} height={24}/>
 				</Button>
 				<p class="body-small-medium tc-secondary">Hi, {username}</p>
 				<Button id="profile" classList="btn p-2">
 					<div class="flex align-items-center gap-1">
-						<img src="/icons/person-circle.svg" alt="icon">
-						<img src="/icons/chevron-down.svg" alt="icon">
+						<PersonCircle width={24} height={24}/>
+						<ChevronDown width={16} height={16}/>
 					</div>
 				</Button>
 			</div>
@@ -73,7 +86,7 @@
 </header>
 
 {#if modalShow}
-	<Login bind:modalShow />
+	<Login bind:modalShow bind:isLoggedIn/>
 {/if}
 
 <style>

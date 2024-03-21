@@ -1,4 +1,10 @@
 <script>
+	import Check from "svelte-bootstrap-icons/lib/Check.svelte"
+	import Info from "svelte-bootstrap-icons/lib/Info.svelte"
+	import Exclamation from "svelte-bootstrap-icons/lib/Exclamation.svelte"
+	import SlashCircle from "svelte-bootstrap-icons/lib/SlashCircle.svelte"
+	import X from "svelte-bootstrap-icons/lib/X.svelte"
+
     import { fly } from 'svelte/transition'
 	import { onDestroy, onMount } from 'svelte';
 	import Button from '@components/Button.svelte';
@@ -8,7 +14,7 @@
 	export let message = '';
 	export let color = '';
 
-	let duration = 3000;
+	let duration = 5000;
 
 	const hideToast = () => {
 		toastVisible = false;
@@ -30,37 +36,21 @@
 		<div class="toast-body">
 			<div class="toast-text">
 				{#if color == 'toast-info'}
-					<img
-						src="/icons/info.svg"
-						alt="icon"
-						width="36"
-						height="36"
-						class="toast-icon toast-icon-info"
-					/>
+				<div class="toast-icon toast-icon-info">
+					<Info width={24} height={24}/>
+				</div>
 				{:else if color == 'toast-success'}
-					<img
-						src="/icons/check.svg"
-						alt="icon"
-						width="36"
-						height="36"
-						class="toast-icon toast-icon-success"
-					/>
+				<div class="toast-icon toast-icon-success">
+					<Check width={24} height={24}/>
+				</div>
 				{:else if color == 'toast-warning'}
-					<img
-						src="/icons/exclamation.svg"
-						alt="icon"
-						width="36"
-						height="36"
-						class="toast-icon toast-icon-warning"
-					/>
+				<div class="toast-icon toast-icon-warning">
+					<Exclamation width={24} height={24}/>
+				</div>
 				{:else if color == 'toast-danger'}
-					<img
-						src="/icons/slash-circle.svg"
-						alt="icon"
-						width="36"
-						height="36"
-						class="toast-icon toast-icon-danger"
-					/>
+				<div class="toast-icon toast-icon-danger">
+					<SlashCircle width={24} height={24}/>
+				</div>
 				{/if}
 				<div class="flex-column">
 					<p class="body-small-medium">{title}</p>
@@ -68,7 +58,9 @@
 				</div>
 			</div>
 			<div class="toast-action">
-				<button on:click={hideToast}><img src="/icons/x.svg" alt="icon" /></button>
+				<Button onClick={hideToast} classList="btn btn-no-padding">
+					<X width={24} height={24}/>
+				</Button>
 			</div>
 		</div>
 	</div>
@@ -95,28 +87,21 @@
 	.toast-text {
 		display: flex;
 		flex-direction: row;
-		gap: 8px;
+		gap: 10px;
 	}
 
 	.toast-action {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 8px;
-	}
-
-	.toast-action > button {
-		border-radius: 8px;
-		background-color: transparent;
-		border: none;
-	}
-
-	.toast-action > button:hover {
-		cursor: pointer;
 	}
 
 	.toast-icon {
-		padding: 8px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 36px;
+		height: 36px;
 		border-radius: 100%;
 	}
 

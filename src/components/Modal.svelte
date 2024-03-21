@@ -1,5 +1,6 @@
 <script>
     export let modalShow = false
+    export let width = "42.625rem"
 
     let closeOnClickOverlay = (event) =>{
         if(event.target.classList.contains('overlay')){
@@ -12,7 +13,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="overlay" on:click={closeOnClickOverlay}>
-    <div class="card drop-shadow w-100" style="max-width: 56.83rem;">
+    <div class="card drop-shadow w-100" style="max-width: {width};">
         <slot/>
     </div>
 </div>

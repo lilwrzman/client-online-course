@@ -50,6 +50,11 @@
 		cursor: pointer;
 	}
 
+	.btn-wrap{
+		display: inline-block !important;
+		max-width: fit-content !important;
+	}
+
 	.btn-main {
 		background-color: var(--primary-main);
 		border: 1px solid var(--primary-main);

@@ -1,5 +1,11 @@
+<script>
+    import Instagram from "svelte-bootstrap-icons/lib/Instagram.svelte";
+    import Facebook from "svelte-bootstrap-icons/lib/Facebook.svelte";
+    import Twitter from "svelte-bootstrap-icons/lib/Twitter.svelte";
+</script>
+
 <footer>
-    <div class="container">
+    <div class="container pt-6">
         <hr>
         <div class="flex-column gap-6 my-6">
             <div class="flex justify-content-between">
@@ -28,9 +34,9 @@
                     </div>
                 </div>
                 <div class="flex gap-4 align-items-center">
-                    <a href=""><img src="/icons/Instagram.svg" alt="icon"></a>
-                    <a href=""><img src="/icons/Facebook.svg" alt="icon"></a>
-                    <a href=""><img src="/icons/Twitter.svg" alt="icon"></a>
+                    <a href=""><Instagram class="tc-primary-main" width={24} height={24}/></a>
+                    <a href=""><Facebook class="tc-primary-main" width={24} height={24}/></a>
+                    <a href=""><Twitter class="tc-primary-main" width={24} height={24}/></a>
                 </div>
             </div>
             <div class="body-small-reguler">
