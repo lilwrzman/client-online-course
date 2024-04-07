@@ -2,22 +2,22 @@
 	export let type = "button"
 	export let id = ""
 	export let classList = '';
-	export let onClick = () => {};
+	export let onClick = () => {}
 	export let disabled = false;
 	export let href = ""
 	export let custom = ""
 
-	const handleClick = () => {
-		onClick();
+	const handleClick = (evt) => {
+		onClick(evt);
 	};
 </script>
 
-{#if type == "button"}
-<button id="{id}" class={classList} on:click={handleClick} {disabled} style="{custom}">
+{#if type == "button" || type == 'submit' || type == 'reset'}
+<button type={type} id={id} class={classList} on:click={handleClick} {disabled} style={custom}>
 	<slot />
 </button>
 {:else if type == "link"}
-<a href="{href}" id="{id}" class={classList} on:click={handleClick} {disabled} style="{custom}">
+<a href={href} id={id} class={classList} on:click={handleClick} {disabled} style={custom}>
 	<slot />
 </a>
 {/if}
@@ -27,7 +27,7 @@
 
 	.btn {
 		display: inline-block;
-		padding: 12px 28px;
+		padding: 0.75rem 1.75rem;
 		background-color: transparent;
 		border: 1px solid transparent;
 		border-radius: 8px;

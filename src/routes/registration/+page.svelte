@@ -1,4 +1,8 @@
 <script>
+    import ApiController from '$lib/ApiController.js'
+    import showToast from "$lib/Toast.js"
+    import { clearInput, getValue } from "$lib/Input.js"
+
     import Navbar from "@components/Navbar.svelte";
     import Footer from "@components/Footer.svelte";
     import Button from "@components/Button.svelte";
@@ -6,14 +10,12 @@
     import InputField from "@components/InputField.svelte";
     import Toast from "@components/Toast.svelte"
 
-    import showToast from "$lib/toast.js"
-    import { clearInput, getValue } from "$lib/input.js"
-    import ApiController from '$lib/apiController.js'
-
     let errors = null
 
     let toastData = null
     let toastVisible = false
+
+    let modalShow = false
 
     const register = () => {
         const ids = ['fullname', 'username', 'email', 'password', 'password_confirmation', 'referral']
@@ -34,8 +36,6 @@
             }
         })
     }
-
-    let modalShow = false
 </script>
 
 <Navbar/>

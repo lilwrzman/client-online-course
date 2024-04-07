@@ -1,3 +1,4 @@
+import { PUBLIC_SERVER_PATH } from "$env/static/public"
 import axios from 'axios';
 
 const ApiController = {
@@ -10,7 +11,7 @@ const ApiController = {
     }) {
         const config = {
             method,
-            url: `http://127.0.0.1:8000/api/${endpoint}`,
+            url: `${PUBLIC_SERVER_PATH}/api/${endpoint}`,
             data,
             headers: {
                 ...headers,

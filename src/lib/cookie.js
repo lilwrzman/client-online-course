@@ -1,15 +1,26 @@
-const extract = () => {
-    const data = document.cookie.replace(/(?:(?:^|.*;\s*)userData\s*=\s*([^;]*).*$)|^.*$/, "$1");
+import { PUBLIC_KEY } from "$env/static/public"
+import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
 
-    if(data){
-        return JSON.parse(data)
+const extract = (name) => {
+    const cookie = Cookies.get(name)
+    try{
+        let result = null
+        if(cookie){
+            const decrypted = CryptoJS.AES.decrypt(cookie, PUBLIC_KEY).toString(CryptoJS.enc.Utf8)
+            result = JSON.parse(decrypted)
+        }
+        
+        return result ? result : null
+    }catch(err){
+        console.error(err)
+        return null
     }
-
-    return false
 }
 
 const setCookie = (name, datas) => {
-    return document.cookie = `${name}=${datas}; path=/; domain=localhost; expires=${new Date(new Date().getTime() + (7 * 24 * 60 * 60 * 1000)).toGMTString()}`
+    const encrypted = CryptoJS.AES.encrypt(datas, PUBLIC_KEY)
+    return Cookies.set(name, encrypted, {expires: 7, path:'/'})
 }
 
 export { extract, setCookie }

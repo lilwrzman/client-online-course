@@ -1,21 +1,21 @@
 <script>
+	import { onMount } from 'svelte';
+
+	import { extract } from "$lib/Cookie.js"
+
+	import Button from '@components/Button.svelte';
+	import LoginModal from '@components/LoginModal.svelte';
 	import Bell from "svelte-bootstrap-icons/lib/Bell.svelte"
 	import PersonCircle from "svelte-bootstrap-icons/lib/PersonCircle.svelte"
 	import ChevronDown from "svelte-bootstrap-icons/lib/ChevronDown.svelte"
 
-	import Button from '@components/Button.svelte';
-	import Login from '@components/Login.svelte';
-	import Toast from "@components/Toast.svelte";
-
-	import { extract } from "$lib/cookie.js"
-	
-	import { afterUpdate, onMount } from 'svelte';
-
 	export let active
+	export let variant = 'outside'
 
 	let isFixed = false
 	let modalShow = false
 
+	let userData
 	let isLoggedIn = false
 	let username = 'John Doe'
 
@@ -24,13 +24,14 @@
 	}
 
 	onMount(() => {
-		window.addEventListener('scroll', handleScroll)
+		userData = extract('datas')
 
-		if(extract().username){
+		if(userData){
 			isLoggedIn = true
-			username = extract().username
+			username = userData.username
 		}
 
+		window.addEventListener('scroll', handleScroll)
 		return () => {
 			window.removeEventListener('scroll', handleScroll)
 		}
@@ -43,6 +44,7 @@
 			<Button type="link" href="/" classList="btn btn-no-padding">
 				<div class="h5">Logo Disini</div>
 			</Button>
+			{#if variant == 'outside'}
 			<ul class="navbar-menu">
 				<li class="navbar-menu-item {active == 'beranda' ? 'active' : ''}">
 					<a href="/">Beranda</a>
@@ -60,7 +62,11 @@
 					<a href="/artikel">Artikel</a>
 				</li>
 			</ul>
-			{#if isLoggedIn}
+			{/if}
+			{#await extract('datas')}
+				<div></div>
+			{:then datas} 
+			{#if datas}
 			<div class="flex gap-4 align-items-center">
 				<Button id="notification" classList="btn btn-no-padding">
 					<Bell width={24} height={24}/>
@@ -81,12 +87,13 @@
 				<Button type="link" href="/registration" classList="btn btn-main">Daftar</Button>
 			</div>
 			{/if}
+			{/await}
 		</div>
 	</nav>
 </header>
 
 {#if modalShow}
-	<Login bind:modalShow bind:isLoggedIn/>
+	<LoginModal bind:modalShow bind:isLoggedIn/>
 {/if}
 
 <style>
@@ -125,7 +132,6 @@
 
 	.navbar-menu-item a {
 		color: var(--dark);
-		font-size: 14px;
 		font-weight: 500;
 		line-height: 20px;
 		letter-spacing: 0px;

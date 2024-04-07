@@ -1,29 +1,29 @@
 <script>
-	import XLg from 'svelte-bootstrap-icons/lib/XLg.svelte';
+    import { onMount } from "svelte";
+    import { goto } from "$app/navigation"
 
-	import Button from '@components/Button.svelte';
-	import Modal from '@components/Modal.svelte';
-	import InputField from '@components/InputField.svelte';
-	import Toast from '@components/Toast.svelte';
+    import ApiController from '$lib/ApiController.js';
+    import showToast from '$lib/Toast.js';
+	import { extract, setCookie } from '$lib/Cookie.js';
+	import { getValue } from '$lib/Input.js';
 
-	import showToast from '$lib/toast.js';
-	import apiController from '$lib/apiController.js';
-	import { extract, setCookie } from '$lib/cookie.js';
-	import { clearInput, getValue } from '$lib/input.js';
-	import { onMount } from 'svelte';
+    import InputField from "@components/InputField.svelte"
+    import Button from "@components/Button.svelte"
+    import Toast from '@components/Toast.svelte';
 
-	export let modalShow = false;
+    export let role
 
-	let toastData = null;
+    let toastData = null;
 	let toastVisible = false;
 
-	let errors = null;
+    let errors = null;
 
-	const login = () => {
+    const login = () => {
 		const ids = ['email', 'password'];
 		let datas = getValue(ids);
+        datas.role = role
 
-		apiController
+		ApiController
 			.sendRequest({
 				method: 'POST',
 				endpoint: 'login',
@@ -31,9 +31,16 @@
 			})
 			.then((response) => {
 				if (response.status) {
-					setCookie('userData', response.userData)
-					clearInput(ids)
-					window.location.reload()
+                    let datas = JSON.parse(response.userData)
+					setCookie('datas', response.userData)
+					
+                    if(datas.role == 'Superadmin'){
+                        goto('/superadmin/dashboard')
+                    }else if(datas.role == 'Teacher'){
+                        goto('/teacher/dashboard')
+                    }else if(datas.role == 'Corporate Admin'){
+                        goto('/teacher/dashboard')
+                    }
 				} else {
 					if (response.error) {
 						errors = response.error;
@@ -45,13 +52,22 @@
 			});
 	};
 
-	onMount(() => {
-		
-	});
+    onMount(() => {
+        let datas = extract('datas')
+        if(datas){
+            if(datas.role == 'Superadmin'){
+                goto('/superadmin/dashboard')
+            }else if(datas.role == 'Teacher'){
+                goto('/teacher/dashboard')
+            }else if(datas.role == 'Corporate Admin'){
+                goto('/teacher/dashboard')
+            }
+        }
+    })
 </script>
 
-<Modal bind:modalShow>
-	{#if toastVisible}
+<div class="backdrop">
+    {#if toastVisible}
 		<Toast
 			bind:toastVisible
 			title={toastData.title}
@@ -59,42 +75,43 @@
 			color={toastData.color}
 		/>
 	{/if}
-	<div class="card-body gap-5">
-		<div class="flex justify-content-between align-items-center">
-			<div class="h4">Masuk</div>
-			<Button classList="btn btn-no-padding" onClick={() => (modalShow = false)}>
-				<XLg width={30} height={30} />
-			</Button>
-		</div>
-		<InputField
-			type="email"
-			id="email"
-			label="Alamat Email"
-			placeholder="Ketik disini"
-			rules={[{ required: true, type: 'email' }]}
-			error={errors ? (errors.email ? errors.email : '') : ''}
-		/>
+    <div class="card" style="width: 42.625rem;">
+        <div class="card-body gap-5">
+            <div class="flex-column gap-3 align-items-center">
+                <div class="h5">LOGO DISINI</div>
+                <div class="h4">{role == 'Corporate Admin' ? 'Corporate' : role} Login</div>
+            </div>
 
-		<InputField
-			type="password"
-			id="password"
-			label="Password"
-			placeholder="Ketik disini"
-			rules={[{ required: true, type: 'password' }]}
-			error={errors ? (errors.password ? errors.password : '') : ''}
-		/>
+            <InputField
+                type="email"
+                id="email"
+                label="Alamat Email"
+                placeholder="Ketik disini"
+                rules={[{ required: true, type: 'email' }]}
+                error={errors ? (errors.email ? errors.email : '') : ''}
+            />
 
-		<Button classList="btn btn-main" onClick={login}>Masuk</Button>
-		<div class="flex justify-content-center gap-1 default-text-input">
-			<p>Belum punya akun?</p>
-			<Button
-				type="link"
-				href="/registration"
-				classList="btn btn-no-padding tc-primary-main"
-				onClick={() => (modalShow = false)}
-			>
-				<p class="link default-text-input">Daftar disini</p>
-			</Button>
-		</div>
-	</div>
-</Modal>
+            <InputField
+                type="password"
+                id="password"
+                label="Password"
+                placeholder="Ketik disini"
+                rules={[{ required: true, type: 'password' }]}
+                error={errors ? (errors.password ? errors.password : '') : ''}
+            />
+
+            <Button classList="btn btn-main" onClick={login}>Masuk</Button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .backdrop {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--neutral-surface);
+        width: 100vw;
+        height: 100vh;
+    }
+</style>
