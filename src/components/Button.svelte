@@ -40,6 +40,7 @@
 		letter-spacing: 0px;
 		text-align: center;
 		box-sizing: border-box;
+		transition: all .25s ease;
 	}
 
 	.btn-no-padding{
@@ -273,6 +274,24 @@
 		background-color: var(--danger-pressed);
 		border: 1px solid var(--danger-pressed);
 		color: var(--neutral-white);
+	}
+
+	.btn-neutral-outline{
+		background-color: var(--neutral-white);
+		border: 1px solid var(--neutral-border);
+		color: var(--dark);
+	}
+
+	.btn-neutral-outline:hover {
+		background-color: var(--neutral-border);
+		border: 1px solid var(--neutral-border);
+		color: var(--dark);
+	}
+
+	.btn-neutral-outline:active {
+		background-color: #dfdddd;
+		border: 1px solid #dfdddd;
+		color: var(--dark);
 	}
 
 	/* End of Button Section */

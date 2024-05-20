@@ -8,16 +8,21 @@
 	import Exclamation from "svelte-bootstrap-icons/lib/Exclamation.svelte"
 	import SlashCircle from "svelte-bootstrap-icons/lib/SlashCircle.svelte"
 	import X from "svelte-bootstrap-icons/lib/X.svelte"
+	import { goto } from '$app/navigation';
 
     export let toastVisible;
 	export let title = '';
 	export let message = '';
 	export let color = '';
+	export let redirectTo = ''
 
 	let duration = 5000;
 
 	const hideToast = () => {
 		toastVisible = false;
+		if(redirectTo){
+			goto(redirectTo)
+		}
 	};
 
 	onMount(() => {
@@ -32,37 +37,35 @@
 </script>
 
 {#if toastVisible}
-	<div class="toast-wrapper">
-		<div class="toast {color}" transition:fly="{{ x: 50, duration: 300 }}">
-			<div class="toast-body">
-				<div class="toast-text">
-					{#if color == 'toast-info'}
-					<div class="toast-icon toast-icon-info">
-						<Info width={24} height={24}/>
-					</div>
-					{:else if color == 'toast-success'}
-					<div class="toast-icon toast-icon-success">
-						<Check width={24} height={24}/>
-					</div>
-					{:else if color == 'toast-warning'}
-					<div class="toast-icon toast-icon-warning">
-						<Exclamation width={24} height={24}/>
-					</div>
-					{:else if color == 'toast-danger'}
-					<div class="toast-icon toast-icon-danger">
-						<SlashCircle width={24} height={24}/>
-					</div>
-					{/if}
-					<div class="flex-column">
-						<p class="body-small-medium">{title}</p>
-						<p class="caption-light">{message}</p>
-					</div>
+	<div class="toast {color}" transition:fly="{{ x: 50, duration: 300 }}">
+		<div class="toast-body">
+			<div class="toast-text">
+				{#if color == 'toast-info'}
+				<div class="toast-icon toast-icon-info">
+					<Info width={24} height={24}/>
 				</div>
-				<div class="toast-action">
-					<Button onClick={hideToast} classList="btn btn-no-padding">
-						<X width={24} height={24}/>
-					</Button>
+				{:else if color == 'toast-success'}
+				<div class="toast-icon toast-icon-success">
+					<Check width={24} height={24}/>
 				</div>
+				{:else if color == 'toast-warning'}
+				<div class="toast-icon toast-icon-warning">
+					<Exclamation width={24} height={24}/>
+				</div>
+				{:else if color == 'toast-danger'}
+				<div class="toast-icon toast-icon-danger">
+					<SlashCircle width={24} height={24}/>
+				</div>
+				{/if}
+				<div class="flex-column">
+					<p class="body-small-medium">{title}</p>
+					<p class="caption-light">{message}</p>
+				</div>
+			</div>
+			<div class="toast-action">
+				<Button onClick={hideToast} classList="btn btn-no-padding">
+					<X width={24} height={24}/>
+				</Button>
 			</div>
 		</div>
 	</div>
@@ -71,16 +74,12 @@
 <style>
 	/* Toast Section */
 
-	.toast-wrapper{
-		position: relative;
-	}
-
 	.toast {
-		position: absolute;
-		top: 8px;
-		right: 8px;
-		border-radius: 8px;
-		padding: 8px;
+		position: fixed;
+		bottom: 1rem;
+		right: 1rem;
+		border-radius: .5rem;
+		padding: .5rem;
 		z-index: 999;
 		width: fit-content;
 	}

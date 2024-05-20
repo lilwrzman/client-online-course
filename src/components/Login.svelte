@@ -10,6 +10,7 @@
     import InputField from "@components/InputField.svelte"
     import Button from "@components/Button.svelte"
     import Toast from '@components/Toast.svelte';
+    import Spinner from '@components/Spinner.svelte';
 
     export let role
 
@@ -18,7 +19,10 @@
 
     let errors = null;
 
+    let showSpinner = false
+
     const login = () => {
+        showSpinner = true
 		const ids = ['email', 'password'];
 		let datas = getValue(ids);
         datas.role = role
@@ -42,6 +46,7 @@
                         goto('/teacher/dashboard')
                     }
 				} else {
+                    showSpinner = false
 					if (response.error) {
 						errors = response.error;
 					} else {
@@ -75,6 +80,11 @@
 			color={toastData.color}
 		/>
 	{/if}
+
+    {#if showSpinner}
+        <Spinner/>    
+    {/if}
+    
     <div class="card" style="width: 42.625rem;">
         <div class="card-body gap-5">
             <div class="flex-column gap-3 align-items-center">

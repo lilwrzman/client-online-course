@@ -11,6 +11,7 @@
 
 	export let active
 	export let variant = 'outside'
+	export let pageTitle = ''
 
 	let isFixed = false
 	let modalShow = false
@@ -39,10 +40,17 @@
 </script>
 
 <header>
-	<nav class="nav nav-light {isFixed ? 'nav-fixed' : ''} w-100">
+	<nav class="nav
+		{variant == 'outside' ? 'nav-light' : 'nav-neutral'}
+		{isFixed && variant == "outside" ? 'navbar-shadow' : ''}
+		w-100">
 		<div class="container flex justify-content-between align-items-center h-100">
 			<Button type="link" href="/" classList="btn btn-no-padding">
+				{#if variant == 'outside'}
 				<div class="h5">Logo Disini</div>
+				{:else}
+				<div class="body-large-semi-bold">{pageTitle}</div>
+				{/if}
 			</Button>
 			{#if variant == 'outside'}
 			<ul class="navbar-menu">
@@ -63,11 +71,18 @@
 				</li>
 			</ul>
 			{/if}
-			{#await extract('datas')}
-				<div></div>
-			{:then datas} 
-			{#if datas}
-			<div class="flex gap-4 align-items-center">
+			{#if variant == 'inside'}
+			<div class="flex gap-2 align-items-center">
+				<p class="body-small-medium tc-primary-main">{userData ? userData.role : ''}</p>
+				<Button id="profile" classList="btn p-2">
+					<div class="flex align-items-center gap-1">
+						<PersonCircle width={24} height={24} color="#3951A8"/>
+						<ChevronDown width={16} height={16}/>
+					</div>
+				</Button>
+			</div>
+			{:else if userData}
+			<div class="flex gap-2 align-items-center">
 				<Button id="notification" classList="btn btn-no-padding">
 					<Bell width={24} height={24}/>
 				</Button>
@@ -87,7 +102,6 @@
 				<Button type="link" href="/registration" classList="btn btn-main">Daftar</Button>
 			</div>
 			{/if}
-			{/await}
 		</div>
 	</nav>
 </header>
@@ -99,21 +113,23 @@
 <style>
 	/* Navbar Section */
 
+	header{
+		position: sticky;
+		position: -webkit-sticky;
+		top: 0;
+		z-index: 9;
+	}
+
 	.nav{
 		height: 80px;
-		z-index: 999;
-		transition: top 0.3s ease;
 	}
 
 	.nav-light{
 		background-color: var(--neutral-white);
 	}
 
-	.nav-fixed{
-		position: fixed;
-		top: 0;
-		left: 0;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	.nav-neutral{
+		background-color: var(--neutral-surface);
 	}
 
 	.navbar-menu {
@@ -148,6 +164,10 @@
 	.navbar-menu-item:hover {
 		cursor: pointer;
 		background-color: var(--neutral-surface);
+	}
+
+	.navbar-shadow{
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	}
 
 	/* End of Navbar Section */

@@ -13,7 +13,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="overlay" on:click={closeOnClickOverlay}>
-    <div class="card drop-shadow w-100" style="max-width: {width};">
+    <div class="card card-modal drop-shadow w-100" style="max-width: {width};">
         <slot/>
     </div>
 </div>
@@ -32,6 +32,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 9999;
+        z-index: 99;
+    }
+
+    .card-modal{
+        padding: 46px 36px !important;
     }
 </style>
