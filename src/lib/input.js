@@ -19,26 +19,26 @@ const validateInput = (value, rules) => {
 
     for (let rule of rules) {
         if (rule.required && !value) {
-            errors.push(rule.message || 'This field is required');
+            errors.push(rule.message || 'Harap isi data ini!');
         }
 
         if (rule.min && value.length < rule.min) {
-            errors.push(rule.message || `Minimum length is ${rule.min}`);
+            errors.push(rule.message || `Minimal panjang karakter adalah ${rule.min}!`);
         }
 
         if (rule.max && value.length > rule.max) {
-            errors.push(rule.message || `Maximum length is ${rule.max}`);
+            errors.push(rule.message || `Maksimum panjang karakter adalah ${rule.max}!`);
         }
 
         if (rule.type && rule.type == 'email') {
             if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){
-                errors.push(rule.message || 'Please enter a valid email address');
+                errors.push(rule.message || 'Mohon masukkan email yang valid!');
             }
         }
 
         if (rule.type && rule.type == 'password') {
             if(!/^(?=.*[a-zA-Z])(?=.*\d).{8,16}$/.test(value)){
-                errors.push(rule.message || 'Password must be 8-16 characters long and contain at least one letter and one number');
+                errors.push(rule.message || 'Password harus terdiri dari 8-16 karakter dan terdapat setiaknya satu huruf dan satu angka!');
             }
         }
     }

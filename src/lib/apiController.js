@@ -8,6 +8,7 @@ const ApiController = {
         data = null,
         headers = { 'Content-Type': 'application/x-www-form-urlencoded' },
         authToken = null,
+        onUploadProgress = null
     }) {
         const config = {
             method,
@@ -17,6 +18,7 @@ const ApiController = {
                 ...headers,
                 Authorization: authToken ? `Bearer ${authToken}` : null,
             },
+            onUploadProgress
         };
 
         return axios(config).then(response => response.data);

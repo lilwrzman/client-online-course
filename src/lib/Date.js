@@ -1,0 +1,24 @@
+const now = new Date()
+const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+const dayName = days[now.getDay()]
+const monthName = months[now.getMonth()]
+const dayOfMonth = now.getDate()
+const year = now.getFullYear()
+let hours = now.getHours()
+const minutes = now.getMinutes()
+const amOrPm = hours >= 12 ? 'PM' : 'AM';
+hours = hours % 12 || 12;
+
+const addLeadingZero = (num) => (num < 10 ? '0' + num : num)
+const formattedTime = `${addLeadingZero(hours)}.${addLeadingZero(minutes)} ${amOrPm}`
+
+const getCurrentDay = () => {
+    return `${dayName}, ${dayOfMonth} ${monthName} ${year}`
+}
+
+const getCurrentTime = () => {
+    return `${formattedTime}`
+}
+
+export { getCurrentDay, getCurrentTime }
