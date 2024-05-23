@@ -50,8 +50,12 @@
         }
     }
 
-    $: {
-        inputClass += error ? 'invalid' : ''
+    $: {        
+        if(!inputClass.includes('invalid')) {
+            inputClass += error ? 'invalid' : ''
+        }else{
+            inputClass = inputClass.replace('invalid', '')
+        }
     }
 </script>
 
@@ -164,7 +168,7 @@
         background-color: var(--neutral-white);
         color: #185951;
         caret-color: #185951;
-        outline: 2px solid #718284;
+        outline: 1px solid #718284;
     }
 
     input:focus::placeholder {

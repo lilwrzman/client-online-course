@@ -6,6 +6,7 @@
     export let useDefault = true
     export let file
     export let url = ''
+    export let minHeight = 0.75
 
     let dropzone, dropzoneMessage, preview, input
 
@@ -52,10 +53,10 @@
         dropzoneMessage = document.querySelector('#dropzone-container p')
         preview = document.getElementById('dropzone-preview')
 
-        dropzone.style.height = `${dropzone.getBoundingClientRect().width * 0.75}px`
+        dropzone.style.height = `${dropzone.getBoundingClientRect().width * minHeight}px`
 
         window.addEventListener('resize', (evt) => {
-            dropzone.style.height = `${dropzone.getBoundingClientRect().width * 0.75}px`
+            dropzone.style.height = `${dropzone.getBoundingClientRect().width * minHeight}px`
         })
 
         dropzone.addEventListener('drop', async (evt) => {
@@ -64,15 +65,21 @@
             evt.preventDefault()
 
             if(evt.dataTransfer.items[0].kind !== 'file'){
+                dropzoneMessage.style.display = 'block'
                 dropzoneMessage.classList.add('tc-danger-main')
                 dropzoneMessage.textContent = 'Error: Bukan file!'
                 throw new Error('Bukan file!')
+            }else{
+                dropzoneMessage.style.display = 'none'
             }
 
             if(evt.dataTransfer.items.length > 1){
+                dropzoneMessage.style.display = 'block'
                 dropzoneMessage.classList.add('tc-danger-main')
                 dropzoneMessage.textContent = 'Error: Tidak bisa lebih dari 1 file!'
                 throw new Error('Tidak bisa lebih dari 1 file!')
+            }else{
+                dropzoneMessage.style.display = 'none'
             }
 
             const filesArray = [...evt.dataTransfer.files]
@@ -91,9 +98,12 @@
             })
 
             if(!isFile){
+                dropzoneMessage.style.display = 'block'
                 dropzoneMessage.classList.add('tc-danger-main')
                 dropzoneMessage.textContent = 'Error: Bukan file (tidak bisa folder)!'
                 throw new Error('Bukan file (tidak bisa folder)!')
+            }else{
+                dropzoneMessage.style.display = 'none'
             }
 
             dropzone.style.backgroundColor = '#ffffff'
@@ -126,7 +136,7 @@
                 <div class="body-small-reguler">atau</div>
             </div>
             <Button classList="btn btn-main" onClick={openFileHandler}>Pilih File</Button>
-            <p class="body-small-reguler"></p>
+            <p class="body-small-reguler" style="display: none;"></p>
         </div>
         {:else}
         <slot/>
