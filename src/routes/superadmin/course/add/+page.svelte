@@ -314,34 +314,38 @@
     </div>
 </div>
 
-<style>
-    .row-menu-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: all .25s ease;
-    }
+<svelte:head>
+    <title>Materi | Tambah Baru</title>
 
-    .row-menu-container:hover{
-        padding-top: 0.25rem;
-        padding-bottom: 0.25rem;
-        background-color: var(--hover);
-    }
-
-    .row-menu-active::before{
-        border-color: var(--primary-main) !important;
-    }
-
-    .row-menu::before{
-        content: "";
-        height: 90%;
-        border-radius: 3px;
-        border: 2px solid transparent;
-    }
-
-    .teacher-data:hover{
-        cursor: pointer;
-    }
-</style>
+    <style>
+        .row-menu-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all .25s ease;
+        }
+    
+        .row-menu-container:hover{
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            background-color: var(--hover);
+        }
+    
+        .row-menu-active::before{
+            border-color: var(--primary-main) !important;
+        }
+    
+        .row-menu::before{
+            content: "";
+            height: 90%;
+            border-radius: 3px;
+            border: 2px solid transparent;
+        }
+    
+        .teacher-data:hover{
+            cursor: pointer;
+        }
+    </style>
+</svelte:head>

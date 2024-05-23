@@ -297,34 +297,38 @@
     </div>
 </div>
 
-<style>
-    .course-data {
-        cursor: pointer;
-    }
-
-    .row-menu-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: all .25s ease;
-    }
-
-    .row-menu-container:hover{
-        padding-top: 0.25rem;
-        padding-bottom: 0.25rem;
-        background-color: var(--hover);
-    }
-
-    .row-menu-active::before{
-        border-color: var(--primary-main) !important;
-    }
-
-    .row-menu::before{
-        content: "";
-        height: 90%;
-        border-radius: 3px;
-        border: 2px solid transparent;
-    }
-</style>
+<svelte:head>
+    <title>Alur Belajar | Tambah Baru</title>
+    
+    <style>
+        .course-data {
+            cursor: pointer;
+        }
+    
+        .row-menu-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all .25s ease;
+        }
+    
+        .row-menu-container:hover{
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            background-color: var(--hover);
+        }
+    
+        .row-menu-active::before{
+            border-color: var(--primary-main) !important;
+        }
+    
+        .row-menu::before{
+            content: "";
+            height: 90%;
+            border-radius: 3px;
+            border: 2px solid transparent;
+        }
+    </style>
+</svelte:head>

@@ -149,8 +149,12 @@
     </div>  
 </div>
 
-<style>
-    .card-img-fluid {
-        aspect-ratio: 4/3;
-    }
-</style>
+<svelte:head>
+    <title>Materi</title>
+
+    <style>
+        .card-img-fluid {
+            aspect-ratio: 4/3;
+        }
+    </style>
+</svelte:head>

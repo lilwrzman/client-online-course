@@ -147,7 +147,7 @@
 </div>
 
 <svelte:head>
-    <title>Learning Path</title>
+    <title>Alur Belajar</title>
 
     <style>
         .card-img-fluid {
