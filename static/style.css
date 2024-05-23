@@ -96,7 +96,7 @@ main { overflow-x: hidden; }
 
 p { margin-top: 0; margin-bottom: 0; }
 
-.h1 {
+.h1, h1 {
     font-size: 52px;
     font-weight: 700;
     line-height: 60px;
@@ -105,7 +105,7 @@ p { margin-top: 0; margin-bottom: 0; }
     margin-bottom: 0.5rem;
 }
 
-.h2 {
+.h2, h2 {
     font-size: 44px;
     font-weight: 700;
     line-height: 54px;
@@ -114,7 +114,7 @@ p { margin-top: 0; margin-bottom: 0; }
     margin-bottom: 0.5rem;
 }
 
-.h3 {
+.h3, h3 {
     font-size: 36px;
     font-weight: 700;
     line-height: 44px;
@@ -123,7 +123,7 @@ p { margin-top: 0; margin-bottom: 0; }
     margin-bottom: 0.5rem;
 }
 
-.h4 {
+.h4, h4 {
     font-size: 28px;
     font-weight: 700;
     line-height: 36px;
@@ -132,7 +132,7 @@ p { margin-top: 0; margin-bottom: 0; }
     margin-bottom: 0.5rem;
 }
 
-.h5 {
+.h5, h5 {
     font-size: 20px;
     font-weight: 700;
     line-height: 28px;
@@ -280,6 +280,12 @@ a {
 }
 
 .link { text-decoration: underline !important; }
+
+.text-center{ text-align: center !important; }
+
+.text-start{ text-align: start !important; }
+
+.text-end { text-align: end !important; }
 
 /* End of Typography Section */
 
@@ -667,6 +673,82 @@ a {
 .col-12 { flex: 0 0 100%; max-width: 100%; }
 
 /* End of Grid Section */
+
+
+/* Table Section */
+
+.table-responsive {
+    border: 1px solid var(--neutral-border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    caption-side: bottom;
+    border-collapse: collapse;
+}
+
+.table {
+    width: 100%;
+    vertical-align: middle;
+    border-color: var(--neutral-border);
+    margin-bottom: 0;
+}
+
+.table > thead {
+    vertical-align: bottom;
+}
+
+.table th {
+    padding: 1rem 1.25rem;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0px;
+    text-align: start;
+}
+
+.table thead {
+    border-bottom: 1px solid var(--neutral-border);
+}
+
+.table-border-bottom > tr {
+    border-bottom: 1px solid var(--neutral-border);
+}
+
+.table-border-bottom > tr:last-child {
+    border-bottom: transparent;
+}
+
+.table > tbody > tr > td {
+    padding: 1rem 1.25rem;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0px;
+}
+
+.table-stripped > tbody > tr:nth-child(odd){
+    background-color: var(--neutral-surface);
+}
+
+.table-stripped > tbody > tr:nth-child(even){
+    background-color: var(--neutral-white);
+}
+
+.number > thead > tr > th:first-child{
+    width: 2rem;
+    text-align: center;
+}
+
+.number > tbody > tr > td:first-child{
+    width: 2rem;
+    text-align: center;
+}
+
+/* End of Table Section */
+
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
