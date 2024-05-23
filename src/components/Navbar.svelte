@@ -58,16 +58,16 @@
 					<a href="/">Beranda</a>
 				</li>
 				<li class="navbar-menu-item {active == 'alur belajar' ? 'active' : ''}">
-					<a href="/alur-belajar">Alur Belajar</a>
+					<a href="/learning-paths">Alur Belajar</a>
 				</li>
 				<li class="navbar-menu-item {active == 'materi' ? 'active' : ''}">
-					<a href="/materi">Materi</a>
+					<a href="/courses">Materi</a>
 				</li>
 				<li class="navbar-menu-item {active == 'event' ? 'active' : ''}">
-					<a href="/event">Event</a>
+					<a href="/events">Event</a>
 				</li>
 				<li class="navbar-menu-item {active == 'artikel' ? 'active' : ''}">
-					<a href="/artikel">Artikel</a>
+					<a href="/articles">Artikel</a>
 				</li>
 			</ul>
 			{/if}
@@ -148,6 +148,7 @@
 
 	.navbar-menu-item a {
 		color: var(--dark);
+		font-size: 14px;
 		font-weight: 500;
 		line-height: 20px;
 		letter-spacing: 0px;
