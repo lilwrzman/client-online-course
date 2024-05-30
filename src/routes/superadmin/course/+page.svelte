@@ -13,6 +13,7 @@
     import Toast from "@components/Toast.svelte";
     import { PlusLg, Hourglass, ThreeDotsVertical } from "svelte-bootstrap-icons";
     import {DataHandler} from "@vincjo/datatables"
+	import checkLogin from "$lib/CheckLogin";
 
     let user, courses
     let option = [
@@ -42,10 +43,10 @@
     const getCourses = () => {
         ApiController.sendRequest({
             method: "GET",
-            endpoint: 'course/get'
+            endpoint: 'course/get',
         }).then(response => {
             if(response.data){
-                courses = response.data
+                courses = response.data.courses
                 handler = new DataHandler(courses)
                 rows = handler.getRows()
                 handler.sortDesc('created_at')
@@ -54,13 +55,9 @@
     }
 
     onMount(() => {
+        user = checkLogin('Superadmin')
+        
         let flashes = getFlash()
-        user = extract('datas')
-
-        if(!user){
-            goto('/superadmin/login')
-        }
-
         if(flashes){
             toastData = {
                 title: "Sukses",
@@ -75,9 +72,9 @@
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Materi" role="{user ? user.role : ''}" />
+    <Sidebar isOpen={true} active="Materi" role="Superadmin" />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus"/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
         <main style="flex-grow: 1;" class="flex-column">
             <div class="container flex-column py-4 gap-8" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -85,10 +82,10 @@
                 {/if}
 
                 <div class="flex flex-wrap justify-content-between align-items-center gap-4">
-                    <div class="flex flex-wrap gap-4 grow-item">
+                    <div class="flex flex-wrap gap-3 grow-item">
                         <InputField type="select-option" id="select-default" 
                             containerClass="grow-item grow-auto-md"   
-                            inputClass="input-bg-neutral pr-8" 
+                            inputClass="input-bg-light pr-8" 
                             onInput={handleSort}
                             value={sortBy} option={option}/>
                         <InputField type="search" id="search" placeholder="Search..." 
@@ -122,6 +119,7 @@
                                         class="card-img-fluid radius-sm" alt="course-thumbnail"
                                         loading="lazy">
                                 </div>
+                                <p class="label-bullet body-small-medium" style="color: {course.learning_path.color};">{course.learning_path.title}</p>
                                 <div class="flex-column gap-1">
                                     <div class="body-small-medium">{course.title}</div>
                                     <div class="flex justify-content-between">

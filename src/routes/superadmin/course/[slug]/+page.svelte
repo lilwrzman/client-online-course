@@ -7,9 +7,7 @@
 
 	import ApiController from "$lib/ApiController";
     import { extract } from "$lib/Cookie";
-    import showToast from "$lib/Toast";
-	import { getValue } from "$lib/Input";
-    import { setFlash } from "$lib/Flash";
+    import { setFlash } from "$lib/Flash.js";
     
     import Navbar from "@components/Navbar.svelte";
     import Sidebar from "@components/Sidebar.svelte";
@@ -18,8 +16,10 @@
     import Toast from "@components/Toast.svelte";
     import Dropzone from "@components/Dropzone.svelte";
     import Spinner from "@components/Spinner.svelte";
+    import Modal from "@components/Modal.svelte";
 
-    import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill, PencilFill, PassFill, LightbulbFill } from "svelte-bootstrap-icons"
+    import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill, PencilFill, PassFill, LightbulbFill, Trash, TrashFill } from "svelte-bootstrap-icons"
+	import checkLogin from "$lib/CheckLogin.js";
 
     export let data
     let slug = data.slug
@@ -36,6 +36,7 @@
     let teacherListExpand = false
     let isChangingThumbnail = false
     let showSpinner = false
+    let modalShow = false
 
     const handleSubmit = (section) => {
         showSpinner = true
@@ -63,7 +64,6 @@
             data: formData,
             authToken: user.token
         }).then(response => {
-            console.log(response)
             if(response.error){
                 errors = response.error
                 showSpinner = false
@@ -114,21 +114,59 @@
         })
     }
 
-    onMount(() => {
-        user = extract('datas')
+    const removeTeacher = () => {
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: `course/${detail.id}/remove_teacher`,
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                getDetail(null, () => {
+                    toastData = { title: "Berhasil", message: response.message, color: 'toast-success' }
+                    toastVisible = true
+                    showSpinner = false
+                })
+            }
+        })
+    }
 
-        if(!user){
-            goto('/superadmin/login')
-        }
+    const deleteCourse = () => {
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: 'course/delete',
+            data: { id: detail.id },
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/course' })
+            }else if(!response.status){
+                toastData = {
+                    title: "Gagal",
+                    message: response.message,
+                    color: 'toast-danger'
+                }
+                toastVisible = true
+            }else{
+                errors = response.error
+            }
+
+            showSpinner = false
+        })
+    }
+
+    onMount(() => {
+        user = checkLogin("Superadmin")
 
         getDetail()
     })
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Materi" role="{user ? user.role : ''}" />
+    <Sidebar isOpen={true} active="Materi" role="Superadmin" />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus"/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -140,18 +178,14 @@
                 {/if}
 
                 <div class="flex gap-2">
-                    <a href="/superadmin/course" class="body-medium-semi-bold tc-primary-main">
-                        Materi
-                    </a>
+                    <a href="/superadmin/course" class="body-medium-semi-bold tc-neutral-disabled">Materi</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/course/{slug}" class="body-medium-semi-bold tc-neutral-disabled">
-                        { detail ? detail.title : '' }
-                    </a>
+                    <a href="/superadmin/course/{slug}" class="body-medium-semi-bold tc-primary-main">{ detail ? detail.title : '' }</a>
                 </div>
                 
                 {#if status}
                 <div class="row">
-                    <div class="col-12 col-md-4 col-xl-3 mb-3">
+                    <div class="col-12 col-md-4 col-xl-3 mb-3 flex-column gap-3">
                         <div class="card radius-sm">
                             <div class="card-body gap-2">
                                 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -198,7 +232,7 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-content-center align-items-center">
-                                        {#if selected_teacher.id}
+                                        {#if selected_teacher && selected_teacher.id}
                                         <CheckLg width=20 height=20 color="#2ECC71"/>
                                         {:else}
                                         <ExclamationLg width=20 height=20 color="#E74C3C"/>
@@ -258,6 +292,14 @@
                                 </div>
                             </div>
                         </div>
+                        <Button classList="btn btn-danger" onClick={() => {
+                            modalShow = true
+                        }}>
+                            <div class="flex gap-2 justify-content-center align-items-center">
+                                <TrashFill/>
+                                Hapus
+                            </div>
+                        </Button>
                     </div>
                     <div class="col-12 col-md-8 col-xl-9">
                         {#if active == 'Umum'}
@@ -339,15 +381,31 @@
                                 </div>
 
                                 <div class="flex-column gap-2">
-                                    <div class="flex align-items-center p-3 gap-2 neutral-border radius-md teacher-data">
-                                        <PersonFill width=15 height=15 />
-                                        <div class="body-small-semi-bold">{ detail.teacher.info.fullname }</div>
+                                    {#if !detail.teacher}
+                                    <div class="body-small-reguler">Belum ada Pemateri untuk Materi ini!</div>
+                                    {:else}
+                                    <div class="flex align-items-center p-3 justify-content-between 
+                                        neutral-border radius-md">
+                                        <div class="flex gap-2 align-items-center">
+                                            <PersonFill width=15 height=15 />
+                                            <div class="body-small-semi-bold">{ detail.teacher.info.fullname }</div>    
+                                        </div>
+                                        <Button classList="btn btn-no-padding" onClick={removeTeacher}>
+                                            <div class="flex align-items-center">
+                                                <Trash width=15 height=15/>
+                                            </div>
+                                        </Button>
                                     </div>
+                                    {/if}
                                     {#if !teacherListExpand}
                                     <Button classList="btn btn-neutral-outline" onClick={() => teacherListExpand = true}>
                                         <div class="flex body-small-semi-bold tc-dark justify-content-center align-items-center gap-2">
                                             <PencilFill/>
+                                            {#if detail.teacher}
                                             Ubah Pemateri
+                                            {:else}
+                                            Atur Pemateri
+                                            {/if}
                                         </div>
                                     </Button>
                                     {/if}
@@ -356,15 +414,19 @@
                                 {#if teacherListExpand}
                                     {#if teachers && teachers.length > 0}
                                         <div class="flex-column gap-2">
-                                            <div class="body-small-reguler">Pilih materi dibawah ini!</div>
+                                            <div class="body-small-reguler">Pilih pemateri dibawah ini!</div>
                                             {#each teachers as item}
                                             <!-- svelte-ignore a11y-click-events-have-key-events -->
                                             <!-- svelte-ignore a11y-no-static-element-interactions -->
                                             <div on:click={() => {
-                                                selected_teacher = selected_teacher == item ? detail.teacher : item
+                                                if(!selected_teacher){
+                                                    selected_teacher = item
+                                                }else{
+                                                    selected_teacher = selected_teacher == item ? null : item
+                                                }
                                             }} 
                                                 class="flex align-items-center p-3 gap-2 radius-md teacher-data
-                                                {selected_teacher.id == item.id ? 'success-border' : 'neutral-border'}">
+                                                {selected_teacher && selected_teacher.id == item.id ? 'success-border' : 'neutral-border'}">
                                                 <PersonFill width=15 height=15 />
                                                 <div class="body-small-semi-bold">{ item.info.fullname }</div>
                                             </div>
@@ -383,8 +445,12 @@
                                 {#if teacherListExpand}
                                 <div class="flex justify-content-between align-items-center">
                                     <div class="body-small-reguler">
-                                        {#if selected_teacher != detail.teacher}
-                                        Ganti Pemateri {detail.teacher.info.fullname} menjadi {selected_teacher.info.fullname}?
+                                        {#if !detail.teacher && selected_teacher}
+                                            Atur {selected_teacher.info.fullname} sebagai pemateri {detail.title}?
+                                        {:else}
+                                            {#if selected_teacher != detail.teacher}
+                                                Ganti Pemateri {detail.teacher.info.fullname} menjadi {selected_teacher.info.fullname}?
+                                            {/if}
                                         {/if}
                                     </div>
                                     <div class="flex gap-2">
@@ -427,6 +493,23 @@
         </main>
     </div>
 </div>
+
+{#if modalShow}
+    <Modal bind:modalShow>
+        <div class="card-body gap-5">
+            <div class="flex-column">
+                <div class="h4">Hapus Alur Belajar</div>
+                <div class="default-text-input">
+                    Apakah anda yakin ingin menghapus alur belajar {detail.title}? Proses ini tidak dapat dibatalkan!
+                </div>
+            </div>
+            <div class="flex-row-reverse gap-2">
+                <Button classList="btn btn-danger" onClick={deleteCourse}>Ya, hapus!</Button>
+                <Button classList="btn btn-main-outline" onClick={() => modalShow = false}>Tidak</Button>
+            </div>
+        </div>  
+    </Modal> 
+{/if}
 
 <svelte:head>
     <title>{ title ? title : 'Loading' }</title>

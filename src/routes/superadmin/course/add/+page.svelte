@@ -1,5 +1,5 @@
 <script>
-    import { onDestroy, onMount } from "svelte";
+    import { onMount } from "svelte";
     import { goto } from "$app/navigation";
 
     import { fly } from "svelte/transition"
@@ -7,8 +7,6 @@
 
 	import ApiController from "$lib/ApiController";
     import { extract } from "$lib/Cookie";
-    import showToast from "$lib/Toast";
-	import { getValue } from "$lib/Input";
     import { setFlash } from "$lib/Flash";
     
     import Navbar from "@components/Navbar.svelte";
@@ -20,16 +18,16 @@
     import Spinner from "@components/Spinner.svelte";
 
     import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill } from "svelte-bootstrap-icons"
+	import checkLogin from "$lib/CheckLogin";
 
-    let user, errors, teachers, status = false
+    let user, errors, teachers
     let title, description, price, thumbnail_file, teacher_id
+    let active = 'Umum'
 
     let toastData = null
     let toastVisible = false
-
-    let active = 'Umum'
-
     let showSpinner = false
+    let status = false
 
     const handleSubmit = () => {
         showSpinner = true
@@ -79,20 +77,16 @@
     }
 
     onMount(() => {
-        user = extract('datas')
-
-        if(!user){
-            goto('/superadmin/login')
-        }
+        user = checkLogin('Superadmin')
 
         getTeachers()
     })
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Materi" role="{user ? user.role : ''}" />
+    <Sidebar isOpen={true} active="Materi" role="Superadmin" />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus"/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -104,13 +98,9 @@
                 {/if}
 
                 <div class="flex gap-2">
-                    <a href="/superadmin/course" class="body-medium-semi-bold tc-primary-main">
-                        Materi
-                    </a>
+                    <a href="/superadmin/course" class="body-medium-semi-bold tc-neutral-disabled">Materi</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/course/add" class="body-medium-semi-bold tc-neutral-disabled">
-                        Tambah Baru
-                    </a>
+                    <a href="/superadmin/course/add" class="body-medium-semi-bold tc-primary-main">Tambah Baru</a>
                 </div>
                 {#if status}
                 <div class="row">
@@ -215,7 +205,6 @@
                         {:else if active == 'Thumbnail'}
                         <div class="card radius-sm" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
                             <div class="card-body gap-4">
-
                                 <div class="flex-column gap-1">
                                     <div class="body-large-semi-bold">Thumbnail</div>
                                     <div class="body-small-reguler">
@@ -248,26 +237,16 @@
                                     {#each teachers as teacher, index}
                                     <!-- svelte-ignore a11y-no-static-element-interactions -->
                                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <div id="teacher-{index}" class="flex align-items-center p-3 gap-2 neutral-border radius-md teacher-data"
+                                    <div id="teacher-{index}" class="flex align-items-center p-3 gap-2 {teacher_id == teacher.id ? 'success-border' : 'neutral-border'} radius-md teacher-data"
                                         on:click={() => {
-                                            let target = document.getElementById(`teacher-${index}`)
-                                            let siblings = [...target.parentElement.children].filter(elm => elm != target)
-
-                                            if(teacher_id != teacher.id){
+                                            if(!teacher_id){
                                                 teacher_id = teacher.id
-
-                                                target.classList.add('success-border')
                                             }else{
-                                                teacher_id = null
-                                                target.classList.remove('success-border')
+                                                teacher_id = teacher_id == teacher.id ? null : teacher.id
                                             }
-
-                                            siblings.forEach(elm => {
-                                                elm.classList.remove('success-border')
-                                            })
                                         }}>
                                         <PersonFill width=15 height=15 />
-                                        <div class="body-small-semi-bold">{ teacher.info.fullname }</div>
+                                        <div class="body-small-semi-bold">{ teacher.fullname }</div>
                                     </div>
                                     {/each}
                                 </div>
