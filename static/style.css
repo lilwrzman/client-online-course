@@ -773,6 +773,8 @@ table {
 
 /* End of Table Section */
 
+/*Additional Section*/
+
 .label-bullet{
     display: flex;
     align-items: center;
@@ -787,7 +789,6 @@ table {
     background-color: currentColor;
     margin-right: 8px;
 }
-
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
