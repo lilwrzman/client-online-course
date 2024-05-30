@@ -17,8 +17,8 @@
     import Toast from "@components/Toast.svelte";
     import Modal from "@components/Modal.svelte";
     import Spinner from "@components/Spinner.svelte";
-    import SortMenu from "@components/SortMenu.svelte";
-    import SearchMenu from "@components/SearchMenu.svelte";
+    import SortMenu from '@components/SortMenu.svelte';
+    import SearchMenu from '@components/SearchMenu.svelte';
 	import checkLogin from "$lib/CheckLogin";
 
     let user
@@ -34,17 +34,29 @@
     let modalShow = false
     let showSpinner = false
 
-    let teachers, status = false
-    let selectedTeacher
+    let corporates, status = false
+    let selectedCorporate
 
-    const getTeachers = (callback = null) => {
+    const handleSort = (evt) => {
+        sortBy = evt.target.value
+
+        if(sortBy == 'newest'){
+            handler.sortDesc('created_at')
+        }else if(sortBy == 'asc'){
+            handler.sortAsc('fullname')
+        }else if(sortBy == 'desc'){
+            handler.sortDesc('fullname')
+        }
+    }
+
+    const getCorporates = (callback = null) => {
         ApiController.sendRequest({
             method: "GET",
-            endpoint: "account/get?role=Teacher",
+            endpoint: "account/get?role=Corporate Admin",
             authToken: user.token
         }).then(response => {
-            teachers = response.data
-            handler = new DataHandler(teachers)
+            corporates = response.data
+            handler = new DataHandler(corporates)
             rows = handler.getRows()
             handler.sortDesc('created_at')
             status = true
@@ -55,8 +67,8 @@
         })
     }
 
-    const deleteTeacher = () => {
-        if(!selectedTeacher){
+    const deleteCorporate = () => {
+        if(!selectedCorporate){
             return
         }
 
@@ -65,7 +77,7 @@
         ApiController.sendRequest({
             method: "POST",
             endpoint: "account/delete",
-            data: {id: selectedTeacher.id},
+            data: {id: selectedCorporate.id},
             authToken: user.token
         }).then(response => {
             if(response.error){
@@ -74,7 +86,7 @@
             }
 
             if(response.status){
-                getTeachers(() => {
+                getCorporates(() => {
                     toastData = {
                         title: "Berhasil",
                         message: response.message,
@@ -98,7 +110,7 @@
     }
 
     onMount(() => {
-        user = checkLogin('Superadmin')
+        user = checkLogin("Superadmin")
         
         let flashes = getFlash()
         if(flashes){
@@ -110,7 +122,7 @@
             toastVisible = true
         }
 
-        getTeachers()
+        getCorporates()
     })
 </script>
 
@@ -129,14 +141,14 @@
                 {/if}
 
                 <Tab menus={[
-                    {'title': 'Pemateri', 'href': '/superadmin/account/teacher', active: true},
-                    {'title': 'Mitra', 'href': '/superadmin/account/corporate'},
+                    {'title': 'Pemateri', 'href': '/superadmin/account/teacher'},
+                    {'title': 'Mitra', 'href': '/superadmin/account/corporate', active: true},
                     {'title': 'Karyawan', 'href': '/superadmin/account/student'}
                 ]}/>
                 <div class="card radius-sm gap-3" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
                     <div class="flex-column mb-3">
-                        <div class="body-medium-semi-bold">Akun Pemateri</div>
-                        <div class="body-small-reguler">Kelola akun-akun untuk digunakan pemateri LPK!</div>
+                        <div class="body-medium-semi-bold">Akun Mitra</div>
+                        <div class="body-small-reguler">Kelola akun-akun untuk digunakan perusahaan mitra!</div>
                     </div>
                     <div class="flex flex-wrap justify-content-between align-items-center gap-4">
                         <div class="flex flex-wrap gap-3 grow-item">
@@ -156,7 +168,7 @@
 
                             <SearchMenu action={(evt) => handler.search(evt.target.value, ['fullname'])}/>
                         </div>
-                        <Button type="link" href="/superadmin/account/teacher/add" classList="btn btn-main pl-4 grow-item grow-auto-md">
+                        <Button type="link" href="/superadmin/account/corporate/add" classList="btn btn-main pl-4 grow-item grow-auto-md">
                             <div class="flex align-items-center justify-content-center gap-2">
                                 <img src="/icons/plus-lg.svg" alt="plus-icon"/>
                                 <div>Tambah Baru</div>
@@ -164,14 +176,16 @@
                         </Button>
                     </div>
 
-                    <div class="table-responsive radius-sm">
+                    <div class="table-scroll radius-sm">
                         <table class="table number">
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
-                                    <th>Nama</th>
+                                    <th>Perusahaan</th>
+                                    <th>Username</th>
                                     <th>Email</th>
-                                    <th class="text-center">Materi</th>
+                                    <th class="text-center">Referral</th>
+                                    <th class="text-center">Karyawan</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -181,23 +195,25 @@
                                 {#each $rows as row, index}
                                 <tr>
                                     <td class="text-center">{index + 1}</td>
-                                    <td>{row.fullname}</td>
+                                    <td>{row.name}</td>
+                                    <td>{row.username}</td>
                                     <td>{row.email}</td>
-                                    <td class="text-center">{row.course_count} materi</td>
+                                    <td class="text-center">{row.referral_code}</td>
+                                    <td class="text-center">{row.student_count} karyawan</td>
                                     <td class="text-center">
                                         <Button classList="btn btn-info py-1 px-2"
-                                            onClick={() => goto(`/superadmin/account/teacher/${row.id}`)}>Detail</Button>
+                                            onClick={() => goto(`/superadmin/account/corporate/${row.id}`)}>Detail</Button>
                                     </td>
                                 </tr>
                                 {/each}
                                 {:else}
                                 <tr>
-                                    <td colspan="5">Tidak ada data...</td>
+                                    <td colspan="9">Tidak ada data...</td>
                                 </tr>
                                 {/if}
                                 {:else}
                                 <tr>
-                                    <td colspan="5">Loading...</td>
+                                    <td colspan="9">Loading...</td>
                                 </tr>
                                 {/if}
                             </tbody>
@@ -213,15 +229,15 @@
     <Modal bind:modalShow>
         <div class="card-body gap-5">
             <div class="flex-column">
-                <div class="h4">Hapus Pemateri</div>
+                <div class="h4">Hapus Mitra</div>
                 <div class="default-text-input">
-                    Apakah anda yakin ingin menghapus pemateri ? Proses ini tidak dapat dibatalkan!
+                    Apakah anda yakin ingin menghapus mitra {selectedCorporate.name} ? Proses ini tidak dapat dibatalkan!
                 </div>
             </div>
             <div class="flex-row-reverse gap-2">
-                <Button classList="btn btn-danger" onClick={deleteTeacher}>Ya, hapus!</Button>
+                <Button classList="btn btn-danger" onClick={deleteCorporate}>Ya, hapus!</Button>
                 <Button classList="btn btn-main-outline" onClick={() => {
-                    selectedTeacher = null
+                    selectedCorporate = null
                     modalShow = false
                 }}>Tidak</Button>
             </div>
@@ -230,5 +246,5 @@
 {/if}
 
 <svelte:head>
-    <title>Manajemen Akun | Pemateri</title>
+    <title>Manajemen Akun | Mitra</title>
 </svelte:head>

@@ -7,8 +7,6 @@
 
     import ApiController from "$lib/ApiController.js"
     import { extract } from "$lib/Cookie.js"
-    import { getDay } from "$lib/Date"
-    import { setFlash } from "$lib/Flash"
 
     import InputField from "@components/InputField.svelte"
     import Button from "@components/Button.svelte"
@@ -17,32 +15,29 @@
     import Toast from "@components/Toast.svelte"
     import Dropzone from "@components/Dropzone.svelte"
     import Spinner from "@components/Spinner.svelte"
-    import { PencilFill, TrashFill } from "svelte-bootstrap-icons"
+    import { PencilFill, TrashFill, Copy } from "svelte-bootstrap-icons"
+    import Modal from "@components/Modal.svelte"
     import Tab from "@components/Tab.svelte"
     import { DataHandler } from "@vincjo/datatables/local"
-    import Modal from "@components/Modal.svelte"
 	import checkLogin from "$lib/CheckLogin.js";
 
     export let data
     let id = data.id
 
     let user
-    let errors = null
+    
+    let corporate
+    let name, address, contact, username, email, avatar_file, avatar_url
 
-    let toastData = null
-    let toastVisible = false
-
-    let showSpinner = false, modalShow = false
-
-    let detail, isMitra = false
-    let myCourses, handlerCourses, courses
-    let myTransaction, handleTransactions, transactions
-    let fullname, username, email, avatar_file, avatar_url
     let status = false
     let isChangingAvatar = false
-    let corporates, option = [], corporate_id
-
-    let tab = 'Course Access'
+    let modalShow = false
+    let showSpinner = false
+    let errors = null
+    let toastData = null
+    let toastVisible = false
+    let tab = 'Students'
+    let myStudents, handlerStudents, students 
 
     const getDetail = (callback = null) => {
         ApiController.sendRequest({
@@ -50,29 +45,16 @@
             endpoint: `account/${id}`,
             authToken: user.token
         }).then(response => {
-            detail = response.data
-            fullname = detail.fullname
-            username = detail.username
-            email = detail.email
-            avatar_url = `http://127.0.0.1:8000/storage/${detail.avatar}`
-
-            myCourses = detail.my_courses
-            handlerCourses = new DataHandler(myCourses)
-            courses = handlerCourses.getRows()
-
-            myTransaction = []
-            handleTransactions = new DataHandler(myTransaction)
-            transactions = handleTransactions.getRows()
-
-            corporates = detail.corporates.map(elm => {
-                return {value: elm.id, text: elm.info.name}
-            })
-
-            option = []
-            option.push({value: null, text: "Pilih Mitra"})
-            option.push(...corporates)
-            isMitra = detail.corporate_id ? true : false
-            corporate_id = isMitra ?  detail.corporate_id : option[0].value
+            corporate = response.data
+            name = corporate.name
+            address = corporate.address
+            contact = corporate.contact
+            username = corporate.username
+            email = corporate.email
+            avatar_url = `http://127.0.0.1:8000/storage/${corporate.avatar}`
+            myStudents = corporate.my_students
+            handlerStudents = new DataHandler(myStudents)
+            students = handlerStudents.getRows()
 
             status = true
 
@@ -84,22 +66,14 @@
 
     const handleSubmit = (evt) => {
         showSpinner = true
+
         let fd = new FormData()
         fd.append("id", id)
-        fd.append("fullname", fullname)
+        fd.append("name", name)
+        fd.append("address", address)
+        fd.append("contact", contact)
         fd.append("username", username)
         fd.append("email", email)
-
-        if(isMitra){
-            if(corporate_id){
-                fd.append("corporate_id", corporate_id)
-            }else{
-                showSpinner = false
-                return alert("Pilih perusahaan mitra!")
-            }
-        }else{
-            fd.append("corporate_id", null)
-        }
 
         ApiController.sendRequest({
             method: "POST",
@@ -153,7 +127,6 @@
             if(response.status){
                 getDetail(() => {
                     toastData = { title: "Berhasil", message: response.message, color: 'toast-success'}
-                    isChangingAvatar = false
                     toastVisible = true
                     showSpinner = false
                 })
@@ -165,7 +138,7 @@
         })
     }
 
-    const deleteStudent = () => {
+    const deleteCorporate = () => {
         showSpinner = true
 
         ApiController.sendRequest({
@@ -180,7 +153,7 @@
             }
 
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/student' })
+                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/corporate' })
             }else{
                 toastData = {
                     title: "Gagal",
@@ -194,17 +167,21 @@
         })
     }
 
+    const toClipboard = () => {
+        navigator.clipboard.writeText(corporate.referral).then(() => {
+            toastData = { title: "Berhasil", message: "Link referral berhasil disalin", color: 'toast-success'}
+            toastVisible = true
+        }).catch(error => {
+            toastData = { title: "Gagal", message: error, color: 'toast-danger'}
+            toastVisible = true
+        })
+    }
+
     onMount(() => {
         user = checkLogin("Superadmin")
 
         getDetail()
     })
-
-    $:{
-        if(!isMitra){
-            corporate_id = null
-        }
-    }
 </script>
 
 <div class="flex">
@@ -220,69 +197,61 @@
                 {#if showSpinner}
                     <Spinner/>    
                 {/if}
-                
+                {#if status}
                 <div class="flex gap-2">
                     <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">Manajemen Akun</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/student" class="body-medium-semi-bold tc-neutral-disabled">Karyawan</a>
+                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">Mitra</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/student/{id}" class="body-medium-semi-bold tc-primary-main">Detail</a>
+                    <a href="/superadmin/account/corporate/{id}" class="body-medium-semi-bold tc-primary-main">Detail</a>
                 </div>
-
-                {#if status}
                 <div class="row">
                     <div class="col-12 col-md-8">
                         <div class="card radius-sm" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
                             <div class="card-body gap-4">
                                 <div class="flex-column gap-1">
-                                    <div class="body-large-semi-bold">Karyawan</div>
-                                    <div class="body-small-reguler">Berikut adalah informasi dari akun {detail.fullname}!</div>
+                                    <div class="body-large-semi-bold">Mitra</div>
+                                    <div class="body-small-reguler">Lengkapi form dengan data yang valid!</div>
                                 </div>
 
                                 <div class="flex-column gap-3">
-                                    <InputField labelClass="body-medium-semi-bold" label="Nama Lengkap" id="fullname" 
-                                        placeholder="Nama lengkap" bind:value={fullname}
-                                        rules={[{ required: true }]} error={errors ? errors.fullname ? errors.fullname : '' : '' }/>
+                                    <InputField labelClass="body-medium-semi-bold" label="Nama Perusahaan" id="name" 
+                                        placeholder="Nama perusahaan" bind:value={name}
+                                        rules={[{ required: true }]} error={errors ? errors.name ? errors.name : '' : '' }/>
+                                    
+                                    <InputField labelClass="body-medium-semi-bold" label="Alamat Perusahaan" id="address" 
+                                        placeholder="Alamat perusahaan" bind:value={address}
+                                        rules={[{ required: true }]} error={errors ? errors.address ? errors.address : '' : '' }/>
+
+                                    <InputField labelClass="body-medium-semi-bold" label="Kontak" id="contact" 
+                                        placeholder="Nomor telepon perusahaan" bind:value={contact}
+                                        rules={[{ required: true }]} error={errors ? errors.contact ? errors.contact : '' : '' }/>
 
                                     <InputField labelClass="body-medium-semi-bold" bind:value={username}
-                                        placeholder="Username untuk akun karyawan"
+                                        placeholder="Username untuk akun pemateri"
                                         label="Username" id="username" rules={[{ required: true }]} 
                                         error={errors ? errors.username ? errors.username : '' : '' }/>
 
                                     <InputField labelClass="body-medium-semi-bold" bind:value={email}
-                                        placeholder="Email untuk akun karyawan"
+                                        placeholder="Email untuk akun pemateri"
                                         label="Email" id="email" rules={[{ required: true, type: 'email' }]} 
                                         error={errors ? errors.email ? errors.email : '' : '' }/>
-                                    
-                                    <InputField labelClass="body-medium-semi-bold" label="Jenis Karyawan"
-                                        type="select-option" id="select-jenis" 
-                                        containerClass="grow-item grow-auto-md"   
-                                        inputClass="pr-8" bind:value={isMitra} option={[
-                                            { value: false, text: 'Umum' },
-                                            { value: true, text: 'Mitra' },
-                                        ]}/>
-
-                                    {#if isMitra}
-                                    <InputField labelClass="body-medium-semi-bold" label="Mitra"
-                                        type="select-option" id="select-mitra" 
-                                        containerClass="grow-item grow-auto-md"   
-                                        inputClass="pr-8" bind:value={corporate_id} option={option}/>
-                                    {/if}
                                 </div>
 
                                 <div class="flex-row-reverse gap-2">
-                                    <Button disabled={fullname != detail.fullname || 
-                                        username != detail.username || 
-                                        email != detail.email ||
-                                        corporate_id != detail.corporate_id ? false : true}
+                                    <Button disabled={name != corporate.name || 
+                                        address != corporate.address || 
+                                        contact != corporate.contact || 
+                                        username != corporate.username || 
+                                        email != corporate.email ? false : true} 
                                         classList="btn btn-main" onClick={handleSubmit}>Simpan</Button>
-                                    <Button type='link' href='/superadmin/account/student' classList="btn btn-main-outline">Kembali</Button>
+                                    <Button type='link' href='/superadmin/account/corporate' classList="btn btn-main-outline">Kembali</Button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 flex-column gap-3" transition:fly={{ delay: 450, duration: 300, x: 100, opacity: 0, easing: quintOut }}>
-                        <div class="card radius-sm">
+                    <div class="col-12 col-md-4 mb-3 flex-column gap-3">
+                        <div class="card radius-sm" style="aspect-ratio: 1/1;">
                             <div class="card-body gap-2">
                                 <div class="body-large-semi-bold">Foto Profil</div>
                                 {#if isChangingAvatar}
@@ -309,6 +278,21 @@
                                 {/if}
                             </div>
                         </div>
+                        <div class="card radius-sm">
+                            <div class="card-body">
+                                <div class="flex justify-content-between align-items-center">
+                                    <div class="flex-column gap-1">
+                                        <div class="caption-reguler-thin">Kode Referral</div>                                
+                                        <div class="body-medium-semi-bold">{corporate.referral}</div>
+                                    </div>
+                                    <Button classList="btn p-0" onClick={toClipboard}>
+                                        <div class="flex align-items-center justify-content-center">
+                                            <Copy/>
+                                        </div>
+                                    </Button>   
+                                </div>
+                            </div>
+                        </div>
                         <Button classList="btn btn-danger" onClick={() => {
                             modalShow = true
                         }}>
@@ -322,55 +306,55 @@
 
                 <div class="flex-column gap-3" transition:fly={{ delay: 650, duration: 300, y: -100, opacity: 0, easing: quintOut }}>
                     <Tab bind:value={tab} type="variabel" menus={[
-                        {'title': 'Akses Materi', 'value': 'Course Access'},
-                        {'title': 'Riwayat Transaksi', 'value': 'Transaction History'}
+                        {'title': 'Karyawan Mitra', 'value': 'Students'},
+                        {'title': 'Materi Bundel', 'value': 'Courses'}
                     ]}/>
 
-                    {#if tab == 'Course Access'}
+                    {#if tab == 'Students'}
                     <div class="card radius-sm gap-3">
                         <div class="flex-column">
-                            <div class="body-medium-semi-bold">Akses Materi</div>
-                            {#if $courses.length > 0}
-                            <div class="body-small-reguler">Berikut adalah materi-materi yang dapat diakses oleh akun {detail.fullname}!</div>
-                            {:else}
-                            <div class="body-small-reguler">Akun {detail.fullname} belum memiliki akses ke materi apapun!</div>
-                            {/if}
+                            <div class="body-medium-semi-bold">Karyawan Mitra</div>
+                            <div class="body-small-reguler">Berikut adalah karyawan-karyawan dari akun mitra {corporate.name}!</div>
                         </div>
-                        {#if $courses.length > 0}
-                        <div class="row">
-                            {#each $courses as course}
-                            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
-                                <div class="card radius-sm p-0">
-                                    <div class="card-body">
-                                        <div class="w-100">
-                                            <img src="http://127.0.0.1:8000/storage/{course.thumbnail}" 
-                                                class="card-img-fluid radius-sm-top" alt="course-thumbnail"
-                                                loading="lazy">
-                                        </div>
-                                        <div class="flex-column p-2">
-                                            <div class="body-small-medium">{course.title}</div>
-                                            <div class="caption-small-reguler">Diakses sejak: {getDay(course.pivot.access_date)}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {/each}
+                        <div class="table-scroll radius-sm">
+                            <table class="table number">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">No</th>
+                                        <th>Nama</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom">
+                                    {#if $students.length > 0}
+                                    {#each $students as row, index}
+                                    <tr>
+                                        <td class="text-center">{index + 1}</td>
+                                        <td>{row.fullname}</td>
+                                        <td>{row.username}</td>
+                                        <td>{row.email}</td>
+                                    </tr>
+                                    {/each}
+                                    {:else}
+                                    <tr>
+                                        <td colspan="9">Tidak ada data...</td>
+                                    </tr>
+                                    {/if}
+                                </tbody>
+                            </table>
                         </div>
-                        {/if}
                     </div>
-                    {:else if tab == 'Transaction History'}
+                    {:else if tab == 'Courses'}
                     <div class="card radius-sm gap-3">
                         <div class="flex-column">
-                            <div class="body-medium-semi-bold">Riwayat Transaksi</div>
-                            {#if $transactions.length > 0}
-                            <div class="body-small-reguler">Berikut adalah transaksi yang pernah dilakukan oleh akun {detail.fullname}!</div>
-                            {:else}
-                            <div class="body-small-reguler">Akun {detail.fullname} belum melakukan transaksi apapun!</div>
-                            {/if}
+                            <div class="body-medium-semi-bold">Materi Bundel</div>
+                            <div class="body-small-reguler">Berikut adalah materi bundel untuk akun mitra {corporate.name}!</div>
                         </div>
                     </div>
                     {/if}
                 </div>
+                
                 {/if}
             </div>
         </main>
@@ -383,11 +367,11 @@
             <div class="flex-column">
                 <div class="h4">Hapus Mitra</div>
                 <div class="default-text-input">
-                    Apakah anda yakin ingin menghapus karyawan {detail.fullname} ? Proses ini tidak dapat dibatalkan!
+                    Apakah anda yakin ingin menghapus mitra {corporate.name} ? Proses ini tidak dapat dibatalkan!
                 </div>
             </div>
             <div class="flex-row-reverse gap-2">
-                <Button classList="btn btn-danger" onClick={deleteStudent}>Ya, hapus!</Button>
+                <Button classList="btn btn-danger" onClick={deleteCorporate}>Ya, hapus!</Button>
                 <Button classList="btn btn-main-outline" onClick={() => {
                     modalShow = false
                 }}>Tidak</Button>

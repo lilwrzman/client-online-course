@@ -16,6 +16,7 @@
     import Toast from "@components/Toast.svelte"
     import Dropzone from "@components/Dropzone.svelte"
     import Spinner from "@components/Spinner.svelte"
+	import checkLogin from "$lib/CheckLogin";
 
     let user
     let errors = null
@@ -25,21 +26,40 @@
 
     let showSpinner = false
 
-    let fullname, username, email, avatar_file
+    let fullname, username, email, facebook_name, facebook_url, instagram_name, instagram_url, avatar_file
 
     const handleSubmit = (evt) => {
-        showSpinner = true
-
         let fd = new FormData()
         fd.append("role", "Teacher")
         fd.append("fullname", fullname)
         fd.append("username", username)
         fd.append("email", email)
+        
+        if(facebook_name){
+            if(!facebook_url){
+                errors.facebook_url = "Harap isi data ini!"
+                return 
+            }
+
+            fd.append("facebook_name", facebook_name)
+            fd.append("facebook_url", facebook_url)
+        }
+
+        if(instagram_name){
+            if(!instagram_url){
+                errors.instagram_url = "Harap isi data ini!"
+                return 
+            }
+
+            fd.append("instagram_name", instagram_name)
+            fd.append("instagram_url", instagram_url)
+        }
 
         if(avatar_file){
             fd.append("avatar_file", avatar_file)
         }
 
+        showSpinner = true  
         ApiController.sendRequest({
             method: "POST",
             endpoint: "account/add",
@@ -61,25 +81,20 @@
                     color: 'toast-danger'
                 }
                 toastVisible = true
+                showSpinner = false
             }
-
-            showSpinner = false
         })
     }
 
     onMount(() => {
-        user = extract('datas')
-
-        if(!user){
-            goto('/superadmin/login')
-        }
+        user = checkLogin("Superadmin")
     })
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Manajemen Akun" role="{user ? user.role : ''}" />
+    <Sidebar active="Manajemen Akun" role="Superadmin" />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Manajemen Akun"/>
+        <Navbar active="" variant="inside" pageTitle="Manajemen Akun" bind:user={user}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -90,11 +105,11 @@
                     <Spinner/>    
                 {/if}
                 <div class="flex gap-2">
-                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-primary-main">
+                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">
                         Manajemen Akun
                     </a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/teacher/add" class="body-medium-semi-bold tc-neutral-disabled">
+                    <a href="/superadmin/account/teacher/add" class="body-medium-semi-bold tc-primary-main">
                         Tambah Pemateri
                     </a>
                 </div>
@@ -121,17 +136,48 @@
                                         placeholder="Email untuk akun pemateri"
                                         label="Email" id="email" rules={[{ required: true, type: 'email' }]} 
                                         error={errors ? errors.email ? errors.email : '' : '' }/>
+
+                                    <div class="flex-column gap-2">
+                                        <div class="body-medium-semi-bold">Media Sosial</div>
+                                        <div class="card neutral-border">
+                                            <div class="card-body gap-3">
+                                                <div class="flex gap-2">
+                                                    <InputField labelClass="body-small-semi-bold" bind:value={facebook_name}
+                                                        placeholder="Nama akun Facebook pemateri" containerClass="w-100"
+                                                        label="Akun Facebook" id="facebook_name" />
+
+                                                    <InputField labelClass="body-small-semi-bold" bind:value={facebook_url}
+                                                        placeholder="Link akun Facebook pemateri" containerClass="w-100" 
+                                                        label="Link Facebook" id="facebook_url" rules={[{ required: facebook_name ? true : false }]}
+                                                        error={errors ? errors.facebook_url ? errors.facebook_url : '' : facebook_name && !facebook_url ? 'Harap isi data ini!' : '' }/>
+                                                </div>
+                                                <div class="flex gap-2">
+                                                    <InputField labelClass="body-small-semi-bold" bind:value={instagram_name}
+                                                        placeholder="Nama akun Instagram pemateri" containerClass="w-100"
+                                                        label="Akun Instagram" id="instagram_name" />
+
+                                                    <InputField labelClass="body-small-semi-bold" bind:value={instagram_url}
+                                                        placeholder="Link akun Instagram pemateri" containerClass="w-100"
+                                                        label="Link Instagram" id="instagram_url" rules={[{ required: instagram_name ? true : false }]}
+                                                        error={errors ? errors.instagram_url ? errors.instagram_url : '' : instagram_name && !instagram_url ? 'Harap isi data ini!' : ''}/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="flex-row-reverse gap-2">
-                                    <Button disabled={fullname && username && email && avatar_file ? false : true} 
+                                    <Button disabled={fullname && username && email && 
+                                        ( facebook_name ? facebook_url : true ) && 
+                                        ( instagram_name ? instagram_url : true )
+                                        ? false : true} 
                                         classList="btn btn-main" onClick={handleSubmit}>Simpan</Button>
                                     <Button type='link' href='/superadmin/account/teacher' classList="btn btn-main-outline">Batal</Button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 mb-3">
+                    <div class="col-12 col-md-4 mb-3" transition:fly={{ delay: 450, duration: 300, x: 100, opacity: 0, easing: quintOut }}>
                         <div class="card radius-sm" style="aspect-ratio: 1/1;">
                             <div class="card-body gap-2">
                                 <div class="body-large-semi-bold">Foto Profil</div>

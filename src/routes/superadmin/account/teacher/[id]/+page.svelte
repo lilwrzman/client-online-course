@@ -7,7 +7,6 @@
 
     import ApiController from "$lib/ApiController.js"
     import { extract } from "$lib/Cookie.js"
-    import { getDay } from "$lib/Date"
     import { setFlash } from "$lib/Flash"
 
     import InputField from "@components/InputField.svelte"
@@ -17,10 +16,10 @@
     import Toast from "@components/Toast.svelte"
     import Dropzone from "@components/Dropzone.svelte"
     import Spinner from "@components/Spinner.svelte"
-    import { PencilFill, TrashFill } from "svelte-bootstrap-icons"
-    import Tab from "@components/Tab.svelte"
-    import { DataHandler } from "@vincjo/datatables/local"
     import Modal from "@components/Modal.svelte"
+    import { DataHandler } from "@vincjo/datatables/local"
+
+    import { PencilFill, TrashFill } from "svelte-bootstrap-icons"
 	import checkLogin from "$lib/CheckLogin.js";
 
     export let data
@@ -32,73 +31,44 @@
     let toastData = null
     let toastVisible = false
 
-    let showSpinner = false, modalShow = false
+    let showSpinner = false
 
-    let detail, isMitra = false
+    let teacher 
+    let fullname, username, email, facebook_name, facebook_url, instagram_name, instagram_url, avatar_file, avatar_url
+    let facebook = {}, instagram = {}
     let myCourses, handlerCourses, courses
-    let myTransaction, handleTransactions, transactions
-    let fullname, username, email, avatar_file, avatar_url
-    let status = false
+
     let isChangingAvatar = false
-    let corporates, option = [], corporate_id
-
-    let tab = 'Course Access'
-
-    const getDetail = (callback = null) => {
-        ApiController.sendRequest({
-            method: "GET",
-            endpoint: `account/${id}`,
-            authToken: user.token
-        }).then(response => {
-            detail = response.data
-            fullname = detail.fullname
-            username = detail.username
-            email = detail.email
-            avatar_url = `http://127.0.0.1:8000/storage/${detail.avatar}`
-
-            myCourses = detail.my_courses
-            handlerCourses = new DataHandler(myCourses)
-            courses = handlerCourses.getRows()
-
-            myTransaction = []
-            handleTransactions = new DataHandler(myTransaction)
-            transactions = handleTransactions.getRows()
-
-            corporates = detail.corporates.map(elm => {
-                return {value: elm.id, text: elm.info.name}
-            })
-
-            option = []
-            option.push({value: null, text: "Pilih Mitra"})
-            option.push(...corporates)
-            isMitra = detail.corporate_id ? true : false
-            corporate_id = isMitra ?  detail.corporate_id : option[0].value
-
-            status = true
-
-            if(callback != null && typeof callback === 'function'){
-                callback()
-            }
-        })
-    } 
+    let status = false
+    let modalShow = false
 
     const handleSubmit = (evt) => {
         showSpinner = true
+
         let fd = new FormData()
         fd.append("id", id)
         fd.append("fullname", fullname)
         fd.append("username", username)
         fd.append("email", email)
 
-        if(isMitra){
-            if(corporate_id){
-                fd.append("corporate_id", corporate_id)
-            }else{
-                showSpinner = false
-                return alert("Pilih perusahaan mitra!")
+        if(facebook_name){
+            if(!facebook_url){
+                errors.facebook_url = "Harap isi data ini!"
+                return 
             }
-        }else{
-            fd.append("corporate_id", null)
+
+            fd.append("facebook_name", facebook_name)
+            fd.append("facebook_url", facebook_url)
+        }
+
+        if(instagram_name){
+            if(!instagram_url){
+                errors.instagram_url = "Harap isi data ini!"
+                return 
+            }
+
+            fd.append("instagram_name", instagram_name)
+            fd.append("instagram_url", instagram_url)
         }
 
         ApiController.sendRequest({
@@ -153,7 +123,6 @@
             if(response.status){
                 getDetail(() => {
                     toastData = { title: "Berhasil", message: response.message, color: 'toast-success'}
-                    isChangingAvatar = false
                     toastVisible = true
                     showSpinner = false
                 })
@@ -165,7 +134,49 @@
         })
     }
 
-    const deleteStudent = () => {
+    const getDetail = (callback = null) => {
+        ApiController.sendRequest({
+            method: "GET",
+            endpoint: `account/${id}`,
+            authToken: user.token
+        }).then(response => {
+            teacher = response.data
+            fullname = teacher.fullname
+            username = teacher.username
+            email = teacher.email
+            myCourses = teacher.my_courses
+            handlerCourses = new DataHandler(myCourses)
+            courses = handlerCourses.getRows()
+            
+            if(teacher.social_media.length > 0){
+                teacher.social_media.map(elm => {
+                    if(elm.type == 'Facebook') {
+                        facebook = elm
+                        facebook_name = elm.username
+                        facebook_url = elm.url
+                    }else if(elm.type == 'Instagram'){
+                        instagram = elm
+                        instagram_name = elm.username
+                        instagram_url = elm.url
+                    }
+                })
+            }else{
+                facebook.username = ""
+                facebook.url = ""
+                instagram.username = ""
+                instagram.url = ""
+            }
+
+            avatar_url = `http://127.0.0.1:8000/storage/${teacher.avatar}`
+            status = true
+
+            if(callback != null && typeof callback === 'function'){
+                callback()
+            }
+        })
+    } 
+
+    const deleteTeacher = () => {
         showSpinner = true
 
         ApiController.sendRequest({
@@ -180,7 +191,7 @@
             }
 
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/student' })
+                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/teacher' })
             }else{
                 toastData = {
                     title: "Gagal",
@@ -199,16 +210,10 @@
 
         getDetail()
     })
-
-    $:{
-        if(!isMitra){
-            corporate_id = null
-        }
-    }
 </script>
 
 <div class="flex">
-    <Sidebar active="Manajemen Akun" role="Superadmin" />
+    <Sidebar isOpen={false} active="Manajemen Akun" role="Superadmin" />
     <div class="neutral-wrapper px-3">
         <Navbar active="" variant="inside" pageTitle="Manajemen Akun" bind:user={user}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
@@ -220,13 +225,13 @@
                 {#if showSpinner}
                     <Spinner/>    
                 {/if}
-                
+
                 <div class="flex gap-2">
                     <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">Manajemen Akun</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/student" class="body-medium-semi-bold tc-neutral-disabled">Karyawan</a>
+                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">Pemateri</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/student/{id}" class="body-medium-semi-bold tc-primary-main">Detail</a>
+                    <a href="/superadmin/account/teacher/{id}" class="body-medium-semi-bold tc-primary-main">Detail</a>
                 </div>
 
                 {#if status}
@@ -235,54 +240,76 @@
                         <div class="card radius-sm" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
                             <div class="card-body gap-4">
                                 <div class="flex-column gap-1">
-                                    <div class="body-large-semi-bold">Karyawan</div>
-                                    <div class="body-small-reguler">Berikut adalah informasi dari akun {detail.fullname}!</div>
+                                    <div class="body-large-semi-bold">Pemateri</div>
+                                    <div class="body-small-reguler">Lengkapi form dengan data yang valid!</div>
                                 </div>
 
                                 <div class="flex-column gap-3">
                                     <InputField labelClass="body-medium-semi-bold" label="Nama Lengkap" id="fullname" 
-                                        placeholder="Nama lengkap" bind:value={fullname}
+                                        placeholder="Nama lengkap pemateri" bind:value={fullname}
                                         rules={[{ required: true }]} error={errors ? errors.fullname ? errors.fullname : '' : '' }/>
 
                                     <InputField labelClass="body-medium-semi-bold" bind:value={username}
-                                        placeholder="Username untuk akun karyawan"
+                                        placeholder="Username untuk akun pemateri"
                                         label="Username" id="username" rules={[{ required: true }]} 
                                         error={errors ? errors.username ? errors.username : '' : '' }/>
 
                                     <InputField labelClass="body-medium-semi-bold" bind:value={email}
-                                        placeholder="Email untuk akun karyawan"
+                                        placeholder="Email untuk akun pemateri"
                                         label="Email" id="email" rules={[{ required: true, type: 'email' }]} 
                                         error={errors ? errors.email ? errors.email : '' : '' }/>
                                     
-                                    <InputField labelClass="body-medium-semi-bold" label="Jenis Karyawan"
-                                        type="select-option" id="select-jenis" 
-                                        containerClass="grow-item grow-auto-md"   
-                                        inputClass="pr-8" bind:value={isMitra} option={[
-                                            { value: false, text: 'Umum' },
-                                            { value: true, text: 'Mitra' },
-                                        ]}/>
+                                    <div class="flex-column gap-2">
+                                        <div class="body-medium-semi-bold">Media Sosial</div>
+                                        <div class="card neutral-border">
+                                            <div class="card-body gap-3">
+                                                <div class="flex gap-2">
+                                                    <InputField labelClass="body-small-semi-bold" bind:value={facebook_name}
+                                                        placeholder="Nama akun Facebook pemateri" containerClass="w-100"
+                                                        label="Akun Facebook" id="facebook_name" />
 
-                                    {#if isMitra}
-                                    <InputField labelClass="body-medium-semi-bold" label="Mitra"
-                                        type="select-option" id="select-mitra" 
-                                        containerClass="grow-item grow-auto-md"   
-                                        inputClass="pr-8" bind:value={corporate_id} option={option}/>
-                                    {/if}
+                                                    <div class="flex-column w-100 gap-1">
+                                                        <InputField labelClass="body-small-semi-bold" bind:value={facebook_url}
+                                                            placeholder="Link akun Facebook pemateri" containerClass="w-100" 
+                                                            label="Link Facebook" id="facebook_url" rules={[{ required: facebook_name ? true : false }]}
+                                                            error={errors ? errors.facebook_name ? errors.facebook_name : '' : facebook_name && !facebook_url ? 'Harap isi data ini!' : ''}/>
+                                                    </div>
+                                                </div>
+                                                <div class="flex gap-2">
+                                                    <InputField labelClass="body-small-semi-bold" bind:value={instagram_name}
+                                                        placeholder="Nama akun Instagram pemateri" containerClass="w-100"
+                                                        label="Akun Instagram" id="instagram_name" />
+
+                                                    <div class="flex-column w-100 gap-1">
+                                                        <InputField labelClass="body-small-semi-bold" bind:value={instagram_url}
+                                                            placeholder="Link akun Instagram pemateri" containerClass="w-100"
+                                                            label="Link Instagram" id="instagram_url" rules={[{ required: instagram_name ? true : false }]}
+                                                            error={errors ? errors.instagram_name ? errors.instagram_name : '' : instagram_name && !instagram_url ? 'Harap isi data ini!' : ''}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="flex-row-reverse gap-2">
-                                    <Button disabled={fullname != detail.fullname || 
-                                        username != detail.username || 
-                                        email != detail.email ||
-                                        corporate_id != detail.corporate_id ? false : true}
+                                    <Button disabled={((fullname != teacher.fullname && fullname) || 
+                                        (username != teacher.username && username) || 
+                                        (email != teacher.email && email) ||
+                                        ( facebook_name != facebook.username ) || 
+                                        ( facebook_url != facebook.url ) ||
+                                        ( instagram_name != instagram.username ) || 
+                                        ( instagram_url != instagram.url )) && 
+                                        (( facebook_name ? facebook_url : true ) && ( instagram_name ? instagram_url : true ))
+                                        ? false : true} 
                                         classList="btn btn-main" onClick={handleSubmit}>Simpan</Button>
-                                    <Button type='link' href='/superadmin/account/student' classList="btn btn-main-outline">Kembali</Button>
+                                    <Button type='link' href='/superadmin/account/teacher' classList="btn btn-main-outline">Kembali</Button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 flex-column gap-3" transition:fly={{ delay: 450, duration: 300, x: 100, opacity: 0, easing: quintOut }}>
-                        <div class="card radius-sm">
+                    <div class="col-12 col-md-4 mb-3 flex-column gap-3" transition:fly={{ delay: 450, duration: 300, x: 100, opacity: 0, easing: quintOut }}>
+                        <div class="card radius-sm" style="aspect-ratio: 1/1;">
                             <div class="card-body gap-2">
                                 <div class="body-large-semi-bold">Foto Profil</div>
                                 {#if isChangingAvatar}
@@ -320,20 +347,14 @@
                     </div>
                 </div>
 
-                <div class="flex-column gap-3" transition:fly={{ delay: 650, duration: 300, y: -100, opacity: 0, easing: quintOut }}>
-                    <Tab bind:value={tab} type="variabel" menus={[
-                        {'title': 'Akses Materi', 'value': 'Course Access'},
-                        {'title': 'Riwayat Transaksi', 'value': 'Transaction History'}
-                    ]}/>
-
-                    {#if tab == 'Course Access'}
-                    <div class="card radius-sm gap-3">
+                <div class="card radius-sm gap-3" transition:fly={{ delay: 650, duration: 300, y: -100, opacity: 0, easing: quintOut }}>
+                    <div class="card-body gap-3">
                         <div class="flex-column">
-                            <div class="body-medium-semi-bold">Akses Materi</div>
+                            <div class="body-medium-semi-bold">Materi</div>
                             {#if $courses.length > 0}
-                            <div class="body-small-reguler">Berikut adalah materi-materi yang dapat diakses oleh akun {detail.fullname}!</div>
+                            <div class="body-small-reguler">Berikut adalah materi-materi yang dapat dikelola oleh akun {teacher.fullname}!</div>
                             {:else}
-                            <div class="body-small-reguler">Akun {detail.fullname} belum memiliki akses ke materi apapun!</div>
+                            <div class="body-small-reguler">Akun {teacher.fullname} belum memiliki akese untuk mengelola materi apapun!</div>
                             {/if}
                         </div>
                         {#if $courses.length > 0}
@@ -349,7 +370,7 @@
                                         </div>
                                         <div class="flex-column p-2">
                                             <div class="body-small-medium">{course.title}</div>
-                                            <div class="caption-small-reguler">Diakses sejak: {getDay(course.pivot.access_date)}</div>
+                                            <div class="caption-reguler-thin">{course.items} item</div>
                                         </div>
                                     </div>
                                 </div>
@@ -358,18 +379,6 @@
                         </div>
                         {/if}
                     </div>
-                    {:else if tab == 'Transaction History'}
-                    <div class="card radius-sm gap-3">
-                        <div class="flex-column">
-                            <div class="body-medium-semi-bold">Riwayat Transaksi</div>
-                            {#if $transactions.length > 0}
-                            <div class="body-small-reguler">Berikut adalah transaksi yang pernah dilakukan oleh akun {detail.fullname}!</div>
-                            {:else}
-                            <div class="body-small-reguler">Akun {detail.fullname} belum melakukan transaksi apapun!</div>
-                            {/if}
-                        </div>
-                    </div>
-                    {/if}
                 </div>
                 {/if}
             </div>
@@ -381,13 +390,13 @@
     <Modal bind:modalShow>
         <div class="card-body gap-5">
             <div class="flex-column">
-                <div class="h4">Hapus Mitra</div>
+                <div class="h4">Hapus Pemateri</div>
                 <div class="default-text-input">
-                    Apakah anda yakin ingin menghapus karyawan {detail.fullname} ? Proses ini tidak dapat dibatalkan!
+                    Apakah anda yakin ingin menghapus pemateri {teacher.fullname} ? Proses ini tidak dapat dibatalkan!
                 </div>
             </div>
             <div class="flex-row-reverse gap-2">
-                <Button classList="btn btn-danger" onClick={deleteStudent}>Ya, hapus!</Button>
+                <Button classList="btn btn-danger" onClick={deleteTeacher}>Ya, hapus!</Button>
                 <Button classList="btn btn-main-outline" onClick={() => {
                     modalShow = false
                 }}>Tidak</Button>
