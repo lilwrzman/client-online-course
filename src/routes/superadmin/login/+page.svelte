@@ -3,3 +3,7 @@
 </script>
 
 <Login role="Superadmin"/>
+
+<svelte:head>
+    <title>Login</title>
+</svelte:head>

@@ -3,3 +3,7 @@
 </script>
 
 <Login role="Teacher"/>
+
+<svelte:head>
+    <title>Login</title>
+</svelte:head>

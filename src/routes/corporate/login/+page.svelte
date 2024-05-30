@@ -3,3 +3,7 @@
 </script>
 
 <Login role="Corporate Admin"/>
+
+<svelte:head>
+    <title>Login</title>
+</svelte:head>
