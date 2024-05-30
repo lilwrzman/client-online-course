@@ -90,6 +90,14 @@ main { overflow-x: hidden; }
     min-height: 100vh;
 }
 
+.bg-neutral-surface{
+    background-color: var(--neutral-surface) !important;
+}
+
+.bg-neutral-white{
+    background-color: var(--neutral-white);
+}
+
 .container { width: 100%; margin: 0 auto; padding: 0 0.75rem; }
 
 /* Typography Section */
@@ -358,7 +366,7 @@ a {
 
 .mt-1 { margin-top: 0.25rem !important; }
 .mt-2 { margin-top: 0.5rem !important; }
-.mt-3 { margin-top: 1rem !important; }
+.mt-3 { margin-top: 1rem !important; } /* 16px */
 .mt-4 { margin-top: 1.5rem !important; }
 .mt-5 { margin-top: 2rem !important; }
 .mt-6 { margin-top: 2.5rem !important; }
@@ -564,6 +572,14 @@ a {
     border-radius: 0.5rem !important;
 }
 
+.radius-sm-top{
+    border-radius: 0.25rem 0.25rem 0 0 !important;
+}
+
+.radius-sm-bottom{
+    border-radius: 0 0 0.25rem 0.25rem !important;
+}
+
 .primary-border{
     border: 1px solid var(--primary-border);
 }
@@ -602,6 +618,7 @@ a {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
+    gap: 0.875rem;
 }
 
 /* End of Card Section */
@@ -683,6 +700,12 @@ a {
     -webkit-overflow-scrolling: touch;
 }
 
+.table-scroll {
+    border: 1px solid var(--neutral-border);
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
 table {
     caption-side: bottom;
     border-collapse: collapse;
@@ -693,6 +716,7 @@ table {
     vertical-align: middle;
     border-color: var(--neutral-border);
     margin-bottom: 0;
+    background-color: var(--neutral-white);
 }
 
 .table > thead {
@@ -748,6 +772,21 @@ table {
 }
 
 /* End of Table Section */
+
+.label-bullet{
+    display: flex;
+    align-items: center;
+}
+
+.label-bullet::before {
+    content: "";
+    display: block;
+    width: clamp(10px, 12px, 14px);
+    height: clamp(10px, 12px, 14px);
+    border-radius: 100%;
+    background-color: currentColor;
+    margin-right: 8px;
+}
 
 
 /* Extra small devices (portrait phones, less than 576px) */
