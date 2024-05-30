@@ -749,6 +749,22 @@ table {
 
 /* End of Table Section */
 
+/*Additional Section*/
+
+.label-bullet{
+    display: flex;
+    align-items: center;
+}
+
+.label-bullet::before {
+    content: "";
+    display: block;
+    width: clamp(10px, 12px, 14px);
+    height: clamp(10px, 12px, 14px);
+    border-radius: 100%;
+    background-color: currentColor;
+    margin-right: 8px;
+}
 
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
