@@ -13,6 +13,7 @@
     import InputField from "@components/InputField.svelte";
     import { PlusLg, Hourglass } from "svelte-bootstrap-icons";
     import {DataHandler} from "@vincjo/datatables"
+	import checkLogin from "$lib/CheckLogin";
 
     let user, paths, handler, rows
     
@@ -52,13 +53,9 @@
     }
 
     onMount(() => {
+        user = checkLogin('Superadmin')
+        
         let flashes = getFlash()
-        user = extract('datas')
-
-        if(!user){
-            goto('/superadmin/login')
-        }
-
         if(flashes){
             toastData = {
                     title: "Sukses",
@@ -73,19 +70,19 @@
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Alur Belajar" role="{user ? user.role : ''}" />
+    <Sidebar isOpen={true} active="Alur Belajar" role="Superadmin" />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus"/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
         <main style="flex-grow: 1;" class="flex-column">
             <div class="container flex-column py-4 gap-8" style="flex-grow: 1;">
                 {#if toastVisible}
                     <Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color} redirectTo={toastData.redirectTo}/>
                 {/if}
                 <div class="flex flex-wrap justify-content-between align-items-center gap-4">
-                    <div class="flex flex-wrap gap-4 grow-item">
+                    <div class="flex flex-wrap gap-3 grow-item">
                         <InputField type="select-option" id="select-default" 
                             containerClass="grow-item grow-auto-md"   
-                            inputClass="input-bg-neutral pr-8" 
+                            inputClass="input-bg-light pr-8" 
                             onInput={handleSort}
                             value={sortBy} option={option}/>
 

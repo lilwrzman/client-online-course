@@ -18,32 +18,25 @@
     import Spinner from "@components/Spinner.svelte"
 
     import { ImageFill, BookFill, ExclamationLg, NutFill, CheckLg, Hourglass } from "svelte-bootstrap-icons"
+	import checkLogin from "$lib/CheckLogin";
 
     let user
-    let errors = null
-
-    let toastData = null
-    let toastVisible = false
-
-    let showSpinner = false
-
-    let active
-
+    let active = 'Umum'
     let title, description, thumbnail_file
-
     let courses
     let selectedCourse = []
+    
+    let errors = null
+    let toastData = null
+    let toastVisible = false
+    let showSpinner = false
 
-    const appendCourse = (id, index) => {
+    const appendCourse = (id) => {
         let temp = selectedCourse
         if (temp.includes(id)) {
             selectedCourse = temp.filter(elm => elm != id)
-            document.getElementById(`course-${index}`).classList.remove('success-border')
-            document.getElementById(`course-${index}`).classList.add('primary-border')
         } else {
             selectedCourse = [...temp, id]
-            document.getElementById(`course-${index}`).classList.remove('primary-border')
-            document.getElementById(`course-${index}`).classList.add('success-border')
         }
     }
 
@@ -101,21 +94,16 @@
     }
 
     onMount(() => {
-        user = extract('datas')
-
-        if(!user){
-            goto('/superadmin/login')
-        }
+        user = checkLogin('Superadmin')
 
         getMateri()
-        active = 'Umum'
     })
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Alur Belajar" role="{user ? user.role : ''}" />
+    <Sidebar isOpen={true} active="Alur Belajar" role="Superadmin" />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus"/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -126,13 +114,9 @@
                     <Spinner/>    
                 {/if}
                 <div class="flex gap-2">
-                    <a href="/superadmin/learning-path" class="body-medium-semi-bold tc-primary-main">
-                        Alur Pembelajaran
-                    </a>
+                    <a href="/superadmin/learning-path" class="body-medium-semi-bold tc-neutral-disabled">Alur Pembelajaran</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/learning-path/add" class="body-medium-semi-bold tc-neutral-disabled">
-                        Tambah Baru
-                    </a>
+                    <a href="/superadmin/learning-path/add" class="body-medium-semi-bold tc-primary-main">Tambah Baru</a>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-4 col-xl-3 mb-3">
@@ -255,8 +239,8 @@
                                     {#each courses as course, index}
                                     <!-- svelte-ignore a11y-no-static-element-interactions -->
                                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <div id="course-{index}" class="flex align-items-center p-3 gap-2 neutral-border radius-md course-data"
-                                        on:click={() => appendCourse(course.id, index)}>
+                                    <div id="course-{index}" class="flex align-items-center p-3 gap-2 { selectedCourse.includes(course.id) ? 'success-border' : 'neutral-border' } radius-md course-data"
+                                        on:click={() => appendCourse(course.id)}>
                                         <div class="body-small-semi-bold">{ course.title }</div>
                                     </div>
                                     {/each}

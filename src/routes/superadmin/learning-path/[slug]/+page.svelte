@@ -6,7 +6,6 @@
     import { quintOut } from "svelte/easing"
 
     import ApiController from "$lib/ApiController.js"
-    import { extract } from "$lib/Cookie.js"
     import { setFlash } from "$lib/Flash"
 
     import InputField from "@components/InputField.svelte"
@@ -19,26 +18,22 @@
     import Modal from "@components/Modal.svelte"
 
     import { ImageFill, BookFill, ExclamationLg, NutFill, CheckLg, Hourglass, List, Trash, PlusLg, LightbulbFill, PencilFill, TrashFill } from "svelte-bootstrap-icons"
+	import checkLogin from "$lib/CheckLogin.js";
 
     export let data
     let slug = data.slug
-    let learningPath
-
+    
     let user
-    let errors = null
-
-    let toastData = null
-    let toastVisible = false
-
-    let showSpinner = false
-
-    let active
-
+    let active = 'Umum'
     let title, description, thumbnail_file, thumbnail_url
-
+    let learningPath
     let courses
     let selectedCourse = []
-
+    
+    let errors = null
+    let toastData = null
+    let toastVisible = false
+    let showSpinner = false
     let courseListExpand = false
     let isChangingThumbnail = false
     let modalShow = false
@@ -48,12 +43,8 @@
         let temp = selectedCourse
         if (temp.includes(id)) {
             selectedCourse = temp.filter(elm => elm != id)
-            // document.getElementById(`course-${index}`).classList.remove('success-border')
-            // document.getElementById(`course-${index}`).classList.add('primary-border')
         } else {
             selectedCourse = [...temp, id]
-            // document.getElementById(`course-${index}`).classList.remove('primary-border')
-            // document.getElementById(`course-${index}`).classList.add('success-border')
         }
     }
 
@@ -176,22 +167,16 @@
     }
 
     onMount(() => {
+        user = checkLogin('Superadmin')
+        
         getLearningPath()
-
-        user = extract('datas')
-
-        if(!user){
-            goto('/superadmin/login')
-        }
-
-        active = 'Umum'
     })
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Alur Belajar" role="{user ? user.role : ''}" />
+    <Sidebar isOpen={true} active="Alur Belajar" role="Superadmin" />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus"/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>    
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -203,13 +188,9 @@
                 {/if}
                 {#if status}
                 <div class="flex gap-2">
-                    <a href="/superadmin/learning-path" class="body-medium-semi-bold tc-primary-main">
-                        Alur Pembelajaran
-                    </a>
+                    <a href="/superadmin/learning-path" class="body-medium-semi-bold tc-neutral-disabled">Alur Pembelajaran</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/learning-path/{slug}" class="body-medium-semi-bold tc-neutral-disabled">
-                        { learningPath ? learningPath.title : '' }
-                    </a>
+                    <a href="/superadmin/learning-path/{slug}" class="body-medium-semi-bold tc-primary-main">{ learningPath ? learningPath.title : '' }</a>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-4 col-xl-3 mb-3 flex-column gap-3">
@@ -259,7 +240,7 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-content-center align-items-center">
-                                        {#if learningPath.courses}
+                                        {#if learningPath.courses.length > 0}
                                         <CheckLg width=20 height=20 color="#2ECC71"/>
                                         {:else}
                                         <ExclamationLg width=20 height=20 color="#E74C3C"/>
