@@ -22,6 +22,8 @@
     export let containerClass = ""
     export let inputClass = ""
 
+    export let disabled = false
+
     export let labelClass = "body-large-reguler"
 
     export let prefix = ''
@@ -66,8 +68,13 @@
 
     {#if type == 'password'}
     <div class="input-group-container">
-        <input type='{showPassword ? 'text' : 'password'}' id='{id}' name='{name ? name : id}' value='{value}'
+        {#if showPassword}
+        <input type='text' id='{id}' name='{name ? name : id}' bind:value='{value}'
             placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
+        {:else}
+        <input type='password' id='{id}' name='{name ? name : id}' bind:value='{value}'
+            placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
+        {/if}
         <div class="password-icon">
             <Button id="btn-{id}" classList="btn btn-no-padding" onClick={toggleVisibility}>
                 {#if showPassword}
@@ -86,6 +93,7 @@
         <Editor bind:value={value} on:input={tinyHandlerChanges} on:change={tinyHandlerChanges}
             apiKey="{PUBLIC_TINYMCE_KEY}"
             id="{id}"
+            disabled={disabled}
             conf={{
                 menubar: 'tools',
                 plugins: 'lists',
@@ -93,27 +101,15 @@
             }}
         />
     
-        {:else if type == 'select-option'}
-    <select id="{id}" name="{name ? name : id}" class="{inputClass}" on:change={inputHandler} bind:value={value}>
+    {:else if type == 'select-option'}
+    <select id="{id}" name="{name ? name : id}" class="{inputClass}" {disabled} on:change={inputHandler} bind:value={value}>
         {#each option as opt, i}
-        {#if i == 0}
-        <option value="{opt.value}" selected>{opt.text}</option>
-        {:else}
-        <option value="{opt.value}">{opt.text}</option>
-        {/if}
+        <option value={opt.value}>{opt.text}</option>
         {/each}
     </select>
     
-    {:else if type == 'search'}
-    <div class="input-group-container">
-        <div class="search-icon"><Search color="#8191AC"/></div>
-        <input type="text" name="{name ? name : id}" id="{id}" class="search-input {inputClass}" 
-            on:input={inputHandler}
-            placeholder="{placeholder}">
-    </div>
-    
     {:else if type == "text"}
-    <input type="text" id='{id}' name='{name ? name : id}' bind:value={value}
+    <input type="text" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
         placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
     
     {:else if type == "email"}
@@ -127,18 +123,18 @@
         <div class="flex align-items-center justify-content-center px-2">
             {prefix}
         </div>
-        <input type="number" id='{id}' name='{name ? name : id}' bind:value={value}
+        <input type="number" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
             placeholder='{placeholder}' class='{inputClass} w-100' on:change={handleChange}>
     </div>
     {:else}
-    <input type="number" id='{id}' name='{name ? name : id}' bind:value={value}
+    <input type="number" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
         placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
     {/if}
     
     {/if}
     
     {#if error}
-    <p class="tc-danger-main">{error}</p>
+    <p class="tc-danger-main caption-reguler-thin">{error}</p>
     {/if}
 </div>
 
@@ -153,7 +149,7 @@
         font-family: "Poppins", sans-serif;
         font-size: 14px;
         font-weight: 400;
-        line-height: 24px;
+        line-height: 20px;
         letter-spacing: 0.20000000298023224px;
         color: var(--neutral-primary);
         border: transparent;
@@ -194,7 +190,7 @@
         font-family: "Poppins", sans-serif;
         font-size: 14px;
         font-weight: 400;
-        line-height: 24px;
+        line-height: 20px;
         letter-spacing: 0.20000000298023224px;
         color: var(--neutral-primary);
         border: 1px solid #F5F6F7;
@@ -227,18 +223,8 @@
     }
 
     .input-bg-light{
-        background-color: var(--neutral-white);
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .search-input{
-        padding-left: 40px !important;
+        border: 1px solid var(--neutral-border) !important;
+        background-color: var(--neutral-white) !important;
     }
 
     /* End of Input Section */

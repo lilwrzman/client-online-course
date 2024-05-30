@@ -1,4 +1,5 @@
 <script>
+	import { goto } from "$app/navigation";
 	export let type = "button"
 	export let id = ""
 	export let classList = '';
@@ -17,9 +18,9 @@
 	<slot />
 </button>
 {:else if type == "link"}
-<a href={href} id={id} class={classList} on:click={handleClick} {disabled} style={custom}>
+<button type={type} id={id} class="btn {classList}" on:click={() => goto(href)} {disabled} style={custom}>
 	<slot />
-</a>
+</button>
 {/if}
 
 <style>

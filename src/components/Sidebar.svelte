@@ -1,10 +1,11 @@
 <script>
+    import {goto} from "$app/navigation"
     import { HouseDoorFill, BriefcaseFill, WalletFill, BookFill, Calendar2EventFill, PeopleFill, ChevronDown, ChevronUp } from "svelte-bootstrap-icons";
     
+    export let role 
     export let active = "Dashboard"
-    export let role = "Superadmin"
     export let isOpen = false
-
+    
     const handleOpen = () => isOpen = !isOpen
 </script>
 
@@ -17,7 +18,7 @@
                 <li>
                     <a href="/superadmin/dashboard" class="menu {active == 'Dashboard' ? 'menu-active' : ''}">
                         <HouseDoorFill width=20 height=20 color={active == "Dashboard" ? '#3951A8' : '#8191AC'}/>
-                        <p class="body-small-semi-bold {active == "Dashboard" ? 'tc-primary-main' : 'tc-neutral-primary'}">Dashboard</p>
+                        <p class="body-small-semi-bold {active == "Dashboard" ? 'tc-primary-main' : 'tc-neutral-primary'}">Beranda</p>
                     </a>
                 </li>
                 <li>
@@ -75,7 +76,36 @@
                 </li>
 
                 {:else if role == 'Teacher'}
+                <li>
+                    <button on:click={() => goto('/teacher/dashboard')}
+                        class="menu body-small-semi-bold {active == "Dashboard" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
+                        <HouseDoorFill width=20 height=20 color={active == "Dashboard" ? '#3951A8' : '#8191AC'}/>
+                        <p>Beranda</p>
+                    </button>
+                </li>
+                <li>
+                    <button on:click={() => goto('/teacher/course')}
+                        class="menu body-small-semi-bold {active == "Course" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
+                        <BookFill width=20 height=20 color={active == "Course" ? '#3951A8' : '#8191AC'}/>
+                        <p>Materi</p>
+                    </button>
+                </li>
 
+                {:else if role == 'Corporate Admin'}
+                <li>
+                    <button on:click={() => goto('/corporate/dashboard')}
+                        class="menu body-small-semi-bold {active == "Dashboard" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
+                        <HouseDoorFill width=20 height=20 color={active == "Dashboard" ? '#3951A8' : '#8191AC'}/>
+                        <p>Beranda</p>
+                    </button>
+                </li>
+                <li>
+                    <button on:click={() => goto('/corporate/student')}
+                        class="menu body-small-semi-bold {active == "Student" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
+                        <BookFill width=20 height=20 color={active == "Student" ? '#3951A8' : '#8191AC'}/>
+                        <p>Karyawan</p>
+                    </button>
+                </li>
                 {/if}
             </ul>
         </div>
@@ -119,6 +149,7 @@
     }
 
     .menu{
+        font-family: 'Poppins', sans-serif;
         display: flex;
         gap: 24px;
         padding: 20px 14px;

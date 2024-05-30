@@ -1,4 +1,4 @@
-const now = new Date()
+let now = new Date()
 const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
 const dayName = days[now.getDay()]
@@ -21,4 +21,9 @@ const getCurrentTime = () => {
     return `${formattedTime}`
 }
 
-export { getCurrentDay, getCurrentTime }
+const getDay = (date) => {
+    now = new Date(date)
+    return `${dayName}, ${dayOfMonth} ${monthName} ${year}`
+}
+
+export { getCurrentDay, getCurrentTime, getDay }

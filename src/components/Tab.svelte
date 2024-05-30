@@ -1,11 +1,26 @@
 <script>
+	import { goto } from "$app/navigation";
+    import Button from "@components/Button.svelte";
+
     export let menus = []
+    export let type = 'link'
+    export let value = null
+
+    const handleClick = (val) => value = val
 </script>
 
 <div class="tab">
     <ul>
         {#each menus as menu}
-        <li><a href="{menu.href}" class="tab-item {menu.active ? 'active' : ''}">{menu.title}</a></li>
+        {#if type == 'link'}
+        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li class="tab-item {menu.active ? 'active' : ''}" on:click={() => goto(menu.href)}>{menu.title}</li>
+        {:else}
+        <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <li on:click={() => handleClick(menu.value)} class="tab-item {value == menu.value ? 'active' : ''}">{menu.title}</li>
+        {/if}
         {/each}
     </ul>
 </div>
@@ -34,6 +49,7 @@
 
     .tab-item:hover{
         padding: .75rem 1.75rem;
+        cursor: pointer;
     }
 
     .tab .active{

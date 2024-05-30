@@ -23,4 +23,8 @@ const setCookie = (name, datas) => {
     return Cookies.set(name, encrypted, {expires: 7, path:'/'})
 }
 
-export { extract, setCookie }
+const destroyCookie = (name) => {
+    return Cookies.remove(name, {path: '/'})
+}
+
+export { extract, setCookie, destroyCookie }

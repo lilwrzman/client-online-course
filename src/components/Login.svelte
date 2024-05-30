@@ -5,7 +5,7 @@
     import ApiController from '$lib/ApiController.js';
     import showToast from '$lib/Toast.js';
 	import { extract, setCookie } from '$lib/Cookie.js';
-	import { getValue } from '$lib/Input.js';
+    import checkLogin from "$lib/CheckLogin.js";
 
     import InputField from "@components/InputField.svelte"
     import Button from "@components/Button.svelte"
@@ -20,18 +20,16 @@
     let errors = null;
 
     let showSpinner = false
+    let email, password
 
     const login = () => {
         showSpinner = true
-		const ids = ['email', 'password'];
-		let datas = getValue(ids);
-        datas.role = role
 
 		ApiController
 			.sendRequest({
 				method: 'POST',
 				endpoint: 'login',
-				data: datas
+				data: {email, password, role}
 			})
 			.then((response) => {
 				if (response.status) {
@@ -39,11 +37,11 @@
 					setCookie('datas', response.userData)
 					
                     if(datas.role == 'Superadmin'){
-                        goto('/superadmin/dashboard')
+                        return goto('/superadmin/dashboard')
                     }else if(datas.role == 'Teacher'){
-                        goto('/teacher/dashboard')
+                        return goto('/teacher/dashboard')
                     }else if(datas.role == 'Corporate Admin'){
-                        goto('/teacher/dashboard')
+                        return goto('/corporate/dashboard')
                     }
 				} else {
                     showSpinner = false
@@ -58,14 +56,14 @@
 	};
 
     onMount(() => {
-        let datas = extract('datas')
-        if(datas){
-            if(datas.role == 'Superadmin'){
-                goto('/superadmin/dashboard')
-            }else if(datas.role == 'Teacher'){
-                goto('/teacher/dashboard')
-            }else if(datas.role == 'Corporate Admin'){
-                goto('/teacher/dashboard')
+        let user = extract('datas')
+        if(user){
+            if(user.role == 'Superadmin'){
+                return goto('/superadmin/dashboard')
+            } else if(user.role == 'Teacher'){
+                return goto('/teacher/dashboard')
+            } else if(user.role == 'Corporate Admin'){
+                return goto('/corporate/dashboard')
             }
         }
     })
@@ -97,6 +95,7 @@
                 id="email"
                 label="Alamat Email"
                 placeholder="Ketik disini"
+                bind:value={email}
                 rules={[{ required: true, type: 'email' }]}
                 error={errors ? (errors.email ? errors.email : '') : ''}
             />
@@ -106,6 +105,7 @@
                 id="password"
                 label="Password"
                 placeholder="Ketik disini"
+                bind:value={password}
                 rules={[{ required: true, type: 'password' }]}
                 error={errors ? (errors.password ? errors.password : '') : ''}
             />

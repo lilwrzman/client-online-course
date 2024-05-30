@@ -1,42 +1,39 @@
 <script>
 	import { onMount } from 'svelte';
 
-	import { extract } from "$lib/Cookie.js"
-
 	import Button from '@components/Button.svelte';
 	import LoginModal from '@components/LoginModal.svelte';
 	import Bell from "svelte-bootstrap-icons/lib/Bell.svelte"
 	import PersonCircle from "svelte-bootstrap-icons/lib/PersonCircle.svelte"
 	import ChevronDown from "svelte-bootstrap-icons/lib/ChevronDown.svelte"
 
+	export let user
 	export let active
 	export let variant = 'outside'
 	export let pageTitle = ''
 
 	let isFixed = false
 	let modalShow = false
-
-	let userData
 	let isLoggedIn = false
-	let username = 'John Doe'
+	let username = ''
 
 	function handleScroll(){
 		isFixed = window.scrollY >= 50
 	}
 
 	onMount(() => {
-		userData = extract('datas')
-
-		if(userData){
-			isLoggedIn = true
-			username = userData.username
-		}
-
 		window.addEventListener('scroll', handleScroll)
 		return () => {
 			window.removeEventListener('scroll', handleScroll)
 		}
 	})
+
+	$: {
+		if(user){
+			isLoggedIn = true
+			username = user.username
+		}
+	}
 </script>
 
 <header>
@@ -73,7 +70,7 @@
 			{/if}
 			{#if variant == 'inside'}
 			<div class="flex gap-2 align-items-center">
-				<p class="body-small-medium tc-primary-main">{userData ? userData.role : ''}</p>
+				<p class="body-small-medium tc-primary-main">{user ? username : ''}</p>
 				<Button id="profile" classList="btn p-2">
 					<div class="flex align-items-center gap-1">
 						<PersonCircle width={24} height={24} color="#3951A8"/>
@@ -81,7 +78,7 @@
 					</div>
 				</Button>
 			</div>
-			{:else if userData}
+			{:else if user}
 			<div class="flex gap-2 align-items-center">
 				<Button id="notification" classList="btn btn-no-padding">
 					<Bell width={24} height={24}/>
