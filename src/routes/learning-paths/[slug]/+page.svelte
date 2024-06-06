@@ -12,18 +12,20 @@
 
     let detail, status = false
 
-    onMount(() => {
-        ApiController.sendRequest({
-            endpoint: `learning-path/get/${slug}`,
-            method: "GET",
-        }).then(response => {
-            console.log(response)
-            detail = response.data
-            status = true
-        })
-    })
+    // onMount(() => {
+    //     ApiController.sendRequest({
+    //         endpoint: `learning-path/get/${slug}`,
+    //         method: "GET",
+    //     }).then(response => {
+    //         console.log(response)
+    //         detail = response.data
+    //         status = true
+    //     })
+    // })
 </script>
 
+<!-- Sudah Integrasi -->
+<!--
 <Navbar active="alur belajar" />
 
 {#if  status}
@@ -99,6 +101,191 @@
 <Footer />
 
 {/if}
+
+-->
+
+<!-- Belum Integrasi -->
+
+<Navbar active="alur belajar" />
+
+<main>
+    <section id="header" class="section">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <img src="/images/learning-path-image.png" class="thumbnail" alt="thumbnail">
+                </div>
+                <div class="col-md-5">
+                    <div class="flex-column justify-content-center h-100 gap-large">
+                        <div class="flex-column gap-standard">
+                            <div class="flex">
+                                <h4 class="label-bullet mb-0"> </h4>
+                                <h4 class="mb-0">Sales Marketing</h4>
+                            </div>
+                            <p>Ayo kita pelajari sales marketing bersama! Dengan memahami strategi pemasaran yang efektif dan teknik penjualan yang tepat, kita bisa meningkatkan kemampuan kita untuk menarik dan mengonversi pelanggan, serta mencapai kesuksesan dalam bisnis.</p>
+                        </div>
+                        <div class="flex-column gap-standard">
+                            <div class="flex align-items-center gap-4">
+                                <BookFill color="#3951A8"/>
+                                <p class="body-super-large-reguler">24 Materi</p>
+                            </div>
+                            <div class="flex align-items-center gap-4">
+                                <PeopleFill color="#3951A8"/>
+                                <p class="body-super-large-reguler">127 total karyawan terdaftar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="path" class="section">
+        <div class="container">
+            <div class="course">
+                <div class="course-step body-large-semi-bold">Langkah 1</div>
+                <div class="row justify-content-center w-100" style="padding: 80px 0;">
+                    <div class="col-12 col-md-6">
+                        <div class="card radius-sm neutral-border">
+                            <div class="flex align-items-center gap-8">
+                                <img src="/images/sales-marketing4-courses-image.png" 
+                                    alt="thumbnail course" class="w-50">
+                                <div class="flex-column gap-5 w-50">
+                                    <div class="flex-column gap-standard">
+                                        <p class="body-large-semi-bold">Building Trust</p>
+                                        <div class="flex body-medium-reguler justify-content-between align-items-center">
+                                            <p>Rp. 125.000</p>
+                                            <div class="flex align-items-center">
+                                                <StarFill color="#FF9933"/>
+                                                <p>4.8</p>
+                                            </div>
+                                            <p>10 Item</p>
+                                        </div>
+                                    </div>
+                                    <Button type="link" href="/courses/test" classList="btn btn-main">Lihat Detail</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course">
+                <div class="course-step body-large-semi-bold">Langkah 2</div>
+                <div class="row justify-content-center w-100" style="padding: 80px 0;">
+                    <div class="col-12 col-md-6">
+                        <div class="card radius-sm neutral-border">
+                            <div class="flex align-items-center gap-8">
+                                <img src="/images/sales-marketing4-courses-image.png" 
+                                    alt="thumbnail course" class="w-50">
+                                <div class="flex-column gap-5 w-50">
+                                    <div class="flex-column gap-standard">
+                                        <p class="body-large-semi-bold">Building Need</p>
+                                        <div class="flex body-medium-reguler justify-content-between align-items-center">
+                                            <p>Rp. 125.000</p>
+                                            <div class="flex align-items-center">
+                                                <StarFill color="#FF9933"/>
+                                                <p>4.8</p>
+                                            </div>
+                                            <p>10 Item</p>
+                                        </div>
+                                    </div>
+                                    <Button type="link" href="/courses/test" classList="btn btn-main">Lihat Detail</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course">
+                <div class="course-step body-large-semi-bold">Langkah 3</div>
+                <div class="row justify-content-center w-100" style="padding: 80px 0;">
+                    <div class="col-12 col-md-6">
+                        <div class="card radius-sm neutral-border">
+                            <div class="flex align-items-center gap-8">
+                                <img src="/images/sales-marketing4-courses-image.png" 
+                                    alt="thumbnail course" class="w-50">
+                                <div class="flex-column gap-5 w-50">
+                                    <div class="flex-column gap-standard">
+                                        <p class="body-large-semi-bold">Handling Objection</p>
+                                        <div class="flex body-medium-reguler justify-content-between align-items-center">
+                                            <p>Rp. 125.000</p>
+                                            <div class="flex align-items-center">
+                                                <StarFill color="#FF9933"/>
+                                                <p>4.8</p>
+                                            </div>
+                                            <p>10 Item</p>
+                                        </div>
+                                    </div>
+                                    <Button type="link" href="/courses/test" classList="btn btn-main">Lihat Detail</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course">
+                <div class="course-step body-large-semi-bold">Langkah 4</div>
+                <div class="row justify-content-center w-100" style="padding: 80px 0;">
+                    <div class="col-12 col-md-6">
+                        <div class="card radius-sm neutral-border">
+                            <div class="flex align-items-center gap-8">
+                                <img src="/images/sales-marketing4-courses-image.png" 
+                                    alt="thumbnail course" class="w-50">
+                                <div class="flex-column gap-5 w-50">
+                                    <div class="flex-column gap-standard">
+                                        <p class="body-large-semi-bold">Trying to Close</p>
+                                        <div class="flex body-medium-reguler justify-content-between align-items-center">
+                                            <p>Rp. 125.000</p>
+                                            <div class="flex align-items-center">
+                                                <StarFill color="#FF9933"/>
+                                                <p>4.8</p>
+                                            </div>
+                                            <p>10 Item</p>
+                                        </div>
+                                    </div>
+                                    <Button type="link" href="/courses/test" classList="btn btn-main">Lihat Detail</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course">
+                <div class="course-step body-large-semi-bold">Langkah 5</div>
+                <div class="row justify-content-center w-100" style="padding: 80px 0;">
+                    <div class="col-12 col-md-6">
+                        <div class="card radius-sm neutral-border">
+                            <div class="flex align-items-center gap-8">
+                                <img src="/images/sales-marketing4-courses-image.png" 
+                                    alt="thumbnail course" class="w-50">
+                                <div class="flex-column gap-5 w-50">
+                                    <div class="flex-column gap-standard">
+                                        <p class="body-large-semi-bold">Closing</p>
+                                        <div class="flex body-medium-reguler justify-content-between align-items-center">
+                                            <p>Rp. 125.000</p>
+                                            <div class="flex align-items-center">
+                                                <StarFill color="#FF9933"/>
+                                                <p>4.8</p>
+                                            </div>
+                                            <p>10 Item</p>
+                                        </div>
+                                    </div>
+                                    <Button type="link" href="/courses/test" classList="btn btn-main">Lihat Detail</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<Footer />
 
 <svelte:head>
     <title>Loading...</title>
