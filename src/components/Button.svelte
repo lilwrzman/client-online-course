@@ -18,9 +18,9 @@
 	<slot />
 </button>
 {:else if type == "link"}
-<button type={type} id={id} class="btn {classList}" on:click={() => goto(href)} {disabled} style={custom}>
+<a type={type} id={id} class="btn {classList}" href={href} {disabled} style={custom}>
 	<slot />
-</button>
+</a>
 {/if}
 
 <style>

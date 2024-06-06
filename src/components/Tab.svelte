@@ -15,7 +15,9 @@
         {#if type == 'link'}
         <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <li class="tab-item {menu.active ? 'active' : ''}" on:click={() => goto(menu.href)}>{menu.title}</li>
+        <li>
+            <a href="{menu.href}" class="tab-item {menu.active ? 'active' : ''}">{menu.title}</a>
+        </li>
         {:else}
         <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
         <!-- svelte-ignore a11y-click-events-have-key-events -->
