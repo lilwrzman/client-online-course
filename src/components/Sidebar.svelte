@@ -1,6 +1,5 @@
 <script>
-    import {goto} from "$app/navigation"
-    import { HouseDoorFill, BriefcaseFill, WalletFill, BookFill, Calendar2EventFill, PeopleFill, ChevronDown, ChevronUp } from "svelte-bootstrap-icons";
+    import { HouseDoorFill, BriefcaseFill, WalletFill, BookFill, Calendar2EventFill, PeopleFill, ChevronDown, ChevronUp, BoxFill } from "svelte-bootstrap-icons";
     
     export let role 
     export let active = "Dashboard"
@@ -74,37 +73,43 @@
                         <p class="body-small-semi-bold {active == "Manajemen Akun" ? 'tc-primary-main' : 'tc-neutral-primary'}">Manajemen Akun</p>
                     </a>
                 </li>
+                <li>
+                    <a href="/superadmin/bundle" class="menu {active == 'Manajemen Bundel' ? 'menu-active' : ''}">
+                        <BoxFill width=20 height=20 color={active == "Manajemen Bundel" ? '#3951A8' : '#8191AC'}/>
+                        <p class="body-small-semi-bold {active == "Manajemen Bundel" ? 'tc-primary-main' : 'tc-neutral-primary'}">Manajemen Bundel</p>
+                    </a>
+                </li>
 
                 {:else if role == 'Teacher'}
                 <li>
-                    <button on:click={() => goto('/teacher/dashboard')}
+                    <a href="/teacher/dashboard"
                         class="menu body-small-semi-bold {active == "Dashboard" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
                         <HouseDoorFill width=20 height=20 color={active == "Dashboard" ? '#3951A8' : '#8191AC'}/>
                         <p>Beranda</p>
-                    </button>
+                    </a>
                 </li>
                 <li>
-                    <button on:click={() => goto('/teacher/course')}
+                    <a href='/teacher/course'
                         class="menu body-small-semi-bold {active == "Course" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
                         <BookFill width=20 height=20 color={active == "Course" ? '#3951A8' : '#8191AC'}/>
                         <p>Materi</p>
-                    </button>
+                    </a>
                 </li>
 
                 {:else if role == 'Corporate Admin'}
                 <li>
-                    <button on:click={() => goto('/corporate/dashboard')}
+                    <a href='/corporate/dashboard'
                         class="menu body-small-semi-bold {active == "Dashboard" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
                         <HouseDoorFill width=20 height=20 color={active == "Dashboard" ? '#3951A8' : '#8191AC'}/>
                         <p>Beranda</p>
-                    </button>
+                    </a>
                 </li>
                 <li>
-                    <button on:click={() => goto('/corporate/student')}
+                    <a href='/corporate/student'
                         class="menu body-small-semi-bold {active == "Student" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
                         <BookFill width=20 height=20 color={active == "Student" ? '#3951A8' : '#8191AC'}/>
                         <p>Karyawan</p>
-                    </button>
+                    </a>
                 </li>
                 {/if}
             </ul>

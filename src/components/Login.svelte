@@ -5,7 +5,7 @@
     import ApiController from '$lib/ApiController.js';
     import showToast from '$lib/Toast.js';
 	import { extract, setCookie } from '$lib/Cookie.js';
-    import checkLogin from "$lib/CheckLogin.js";
+    import { setFlash } from "$lib/Flash";
 
     import InputField from "@components/InputField.svelte"
     import Button from "@components/Button.svelte"
@@ -58,13 +58,20 @@
     onMount(() => {
         let user = extract('datas')
         if(user){
+            let redirectTo = ''
             if(user.role == 'Superadmin'){
-                return goto('/superadmin/dashboard')
+                redirectTo = '/superadmin/dashboard'
             } else if(user.role == 'Teacher'){
-                return goto('/teacher/dashboard')
+                redirectTo = '/teacher/dashboard'
             } else if(user.role == 'Corporate Admin'){
-                return goto('/corporate/dashboard')
+                redirectTo = '/corporate/dashboard'
             }
+
+            return setFlash({ 
+                    title: 'Ooops',
+                    message: `Anda telah login sebagai ${user.role}. Silahkan logout terlebih dahulu sebelum login menggunakan akun lain!`, 
+                    type: 'warning', redirect: redirectTo 
+                })
         }
     })
 </script>

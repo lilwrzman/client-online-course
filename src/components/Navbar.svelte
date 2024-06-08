@@ -6,6 +6,7 @@
 	import Bell from "svelte-bootstrap-icons/lib/Bell.svelte"
 	import PersonCircle from "svelte-bootstrap-icons/lib/PersonCircle.svelte"
 	import ChevronDown from "svelte-bootstrap-icons/lib/ChevronDown.svelte"
+	import { extract } from '$lib/Cookie';
 
 	export let user
 	export let active
@@ -22,6 +23,10 @@
 	}
 
 	onMount(() => {
+		if(!user){
+			user = extract('datas')
+		}
+
 		window.addEventListener('scroll', handleScroll)
 		return () => {
 			window.removeEventListener('scroll', handleScroll)
@@ -32,6 +37,8 @@
 		if(user){
 			isLoggedIn = true
 			username = user.username
+		}else{
+			isLoggedIn = false
 		}
 	}
 </script>
@@ -42,13 +49,13 @@
 		{isFixed && variant == "outside" ? 'navbar-shadow' : ''}
 		w-100">
 		<div class="container flex justify-content-between align-items-center h-100">
-			<Button type="link" href="/" classList="btn btn-no-padding">
+			<a href="/" class="btn btn-no-padding">
 				{#if variant == 'outside'}
 				<div class="h5">Logo Disini</div>
 				{:else}
 				<div class="body-large-semi-bold">{pageTitle}</div>
 				{/if}
-			</Button>
+			</a>
 			{#if variant == 'outside'}
 			<ul class="navbar-menu">
 				<li class="navbar-menu-item {active == 'beranda' ? 'active' : ''}">

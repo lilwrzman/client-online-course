@@ -47,36 +47,43 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
-                    <Bar {data} options={{ 
-                        responsive: true, 
-                        indexAxis: 'y', 
-                        colors: { forceOveride: true }
-                    }} />
+                    <div class="flex-column justify-content-center align-items-center h-100">
+                        <Bar {data} options={{ 
+                            responsive: true, 
+                            indexAxis: 'y', 
+                            colors: { forceOveride: true }
+                        }} />
+                    </div>
                 </div>
                 <div class="col-md-7">
-                    <div class="flex-column gap-3">
-                        <div class="card neutral-border radius-sm">
-                            <div class="card-body">
-                                <div class="flex-column">
-                                    <h4 class="mb-0">Materi 01</h4>
-                                    <p class="body-small-light">Lorem ipsum dolor sit amet.</p>
-                                </div>
-                            </div>
+                    <div class="card neutral-border radius-sm p-0">
+                        <div class="card-header neutral-border-bottom p-standard">
+                            <p class="body-medium-semi-bold">Materi Saya</p>
                         </div>
-                        <div class="card neutral-border radius-sm">
-                            <div class="card-body">
+                        <div class="card-body flex-column gap-3 p-standard">
+                            <div class="flex justify-content-between align-items-center p-standard course-bg radius-sm">
                                 <div class="flex-column">
-                                    <h4 class="mb-0">Materi 01</h4>
-                                    <p class="body-small-light">Lorem ipsum dolor sit amet.</p>
+                                    <p class="body-small-semi-bold">Materi 01</p>
+                                    <p class="body-medium-reguler">Progress terakhir di submateri berapa</p>
                                 </div>
+                                <Button classList="btn btn-main">Lanjut Belajar</Button>
                             </div>
-                        </div>
-                        <div class="card neutral-border radius-sm">
-                            <div class="card-body">
+                            <div class="flex justify-content-between align-items-center p-standard course-bg radius-sm">
                                 <div class="flex-column">
-                                    <h4 class="mb-0">Materi 01</h4>
-                                    <p class="body-small-light">Lorem ipsum dolor sit amet.</p>
+                                    <p class="body-small-semi-bold">Materi 01</p>
+                                    <p class="body-medium-reguler">Progress terakhir di submateri berapa</p>
                                 </div>
+                                <Button classList="btn btn-main">Lanjut Belajar</Button>
+                            </div>
+                            <div class="flex justify-content-between align-items-center p-standard course-bg radius-sm">
+                                <div class="flex-column">
+                                    <p class="body-small-semi-bold">Materi 01</p>
+                                    <p class="body-medium-reguler">Progress terakhir di submateri berapa</p>
+                                </div>
+                                <Button classList="btn btn-main-outline">Lihat Sertifikat</Button>
+                            </div>
+                            <div class="flex-row-reverse">
+                                <Button type="link" href="#" classList="link">Lihat Selengkapnya</Button>
                             </div>
                         </div>
                     </div>
@@ -95,5 +102,9 @@
 <style>
     #header {
         background-image: url('/images/dashboard-header.svg');
+    }
+
+    .course-bg{
+        background-color: var(--neutral-surface);
     }
 </style>
