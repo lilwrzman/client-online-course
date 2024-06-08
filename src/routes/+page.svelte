@@ -1,32 +1,11 @@
 <script>
-	import { onMount } from 'svelte';
-	
-    import { getFlash } from '$lib/Flash';
-
     import { Splide, SplideSlide } from '@splidejs/svelte-splide';
     import '@splidejs/svelte-splide/css';
 
     import Navbar from "@components/Navbar.svelte";
     import Footer from "@components/Footer.svelte";
     import Button from "@components/Button.svelte";
-    import Toast from "@components/Toast.svelte";
     import StarFill from "svelte-bootstrap-icons/lib/StarFill.svelte"
-
-    let toastVisible = false
-    let toastData = null
-
-    onMount(() => {
-        let flashes = getFlash()
-
-        if(flashes){
-            toastData = {
-                title: flashes.title,
-                message: flashes.message,
-                color: `toast-${flashes.type}`
-            }
-            toastVisible = true
-        }
-    })
 </script>
 
 <Navbar active="beranda"/>
@@ -34,9 +13,6 @@
 <main>
     <section id="header" class="section">
         <div class="container">
-            {#if toastVisible}
-                <Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color} redirectTo={toastData.redirectTo}/>
-            {/if}
             <div class="row">
                 <div class="col align-self-center">
                     <div class="flex-column gap-2">
@@ -49,10 +25,10 @@
                             Lorem ipsum dolor sit amet, consectetur
                         </div>
                     </div>
-                    <Button type="link" href="#materi" classList="btn btn-main mt-6" id="btn-header">Ayo Belajar</Button>
+                    <Button type="link" href="/learning-paths" classList="btn btn-main mt-6" id="btn-header">Ayo Belajar</Button>
                 </div>
                 <div class="col flex justify-content-end">
-                    <img src="/images/MediaImage.svg" alt="header">
+                    <img src="/images/thumbnail.png" alt="header">
                 </div>
             </div>
         </div>
@@ -62,38 +38,64 @@
         <div class="container flex-column gap-4">
             <div class="flex justify-content-between">
                 <div class="h4 tc-dark">Materi Favorit</div>
-                <Button type="link" classList="link p-0 body-large-reguler tc-dark" href="/materi">Lihat Semua</Button>
+                <Button type="link" classList="link body-large-reguler tc-dark" href="/materi">Lihat Semua</Button>
             </div>
             <div class="row justify-content-between">
-                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-4 mb-6">
-                    <img src="/images/MateriSampleImage.svg" alt="materi">
-                    <div class="flex-column">
-                        <div class="h5">Headline 5</div>
+                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
+                    <img src="/images/sales-marketing-courses-image.png" alt="">
+                    <div class="flex-column gap-1">
+                        <div class="body-small-medium" style="color:#29939D;">Sales Marketing</div>
                         <p class="body-small-reguler">
-                            Body standard phasellus justo purus, venenatis sapien eu, faucibus porttitor libero. Proin venenatis diam tortor, nec vulputate sem efficitur in.
+                            Hubungan antar masyarakat
                         </p>
+                        <div class="flex justify-content-between align-items-center">
+                            <p class="caption-small-reguler">Rp 142.000</p>
+                            <p class="caption-small-reguler">9 Item</p>
+                        </div>
                     </div>
-                    <Button classList="btn btn-main btn-wrap">Mulai Belajar</Button>
+                    <Button type="link" href="/courses/detail" classList="btn btn-main" >Lihat Detail</Button>
                 </div>
-                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-4 mb-6">
-                    <img src="/images/MateriSampleImage.svg" alt="materi">
-                    <div class="flex-column">
-                        <div class="h5">Headline 5</div>
+                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
+                    <img src="/images/building-trust-courses-image.png" alt="">
+                    <div class="flex-column gap-1">
+                        <div class="body-small-medium" style="color:#9B51E0;">Building Trust</div>
                         <p class="body-small-reguler">
-                            Body standard phasellus justo purus, venenatis sapien eu, faucibus porttitor libero. Proin venenatis diam tortor, nec vulputate sem efficitur in.
+                            Membangun percaya diri
                         </p>
+                        <div class="flex justify-content-between align-items-center">
+                            <p class="caption-small-reguler">Rp 240.000</p>
+                            <p class="caption-small-reguler">7 Item</p>
+                        </div>
                     </div>
-                    <Button classList="btn btn-main btn-wrap">Mulai Belajar</Button>
+                    <Button type="link" href="/courses/detail" classList="btn btn-main">Lihat Detail</Button>
                 </div>
-                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-4 mb-6">
-                    <img src="/images/MateriSampleImage.svg" alt="materi">
-                    <div class="flex-column">
-                        <div class="h5">Headline 5</div>
+                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
+                    <img src="/images/sales-marketing2-courses-image.png" alt="materi">
+                    <div class="flex-column gap-1">
+                        <div class="body-small-medium" style="color:#29939D;">Sales Marketing</div>
                         <p class="body-small-reguler">
-                            Body standard phasellus justo purus, venenatis sapien eu, faucibus porttitor libero. Proin venenatis diam tortor, nec vulputate sem efficitur in.
+                            Pemasaran media sosial
                         </p>
+                        <div class="flex justify-content-between align-items-center">
+                            <p class="caption-small-reguler">Rp 179.000</p>
+                            <p class="caption-small-reguler">12 Item</p>
+                        </div>
                     </div>
-                    <Button classList="btn btn-main btn-wrap">Mulai Belajar</Button>
+                    <Button type="link" href="/courses/detail" classList="btn btn-main">Lihat Detail</Button>
+                </div>
+                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
+                    <img src="/images/sales-marketing3-courses-image.png" alt="materi">
+                    <div class="flex-column gap-1">
+                        <div class="body-small-medium" style="color:#29939D;">Sales Marketing</div>
+                        <p class="body-small-reguler">
+                            Pemasaran interaktif
+                        </p>
+                        <div class="flex justify-content-between align-items-center">
+                            <p class="caption-small-reguler">Rp 220.000</p>
+                            <p class="caption-small-reguler">14 Item</p>
+                        </div>
+                    </div>
+                    <Button type="link" href="/courses/detail" classList="btn btn-main">Lihat Detail</Button>
                 </div>
             </div>
         </div>
@@ -131,19 +133,19 @@
         <div class="container flex-column pb-6 gap-4">
             <div class="flex justify-content-between">
                 <div class="h4 tc-dark">Testimoni Karyawan</div>
-                <Button type="link" classList="link p-0 body-large-reguler tc-dark" href="/testimoni">Lihat Semua</Button>
+                <Button type="link" classList="link body-large-reguler tc-dark" href="/testimonials">Lihat Semua</Button>
             </div>
             <div class="row justify-content-between">
                 <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/TestimoniSampleImage.svg" alt="">
+                    <img src="/images/testimoni-karyawan-image.png" alt="">
                     <div class="flex-column gap-2">
                         <div class="flex justify-content-between align-items-center">
                             <div class="flex-column gap-1">
                                 <div class="body-large-semi-bold tc-dark">
-                                    Lorem Ipsum
+                                    Michael Hernandez
                                 </div>
                                 <div class="body-small-reguler tc-dark">
-                                    Lorem Ipsum
+                                    Sales Marketing
                                 </div>
                             </div>
                             <div class="flex gap-1 align-items-baseline">
@@ -152,20 +154,20 @@
                             </div>
                         </div>
                         <div class="caption-light tc-dark">
-                            Body standard phasellus justo purus, vene natis a sapien eu faucibus porttitor libero. Sapieds tortor, nec vulputate sem efficitur.
+                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/TestimoniSampleImage.svg" alt="">
+                    <img src="/images/testimoni-karyawan-image.png" alt="">
                     <div class="flex-column gap-2">
                         <div class="flex justify-content-between align-items-center">
                             <div class="flex-column gap-1">
                                 <div class="body-large-semi-bold tc-dark">
-                                    Lorem Ipsum
+                                    Michael Hernandez
                                 </div>
                                 <div class="body-small-reguler tc-dark">
-                                    Lorem Ipsum
+                                    Sales Marketing
                                 </div>
                             </div>
                             <div class="flex gap-1 align-items-baseline">
@@ -174,20 +176,20 @@
                             </div>
                         </div>
                         <div class="caption-light tc-dark">
-                            Body standard phasellus justo purus, vene natis a sapien eu faucibus porttitor libero. Sapieds tortor, nec vulputate sem efficitur.
+                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/TestimoniSampleImage.svg" alt="">
+                    <img src="/images/testimoni-karyawan-image.png" alt="">
                     <div class="flex-column gap-2">
                         <div class="flex justify-content-between align-items-center">
                             <div class="flex-column gap-1">
                                 <div class="body-large-semi-bold tc-dark">
-                                    Lorem Ipsum
+                                    Michael Hernandez
                                 </div>
                                 <div class="body-small-reguler tc-dark">
-                                    Lorem Ipsum
+                                    Sales Marketing
                                 </div>
                             </div>
                             <div class="flex gap-1 align-items-baseline">
@@ -196,7 +198,7 @@
                             </div>
                         </div>
                         <div class="caption-light tc-dark">
-                            Body standard phasellus justo purus, vene natis a sapien eu faucibus porttitor libero. Sapieds tortor, nec vulputate sem efficitur.
+                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
                         </div>
                     </div>
                 </div>
@@ -206,13 +208,3 @@
 </main>
 
 <Footer/>
-
-<svelte:head>
-    <title>PA Online Course</title>
-</svelte:head>
-
-<style>
-    .section {
-        padding-bottom: 0;
-    }
-</style>
