@@ -1,11 +1,32 @@
 <script>
+	import { onMount } from 'svelte';
+	
+    import { getFlash } from '$lib/Flash';
+
     import { Splide, SplideSlide } from '@splidejs/svelte-splide';
     import '@splidejs/svelte-splide/css';
 
     import Navbar from "@components/Navbar.svelte";
     import Footer from "@components/Footer.svelte";
     import Button from "@components/Button.svelte";
+    import Toast from "@components/Toast.svelte";
     import StarFill from "svelte-bootstrap-icons/lib/StarFill.svelte"
+
+    let toastVisible = false
+    let toastData = null
+
+    onMount(() => {
+        let flashes = getFlash()
+
+        if(flashes){
+            toastData = {
+                title: flashes.title,
+                message: flashes.message,
+                color: `toast-${flashes.type}`
+            }
+            toastVisible = true
+        }
+    })
 </script>
 
 <Navbar active="beranda"/>
@@ -13,6 +34,9 @@
 <main>
     <section id="header" class="section">
         <div class="container">
+            {#if toastVisible}
+                <Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color} redirectTo={toastData.redirectTo}/>
+            {/if}
             <div class="row">
                 <div class="col align-self-center">
                     <div class="flex-column gap-2">
@@ -38,7 +62,7 @@
         <div class="container flex-column gap-4">
             <div class="flex justify-content-between">
                 <div class="h4 tc-dark">Materi Favorit</div>
-                <Button type="link" classList="link body-large-reguler tc-dark" href="/materi">Lihat Semua</Button>
+                <Button type="link" classList="link p-0 body-large-reguler tc-dark" href="/materi">Lihat Semua</Button>
             </div>
             <div class="row justify-content-between">
                 <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-4 mb-6">
@@ -107,7 +131,7 @@
         <div class="container flex-column pb-6 gap-4">
             <div class="flex justify-content-between">
                 <div class="h4 tc-dark">Testimoni Karyawan</div>
-                <Button type="link" classList="link body-large-reguler tc-dark" href="/testimoni">Lihat Semua</Button>
+                <Button type="link" classList="link p-0 body-large-reguler tc-dark" href="/testimoni">Lihat Semua</Button>
             </div>
             <div class="row justify-content-between">
                 <div class="col-lg-4 flex gap-2 mb-3">
@@ -182,3 +206,13 @@
 </main>
 
 <Footer/>
+
+<svelte:head>
+    <title>PA Online Course</title>
+</svelte:head>
+
+<style>
+    .section {
+        padding-bottom: 0;
+    }
+</style>
