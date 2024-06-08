@@ -148,7 +148,7 @@
         <div class="container flex-column pb-6 gap-4">
             <div class="flex justify-content-between">
                 <div class="h4 tc-dark">Testimoni Karyawan</div>
-                <Button type="link" classList="link body-large-reguler tc-dark" href="/testimoni">Lihat Semua</Button>
+                <Button type="link" classList="link body-large-reguler tc-dark" href="/testimonials">Lihat Semua</Button>
             </div>
             <div class="row justify-content-between">
                 <div class="col-lg-4 flex gap-2 mb-3">
