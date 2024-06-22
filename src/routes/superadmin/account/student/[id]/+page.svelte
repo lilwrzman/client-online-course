@@ -21,7 +21,8 @@
     import Tab from "@components/Tab.svelte"
     import { DataHandler } from "@vincjo/datatables/local"
     import Modal from "@components/Modal.svelte"
-	import checkLogin from "$lib/CheckLogin.js";
+	import checkLogin from "$lib/CheckLogin.js"
+    import { LockFill, UnlockFill } from "svelte-bootstrap-icons"
 
     export let data
     let id = data.id
@@ -50,6 +51,7 @@
             endpoint: `account/${id}`,
             authToken: user.token
         }).then(response => {
+            console.log(response)
             detail = response.data
             fullname = detail.fullname
             username = detail.username
@@ -165,34 +167,38 @@
         })
     }
 
-    const deleteStudent = () => {
-        showSpinner = true
+    const changeStatus = () => {
 
-        ApiController.sendRequest({
-            method: "POST",
-            endpoint: "account/delete",
-            data: {id: id},
-            authToken: user.token
-        }).then(response => {
-            if(response.error){
-                showSpinner = false
-                return alert('Mohon coba lagi!')
-            }
-
-            if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/student' })
-            }else{
-                toastData = {
-                    title: "Gagal",
-                    message: response.message,
-                    color: 'toast-danger'
-                }
-                modalShow = false
-                showSpinner = false
-                toastVisible = true
-            }
-        })
     }
+
+    // const deleteStudent = () => {
+    //     showSpinner = true
+
+    //     ApiController.sendRequest({
+    //         method: "POST",
+    //         endpoint: "account/delete",
+    //         data: {id: id},
+    //         authToken: user.token
+    //     }).then(response => {
+    //         if(response.error){
+    //             showSpinner = false
+    //             return alert('Mohon coba lagi!')
+    //         }
+
+    //         if(response.status){
+    //             setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/student' })
+    //         }else{
+    //             toastData = {
+    //                 title: "Gagal",
+    //                 message: response.message,
+    //                 color: 'toast-danger'
+    //             }
+    //             modalShow = false
+    //             showSpinner = false
+    //             toastVisible = true
+    //         }
+    //     })
+    // }
 
     onMount(() => {
         user = checkLogin("Superadmin")
@@ -222,11 +228,11 @@
                 {/if}
                 
                 <div class="flex gap-2">
-                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">Manajemen Akun</a>
+                    <a href="/superadmin/account/student" class="body-medium-semi-bold tc-neutral-disabled">Manajemen Akun</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
                     <a href="/superadmin/account/student" class="body-medium-semi-bold tc-neutral-disabled">Karyawan</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/student/{id}" class="body-medium-semi-bold tc-primary-main">Detail</a>
+                    <a href="/superadmin/account/student/{id}#" class="body-medium-semi-bold tc-primary-main">Detail</a>
                 </div>
 
                 {#if status}
@@ -309,12 +315,15 @@
                                 {/if}
                             </div>
                         </div>
-                        <Button classList="btn btn-danger" onClick={() => {
-                            modalShow = true
-                        }}>
+                        <Button classList="btn {detail.status == 'Active' ? 'btn-warning' : 'btn-main'}" onClick={() => modalShow = true}>
                             <div class="flex gap-2 justify-content-center align-items-center">
-                                <TrashFill/>
-                                Hapus Akun
+                                {#if detail.status == 'Active'}
+                                <LockFill/>
+                                Non-Aktifkan
+                                {:else if detail.status == 'Non-Active'}
+                                <UnlockFill/>
+                                Aktifkan
+                                {/if}
                             </div>
                         </Button>
                     </div>
@@ -381,13 +390,13 @@
     <Modal bind:modalShow>
         <div class="card-body gap-5">
             <div class="flex-column">
-                <div class="h4">Hapus Mitra</div>
+                <div class="h4">{detail.status == 'Active' ? 'Non-Aktifkan' : 'Aktifkan'} Akun Karyawan</div>
                 <div class="default-text-input">
-                    Apakah anda yakin ingin menghapus karyawan {detail.fullname} ? Proses ini tidak dapat dibatalkan!
+                    Apakah anda yakin ingin {detail.status == 'Active' ? 'non-aktifkan' : 'aktifkan'} akun karyawan {detail.fullname} ?
                 </div>
             </div>
             <div class="flex-row-reverse gap-2">
-                <Button classList="btn btn-danger" onClick={deleteStudent}>Ya, hapus!</Button>
+                <Button classList="btn {detail.status == 'Active' ? 'btn-warning' : 'btn-main'}" onClick={changeStatus}>Ya, {detail.status == 'Active' ? 'Non-Aktifkan' : 'Aktifkan'}!</Button>
                 <Button classList="btn btn-main-outline" onClick={() => {
                     modalShow = false
                 }}>Tidak</Button>

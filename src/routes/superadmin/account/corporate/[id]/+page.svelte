@@ -153,7 +153,7 @@
             }
 
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/corporate' })
+                setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/corporate' })
             }else{
                 toastData = {
                     title: "Gagal",
@@ -199,11 +199,11 @@
                 {/if}
                 {#if status}
                 <div class="flex gap-2">
-                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">Manajemen Akun</a>
+                    <a href="/superadmin/account/student" class="body-medium-semi-bold tc-neutral-disabled">Manajemen Akun</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">Mitra</a>
+                    <a href="/superadmin/account/corporate" class="body-medium-semi-bold tc-neutral-disabled">Admin Mitra</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/corporate/{id}" class="body-medium-semi-bold tc-primary-main">Detail</a>
+                    <a href="/superadmin/account/corporate/{id}#" class="body-medium-semi-bold tc-primary-main">Detail</a>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-8">

@@ -73,7 +73,7 @@
             }
 
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/teacher' })
+                setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/teacher' })
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",
@@ -105,11 +105,11 @@
                     <Spinner/>    
                 {/if}
                 <div class="flex gap-2">
-                    <a href="/superadmin/account/teacher" class="body-medium-semi-bold tc-neutral-disabled">
+                    <a href="/superadmin/account/student" class="body-medium-semi-bold tc-neutral-disabled">
                         Manajemen Akun
                     </a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/teacher/add" class="body-medium-semi-bold tc-primary-main">
+                    <a href="/superadmin/account/teacher/add#" class="body-medium-semi-bold tc-primary-main">
                         Tambah Pemateri
                     </a>
                 </div>

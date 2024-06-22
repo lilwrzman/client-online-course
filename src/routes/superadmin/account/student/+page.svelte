@@ -1,12 +1,10 @@
 <script>
     import { onMount } from 'svelte';
-    import { goto } from "$app/navigation"
 
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 
     import ApiController from '$lib/ApiController.js';
-    import { extract } from "$lib/Cookie.js"
     import { getFlash } from '$lib/Flash';
     
     import Navbar from '@components/Navbar.svelte'
@@ -18,11 +16,12 @@
     import Tab from '@components/Tab.svelte';
     import SortMenu from '@components/SortMenu.svelte';
     import SearchMenu from '@components/SearchMenu.svelte';
+    import Pagination from '@components/Pagination.svelte';
     
     import { DataHandler } from '@vincjo/datatables'
 	import checkLogin from '$lib/CheckLogin';
 
-    let user, handler, rows
+    let user, handler, rows, pageNumber, rowsPerPage = 10, pageCount
 
     let students, selectedStudent
     let toastData, toastVisible = false
@@ -44,8 +43,10 @@
         }).then(response => {
             if(response.status){
                 students = response.data
-                handler = new DataHandler(students)
+                handler = new DataHandler(students, {rowsPerPage})
                 rows = handler.getRows()
+                pageCount = handler.getPageCount()
+                pageNumber = handler.getPageNumber()
                 handler.sortDesc('created_at')
                 status = true
 
@@ -104,10 +105,10 @@
         let flashes = getFlash()
         if(flashes){
             toastData = {
-                    title: "Sukses",
-                    message: flashes.message,
-                    color: `toast-${flashes.type}`
-                }
+                title: flashes.title,
+                message: flashes.message,
+                color: `toast-${flashes.type}`
+            }
             toastVisible = true
         }
 
@@ -130,20 +131,17 @@
                 {/if}
 
                 <Tab menus={[
+                    {'title': 'Karyawan', 'href': '/superadmin/account/student#', active: true},
                     {'title': 'Pemateri', 'href': '/superadmin/account/teacher'},
-                    {'title': 'Mitra', 'href': '/superadmin/account/corporate'},
-                    {'title': 'Karyawan', 'href': '/superadmin/account/student', active: true}
+                    {'title': 'Admin Mitra', 'href': '/superadmin/account/corporate'}
                 ]}/>
-                <div class="card radius-sm gap-3" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
-                    <div class="flex-column mb-3">
-                        <div class="body-medium-semi-bold">Akun Karyawan</div>
-                        <div class="body-small-reguler">Kelola akun-akun untuk digunakan karyawan mitra atau umum!</div>
-                    </div>
+
+                <div class="flex-column gap-3">
                     <div class="flex flex-wrap justify-content-between align-items-center gap-4">
                         <div class="flex flex-wrap gap-3 grow-item">
                             <SortMenu options={options} action={(evt) => {
                                 let sortBy = evt.target.value
-
+    
                                 if(sortBy == 'newest'){
                                     handler.sortDesc('created_at')
                                 }else if(sortBy == 'asc'){
@@ -154,7 +152,7 @@
                                     handler.sort('id')
                                 }
                             }}/>
-
+    
                             <SearchMenu action={(evt) => handler.search(evt.target.value, ['fullname'])}/>
                         </div>
                         <Button type="link" href="/superadmin/account/student/add" classList="btn btn-main pl-4 grow-item grow-auto-md">
@@ -164,49 +162,52 @@
                             </div>
                         </Button>
                     </div>
-
-                    <div class="table-scroll radius-sm">
-                        <table class="table number">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Nama</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th class="text-center">Karyawan</th>
-                                    <th class="text-center">Jumlah Materi</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-border-bottom">
-                                {#if status}
-                                {#if $rows.length > 0}
-                                {#each $rows as row, index}
-                                <tr>
-                                    <td class="text-center">{index + 1}</td>
-                                    <td>{row.fullname}</td>
-                                    <td>{row.username}</td>
-                                    <td>{row.email}</td>
-                                    <td class="text-center">{row.type}</td>
-                                    <td class="text-center">{row.course_count} materi</td>
-                                    <td class="text-center">
-                                        <Button classList="btn btn-info py-1 px-2"
-                                            onClick={() => goto(`/superadmin/account/student/${row.id}`)}>Detail</Button>
-                                    </td>
-                                </tr>
-                                {/each}
-                                {:else}
-                                <tr>
-                                    <td colspan="9">Tidak ada data...</td>
-                                </tr>
-                                {/if}
-                                {:else}
-                                <tr>
-                                    <td colspan="9">Loading...</td>
-                                </tr>
-                                {/if}
-                            </tbody>
-                        </table>
+    
+                    <div class="card radius-sm gap-3" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
+                        <div class="table-scroll radius-sm">
+                            <table class="table number">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">No</th>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th class="text-center">Karyawan</th>
+                                        <th>Jumlah Materi</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom">
+                                    {#if status}
+                                    {#if $rows.length > 0}
+                                    {#each $rows as row, index}
+                                    <tr>
+                                        <td class="text-center">{index + 1}</td>
+                                        <td>{row.fullname}</td>
+                                        <td>{row.email}</td>
+                                        <td class="text-center">{row.type}</td>
+                                        <td>{row.course_count} materi</td>
+                                        <td>
+                                            <Button type="link" href="/superadmin/account/student/{row.id}" 
+                                                classList="btn btn-info py-1 px-2 w-100">Detail</Button>
+                                        </td>
+                                    </tr>
+                                    {/each}
+                                    {:else}
+                                    <tr>
+                                        <td colspan="9">Tidak ada data...</td>
+                                    </tr>
+                                    {/if}
+                                    {:else}
+                                    <tr>
+                                        <td colspan="9">Loading...</td>
+                                    </tr>
+                                    {/if}
+                                </tbody>
+                            </table>
+                        </div>
+                        {#if status && handler && $pageCount > 1}
+                        <Pagination {handler} />
+                        {/if}
                     </div>
                 </div>
             </div>

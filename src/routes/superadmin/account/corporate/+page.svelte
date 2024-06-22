@@ -20,9 +20,11 @@
     import SortMenu from '@components/SortMenu.svelte';
     import SearchMenu from '@components/SearchMenu.svelte';
 	import checkLogin from "$lib/CheckLogin";
+    import Pagination from "@components/Pagination.svelte";
+    import { Copy } from "svelte-bootstrap-icons"
 
     let user
-    let handler, rows
+    let handler, rows, pageNumber, rowsPerPage = 10, pageCount
     let options = [
         {val: "newest", label:"Terbaru"}, 
         {val: "asc", label: 'A-Z'}, 
@@ -31,6 +33,7 @@
 
     let toastData = null
     let toastVisible = false
+    
     let modalShow = false
     let showSpinner = false
 
@@ -56,8 +59,10 @@
             authToken: user.token
         }).then(response => {
             corporates = response.data
-            handler = new DataHandler(corporates)
+            handler = new DataHandler(corporates, {rowsPerPage})
             rows = handler.getRows()
+            pageCount = handler.getPageCount()
+            pageNumber = handler.getPageNumber()
             handler.sortDesc('created_at')
             status = true
 
@@ -115,7 +120,7 @@
         let flashes = getFlash()
         if(flashes){
             toastData = {
-                title: "Sukses",
+                title: flashes.title,
                 message: flashes.message,
                 color: `toast-${flashes.type}`
             }
@@ -141,15 +146,12 @@
                 {/if}
 
                 <Tab menus={[
+                    {'title': 'Karyawan', 'href': '/superadmin/account/student'},
                     {'title': 'Pemateri', 'href': '/superadmin/account/teacher'},
-                    {'title': 'Mitra', 'href': '/superadmin/account/corporate', active: true},
-                    {'title': 'Karyawan', 'href': '/superadmin/account/student'}
+                    {'title': 'Admin Mitra', 'href': '/superadmin/account/corporate#', active: true}
                 ]}/>
-                <div class="card radius-sm gap-3" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
-                    <div class="flex-column mb-3">
-                        <div class="body-medium-semi-bold">Akun Mitra</div>
-                        <div class="body-small-reguler">Kelola akun-akun untuk digunakan perusahaan mitra!</div>
-                    </div>
+
+                <div class="flex-column gap-3">
                     <div class="flex flex-wrap justify-content-between align-items-center gap-4">
                         <div class="flex flex-wrap gap-3 grow-item">
                             <SortMenu options={options} action={(evt) => {
@@ -175,18 +177,19 @@
                             </div>
                         </Button>
                     </div>
+                </div>
 
+                <div class="card radius-sm gap-3" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
                     <div class="table-scroll radius-sm">
                         <table class="table number">
                             <thead>
                                 <tr>
                                     <th class="text-center">No</th>
                                     <th>Perusahaan</th>
-                                    <th>Username</th>
                                     <th>Email</th>
                                     <th class="text-center">Referral</th>
-                                    <th class="text-center">Karyawan</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th>Karyawan</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom">
@@ -196,13 +199,23 @@
                                 <tr>
                                     <td class="text-center">{index + 1}</td>
                                     <td>{row.name}</td>
-                                    <td>{row.username}</td>
                                     <td>{row.email}</td>
-                                    <td class="text-center">{row.referral_code}</td>
-                                    <td class="text-center">{row.student_count} karyawan</td>
                                     <td class="text-center">
-                                        <Button classList="btn btn-info py-1 px-2"
-                                            onClick={() => goto(`/superadmin/account/corporate/${row.id}`)}>Detail</Button>
+                                        <div class="flex justify-content-center align-items-center gap-2">
+                                            {row.referral_code}
+                                            <Button classList="btn btn-no-padding" onClick={() => {
+                                                navigator.clipboard.writeText(row.referral_code)
+                                                toastData = {title: "Berhasil", message: "Berhasil menyalin kode referral!", color: "toast-success"}
+                                                toastVisible = true
+                                            }}> 
+                                                <Copy/> 
+                                            </Button>
+                                        </div>
+                                    </td>
+                                    <td>{row.student_count} orang</td>
+                                    <td>
+                                        <Button type="link" href="/superadmin/account/corporate/{row.id}" 
+                                            classList="btn btn-info py-1 px-2 w-100">Detail</Button>
                                     </td>
                                 </tr>
                                 {/each}
@@ -219,6 +232,9 @@
                             </tbody>
                         </table>
                     </div>
+                    {#if status && handler && $pageCount > 1}
+                    <Pagination {handler} />
+                    {/if}
                 </div>
             </div>
         </main>

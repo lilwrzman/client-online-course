@@ -62,7 +62,7 @@
             }
 
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/account/student' })
+                setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/student' })
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",
@@ -116,7 +116,7 @@
                         Manajemen Akun
                     </a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/superadmin/account/student/add" class="body-medium-semi-bold tc-primary-main">
+                    <a href="/superadmin/account/student/add#" class="body-medium-semi-bold tc-primary-main">
                         Tambah Karyawan
                     </a>
                 </div>
