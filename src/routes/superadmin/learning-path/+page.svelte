@@ -58,7 +58,7 @@
         let flashes = getFlash()
         if(flashes){
             toastData = {
-                    title: "Sukses",
+                    title: flashes.title,
                     message: flashes.message,
                     color: `toast-${flashes.type}`
                 }

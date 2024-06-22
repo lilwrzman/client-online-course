@@ -19,6 +19,7 @@
 
     import { ImageFill, BookFill, ExclamationLg, NutFill, CheckLg, Hourglass, List, Trash, PlusLg, LightbulbFill, PencilFill, TrashFill } from "svelte-bootstrap-icons"
 	import checkLogin from "$lib/CheckLogin.js";
+    import { dragHandleZone, dragHandle } from "svelte-dnd-action";
 
     export let data
     let slug = data.slug
@@ -27,6 +28,7 @@
     let active = 'Umum'
     let title, description, thumbnail_file, thumbnail_url
     let learningPath
+    let items = []
     let courses
     let selectedCourse = []
     
@@ -38,6 +40,42 @@
     let isChangingThumbnail = false
     let modalShow = false
     let status = false
+
+    let timeoutId = null
+
+    const flipDurationMs = 300
+    const handleDndConsider = (e) => items = e.detail.items
+    const handleSort = (e) => { 
+        items = e.detail.items.map((elm, index) => {
+            return {...elm, order: index + 1}
+        })
+
+        if(timeoutId){
+            clearTimeout(timeoutId)
+        }
+
+        timeoutId = setTimeout(() => {
+            reorderItems(items.map(item => ({id: item.id, order: item.order})))
+            timeoutId = null
+        }, 1500)
+    }
+
+    const reorderItems = (datas) => {
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: 'course/reorder',
+            data: JSON.stringify(datas),
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                toastData = { title: "Berhasil", message: response.message, color: 'toast-success' }
+                toastVisible = true
+                return
+            }
+        }).catch(e => {
+            console.log(e)
+        })
+    }
 
     const appendCourse = (id, index) => {
         let temp = selectedCourse
@@ -105,6 +143,7 @@
         }).then(response => {
             learningPath = response.data
             learningPath.courses = learningPath.courses.sort((a, b) => a.order - b.order)
+            items = JSON.parse(JSON.stringify(learningPath.courses))
             courses = learningPath.lone_course
             
             title = learningPath.title
@@ -150,7 +189,7 @@
             authToken: user.token
         }).then(response => {
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/learning-path' })
+                setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/learning-path' })
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",
@@ -350,16 +389,16 @@
                                     <div class="body-small-reguler">Susun materi-materi untuk Learning Path {title}!</div>
                                 </div>
 
-                                <div class="flex-column gap-2">
-                                    {#if learningPath && learningPath.courses.length > 0}
-                                    
-                                    {#each learningPath.courses as course, index}
+                                <div class="flex-column gap-2" use:dragHandleZone={{ items, flipDurationMs }} on:consider={handleDndConsider} on:finalize="{handleSort}">
+                                    {#if items.length > 0}
+                                    {#each items as course, index (course.id)}
                                     <!-- svelte-ignore a11y-no-static-element-interactions -->
                                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                                     <div id="old-course-{index}" 
                                         class="flex align-items-center justify-content-between p-3 neutral-border radius-md">
                                         <div class="flex gap-2 align-items-center">
-                                            <div class="draggable flex align-items-center"><List /></div>
+                                            <div class="draggable flex align-items-center" use:dragHandle aria-label="drag-handle for {course.id}"
+                                            style="cursor: grab;"><List /></div>
                                             <div class="body-small-semi-bold">{ course.title }</div>
                                         </div>
                                         <Button classList='btn p-0' onClick={() => removeCourse(course.id)}>

@@ -67,7 +67,7 @@
             authToken: user.token
         }).then(response => {
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/learning-path' })
+                setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/learning-path' })
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",
