@@ -1,5 +1,9 @@
 <script>
-    import { HouseDoorFill, BriefcaseFill, WalletFill, BookFill, Calendar2EventFill, PeopleFill, ChevronDown, ChevronUp, BoxFill } from "svelte-bootstrap-icons";
+    import { 
+        HouseDoorFill, BriefcaseFill, WalletFill, BookFill, 
+        Calendar2EventFill, PeopleFill, ChevronDown, ChevronUp, BoxFill,
+        BarChartFill
+    } from "svelte-bootstrap-icons";
     
     export let role 
     export let active = "Dashboard"
@@ -56,6 +60,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="/superadmin/bundle" class="menu {active == 'Paket Kursus' ? 'menu-active' : ''}">
+                        <BoxFill width=20 height=20 color={active == "Paket Kursus" ? '#3951A8' : '#8191AC'}/>
+                        <p class="body-small-semi-bold {active == "Paket Kursus" ? 'tc-primary-main' : 'tc-neutral-primary'}">Paket Kursus</p>
+                    </a>
+                </li>
+                <li>
                     <a href="/superadmin/article" class="menu {active == 'Manajemen Artikel' ? 'menu-active' : ''}">
                         <BookFill width=20 height=20 color={active == "Manajemen Artikel" ? '#3951A8' : '#8191AC'}/>
                         <p class="body-small-semi-bold {active == "Manajemen Artikel" ? 'tc-primary-main' : 'tc-neutral-primary'}">Manajemen Artikel</p>
@@ -68,15 +78,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/superadmin/account/teacher" class="menu {active == 'Manajemen Akun' ? 'menu-active' : ''}">
+                    <a href="/superadmin/account/student" class="menu {active == 'Manajemen Akun' ? 'menu-active' : ''}">
                         <PeopleFill width=20 height=20 color={active == "Manajemen Akun" ? '#3951A8' : '#8191AC'}/>
                         <p class="body-small-semi-bold {active == "Manajemen Akun" ? 'tc-primary-main' : 'tc-neutral-primary'}">Manajemen Akun</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="/superadmin/bundle" class="menu {active == 'Manajemen Bundel' ? 'menu-active' : ''}">
-                        <BoxFill width=20 height=20 color={active == "Manajemen Bundel" ? '#3951A8' : '#8191AC'}/>
-                        <p class="body-small-semi-bold {active == "Manajemen Bundel" ? 'tc-primary-main' : 'tc-neutral-primary'}">Manajemen Bundel</p>
                     </a>
                 </li>
 
@@ -105,9 +109,23 @@
                     </a>
                 </li>
                 <li>
+                    <a href='/corporate/progress'
+                        class="menu body-small-semi-bold {active == "Progress" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
+                        <BarChartFill width=20 height=20 color={active == "Progress" ? '#3951A8' : '#8191AC'}/>
+                        <p>Progress Karyawan</p>
+                    </a>
+                </li>
+                <li>
+                    <a href='/corporate/transaction'
+                        class="menu body-small-semi-bold {active == "Transaction" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
+                        <WalletFill width=20 height=20 color={active == "Transaction" ? '#3951A8' : '#8191AC'}/>
+                        <p>Transaksi</p>
+                    </a>
+                </li>
+                <li>
                     <a href='/corporate/student'
                         class="menu body-small-semi-bold {active == "Student" ? 'tc-primary-main menu-active' : 'tc-neutral-primary'}">
-                        <BookFill width=20 height=20 color={active == "Student" ? '#3951A8' : '#8191AC'}/>
+                        <PeopleFill width=20 height=20 color={active == "Student" ? '#3951A8' : '#8191AC'}/>
                         <p>Karyawan</p>
                     </a>
                 </li>
