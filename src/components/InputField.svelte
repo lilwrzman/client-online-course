@@ -7,8 +7,6 @@
     import Editor from '@tinymce/tinymce-svelte'
     import Eye from "svelte-bootstrap-icons/lib/Eye.svelte"
     import EyeSlash from "svelte-bootstrap-icons/lib/EyeSlash.svelte"
-    import { Search } from "svelte-bootstrap-icons"
-	import { onMount } from "svelte";
 
     export let type = "text"
     export let label = ""
@@ -63,31 +61,31 @@
 
 <div class="flex-column gap-2 {containerClass}">
     {#if label}
-    <label for={id} class="{labelClass}">{label}</label>
+        <label for={id} class="{labelClass}">{label}</label>
     {/if}
 
     {#if type == 'password'}
-    <div class="input-group-container">
-        {#if showPassword}
-        <input type='text' id='{id}' name='{name ? name : id}' bind:value='{value}'
-            placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
-        {:else}
-        <input type='password' id='{id}' name='{name ? name : id}' bind:value='{value}'
-            placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
-        {/if}
-        <div class="password-icon">
-            <Button id="btn-{id}" classList="btn btn-no-padding" onClick={toggleVisibility}>
-                {#if showPassword}
-                <Eye width={24} height={24}/>
-                {:else}
-                <EyeSlash width={24} height={24}/>
-                {/if}
-            </Button>  
+        <div class="input-group-container">
+            {#if showPassword}
+            <input type='text' id='{id}' name='{name ? name : id}' bind:value='{value}'
+                placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
+            {:else}
+            <input type='password' id='{id}' name='{name ? name : id}' bind:value='{value}'
+                placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
+            {/if}
+            <div class="password-icon">
+                <Button id="btn-{id}" classList="btn btn-no-padding" onClick={toggleVisibility}>
+                    {#if showPassword}
+                    <Eye width={24} height={24}/>
+                    {:else}
+                    <EyeSlash width={24} height={24}/>
+                    {/if}
+                </Button>  
+            </div>
         </div>
-    </div>
     
     {:else if type == "file"}
-    <input type="file" id="{id}" name="{name ? name : id}" class='{inputClass}'>
+        <input type="file" id="{id}" name="{name ? name : id}" class='{inputClass}'>
     
     {:else if type == "tinymce"}
         <Editor bind:value={value} on:input={tinyHandlerChanges} on:change={tinyHandlerChanges}
@@ -102,35 +100,43 @@
         />
     
     {:else if type == 'select-option'}
-    <select id="{id}" name="{name ? name : id}" class="{inputClass}" {disabled} on:change={inputHandler} bind:value={value}>
-        {#each option as opt, i}
-        <option value={opt.value}>{opt.text}</option>
-        {/each}
-    </select>
+        <select id="{id}" name="{name ? name : id}" class="{inputClass}" {disabled} on:change={inputHandler} bind:value={value}>
+            {#each option as opt, i}
+            <option value={opt.value}>{opt.text}</option>
+            {/each}
+        </select>
     
     {:else if type == "text"}
-    <input type="text" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
-        placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
+        <input type="text" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
+            placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
     
     {:else if type == "email"}
-    <input type="email" id='{id}' name='{name ? name : id}' bind:value={value}
-        placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
+        <input type="email" id='{id}' name='{name ? name : id}' bind:value={value}
+            placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
     
     {:else if type == "number"}
     
-    {#if prefix}
-    <div class="flex gap-2">
-        <div class="flex align-items-center justify-content-center px-2">
-            {prefix}
+        {#if prefix}
+        <div class="flex gap-2">
+            <div class="flex align-items-center justify-content-center px-2">
+                {prefix}
+            </div>
+            <input type="number" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
+                placeholder='{placeholder}' class='{inputClass} w-100' on:change={handleChange}>
         </div>
+        {:else}
         <input type="number" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
-            placeholder='{placeholder}' class='{inputClass} w-100' on:change={handleChange}>
-    </div>
-    {:else}
-    <input type="number" id='{id}' name='{name ? name : id}' bind:value={value} {disabled}
-        placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
-    {/if}
-    
+            placeholder='{placeholder}' class='{inputClass}' on:change={handleChange}>
+        {/if}
+
+    {:else if type == 'datalist'}
+        <input list="{id}-list" id='{id}' name='{name ? name : id}' placeholder="{placeholder}"
+            class="{inputClass}" on:change={handleChange} bind:value={value}>
+        <datalist id="{id}-list">
+            {#each option as opt}
+            <option value="{opt.value} | {opt.text}"/>
+            {/each}
+        </datalist>
     {/if}
     
     {#if error}

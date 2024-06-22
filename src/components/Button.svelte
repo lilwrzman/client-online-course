@@ -1,5 +1,4 @@
 <script>
-	import { goto } from "$app/navigation";
 	export let type = "button"
 	export let id = ""
 	export let classList = '';
@@ -86,7 +85,7 @@
 
 	.btn-main-outline {
 		border: 1px solid var(--primary-main);
-		color: var(--neutral-primary);
+		color: var(--primary-main);
 	}
 
 	.btn-main-outline:hover {
@@ -262,7 +261,7 @@
 
 	.btn-danger-outline {
 		border: 1px solid var(--danger-main);
-		color: var(--neutral-primary);
+		color: var(--danger-main);
 	}
 
 	.btn-danger-outline:hover {
@@ -293,6 +292,24 @@
 		background-color: #dfdddd;
 		border: 1px solid #dfdddd;
 		color: var(--dark);
+	}
+
+	.btn-neutral-outline-disabled{
+		background-color: var(--neutral-white);
+		border: 1px solid var(--neutral-border);
+		color: var(--neutral-disabled);
+	}
+
+	.btn-neutral-outline-disabled:hover {
+		background-color: var(--neutral-border);
+		border: 1px solid var(--neutral-border);
+		color: var(--neutral-disabled);
+	}
+
+	.btn-neutral-outline-disabled:active {
+		background-color: #dfdddd;
+		border: 1px solid #dfdddd;
+		color: var(--neutral-disabled);
 	}
 
 	/* End of Button Section */

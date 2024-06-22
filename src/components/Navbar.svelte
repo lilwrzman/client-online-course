@@ -49,13 +49,13 @@
 		{isFixed && variant == "outside" ? 'navbar-shadow' : ''}
 		w-100">
 		<div class="container flex justify-content-between align-items-center h-100">
+			{#if variant == 'outside'}
 			<a href="/" class="btn btn-no-padding">
-				{#if variant == 'outside'}
 				<div class="h5">Logo Disini</div>
-				{:else}
-				<div class="body-large-semi-bold">{pageTitle}</div>
-				{/if}
 			</a>
+			{:else}
+			<div class="body-large-semi-bold">{pageTitle}</div>
+			{/if}
 			{#if variant == 'outside'}
 			<ul class="navbar-menu">
 				<li class="navbar-menu-item {active == 'beranda' ? 'active' : ''}">

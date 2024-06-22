@@ -94,7 +94,13 @@
         <div class="card-body gap-5">
             <div class="flex-column gap-3 align-items-center">
                 <div class="h5">LOGO DISINI</div>
-                <div class="h4">{role == 'Corporate Admin' ? 'Corporate' : role} Login</div>
+                {#if role == 'Superadmin'}
+                <div class="h4">Login Admin LPK</div>
+                {:else if role == 'Teacher'}
+                <div class="h4">Login Pemateri LPK</div>
+                {:else if role == 'Corporate Admin'}
+                <div class="h4">Logi Admin Mitra</div>
+                {/if}
             </div>
 
             <InputField
