@@ -33,6 +33,7 @@
 		"js-cookie": "^3.0.5",
 		"svelte-bootstrap-icons": "^3.1.1",
 		"svelte-chartjs": "^3.1.5",
-		"svelte-dnd-action": "^0.9.42"
+		"svelte-dnd-action": "^0.9.49",
+		"video.js": "^8.12.0"
 	}
 }
