@@ -1,9 +1,7 @@
 <script>
 	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
 
 	import ApiController from "$lib/ApiController";
-	import { extract } from "$lib/Cookie";
     import { getFlash } from "$lib/Flash";
 
     import Sidebar from "@components/Sidebar.svelte";
@@ -11,7 +9,7 @@
     import Button from "@components/Button.svelte";
     import InputField from "@components/InputField.svelte";
     import Toast from "@components/Toast.svelte";
-    import { PlusLg, Hourglass, ThreeDotsVertical } from "svelte-bootstrap-icons";
+    import { Hourglass } from "svelte-bootstrap-icons";
     import {DataHandler} from "@vincjo/datatables"
 	import checkLogin from "$lib/CheckLogin";
 
@@ -60,7 +58,7 @@
         let flashes = getFlash()
         if(flashes){
             toastData = {
-                title: "Sukses",
+                title: flashes.title,
                 message: flashes.message,
                 color: `toast-${flashes.type}`
             }
@@ -119,15 +117,21 @@
                                         class="card-img-fluid radius-sm" alt="course-thumbnail"
                                         loading="lazy">
                                 </div>
-                                <p class="label-bullet body-small-medium" style="color: {course.learning_path.color};">{course.learning_path.title}</p>
+                                <p class="label-bullet body-small-medium" style="color: {course.learning_path ? course.learning_path.color : '#333'};">
+                                    {#if course.learning_path}
+                                    {course.learning_path.title}
+                                    {:else}
+                                    Belum masuk Alur Belajar
+                                    {/if}
+                                </p>
                                 <div class="flex-column gap-1">
                                     <div class="body-small-medium">{course.title}</div>
                                     <div class="flex justify-content-between">
-                                        <div class="caption-small-reguler">{course.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR'})}</div>
+                                        <div class="caption-small-reguler">{course.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</div>
                                         <div class="caption-small-reguler">{course.items} Item</div>
                                     </div>
                                 </div>
-                                <Button type="link" href="/superadmin/course/{course.slug}" classList="btn btn-main radius-sm">Lihat Detail</Button>
+                                <Button type="link" href="/superadmin/course/{course.id}" classList="btn btn-main radius-sm">Lihat Detail</Button>
                             </div>
                         </div>
                     </div>

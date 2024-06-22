@@ -1,12 +1,10 @@
 <script>
     import { onMount } from "svelte";
-    import { goto } from "$app/navigation";
 
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 
 	import ApiController from "$lib/ApiController";
-    import { extract } from "$lib/Cookie";
     import { setFlash } from "$lib/Flash";
     
     import Navbar from "@components/Navbar.svelte";
@@ -17,11 +15,11 @@
     import Dropzone from "@components/Dropzone.svelte";
     import Spinner from "@components/Spinner.svelte";
 
-    import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill } from "svelte-bootstrap-icons"
+    import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill, X, PlusLg } from "svelte-bootstrap-icons"
 	import checkLogin from "$lib/CheckLogin";
 
     let user, errors, teachers
-    let title, description, price, thumbnail_file, teacher_id
+    let title, description, price, thumbnail_file, teacher_id, facilities = [{order: 1, text: ''}]
     let active = 'Umum'
 
     let toastData = null
@@ -37,6 +35,10 @@
         formData.append('description', description)
         formData.append('price', price)
         formData.append('teacher_id', teacher_id)
+
+        facilities.forEach((facility, index) => {
+            formData.append('facilities[]', facility.text)
+        })
         
         if(thumbnail_file){
             formData.append('thumbnail_file', thumbnail_file)
@@ -49,7 +51,7 @@
             authToken: user.token
         }).then(response => {
             if(response.status){
-                setFlash({ message: response.message, type: 'success', redirect: '/superadmin/course' })
+                setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/course' })
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",
@@ -194,6 +196,37 @@
                                     <InputField labelClass="body-medium-semi-bold" type="tinymce" label="Deskripsi" id="description" 
                                         bind:value={description} rules={[{ required: true }]} 
                                         error={errors ? errors.description ? errors.description : '' : '' }/>
+
+                                    <div class="flex-column gap-2">
+                                        <label for="" class="body-medium-semi-bold">Fasilitas Pembelajaran</label>
+                                        {#each facilities as facility, index}
+                                        <div class="flex gap-2 align-items-center">
+                                            <InputField id="facility-{index+1}" containerClass="w-100"
+                                                placeholder="Masukkan fasilitas pembelajaran"
+                                                bind:value={facilities[index].text} rules={[{ required: true }]} 
+                                                error={errors ? errors[`description.${index}`] ? errors[`description.${index}`] : '' : '' }/>
+                                            {#if facilities.length > 1}
+                                            <Button classList="btn btn-no-padding" onClick={() => {
+                                                facilities = facilities.filter(elm => elm.order != facility.order)
+                                            }}>
+                                                <div class="flex align-items-center px-2">
+                                                    <X/>
+                                                </div>
+                                            </Button>
+                                            {/if}
+                                        </div>
+                                        {/each}
+                                        <div class="flex justify-content-center">
+                                            <Button classList="btn btn-main-outline" onClick={() => {
+                                                facilities[facilities.length] = {order: facilities[facilities.length-1].order + 1, text: ""}
+                                            }}>
+                                                <div class="flex gap-2 align-items-center">
+                                                    <PlusLg/>
+                                                    Tambah Fasilitas
+                                                </div>
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="flex-row-reverse gap-2">
