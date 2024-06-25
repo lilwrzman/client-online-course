@@ -53,7 +53,9 @@
 									<p class="body-small-medium">Sales Marketing</p>
 									<p class="caption-small-reguler">24 Materi</p>
 								</div>
-								<Button type="link" href="/learning-paths/detail" classList="btn btn-main">Lihat Detail</Button>
+								<Button type="link" href="/learning-paths/detail" classList="btn btn-main"
+									>Lihat Detail</Button
+								>
 							</div>
 						</div>
 					</div>
