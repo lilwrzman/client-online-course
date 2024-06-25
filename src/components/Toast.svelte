@@ -23,6 +23,11 @@
 		if(redirectTo){
 			goto(redirectTo)
 		}
+
+		title = '';
+		message = '';
+		color = '';
+		redirectTo = ''
 	};
 
 	onMount(() => {

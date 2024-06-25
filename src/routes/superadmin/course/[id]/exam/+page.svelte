@@ -98,7 +98,7 @@
 
         ApiController.sendRequest({
             method: "POST",
-            endpoint: `course/${id}/items/assessment/add`,
+            endpoint: `course/${id}/assessment/add`,
             data: JSON.stringify(datas),
             authToken: user.token
         }).then(response => {

@@ -87,7 +87,10 @@
         user = checkLogin("Superadmin")
 
         if($page.url.searchParams.has('title')){
-            title = $page.url.searchParams.get('title')
+            title = decodeURIComponent($page.url.searchParams.get('title'))
+            if($page.url.hash){
+                title = title + decodeURIComponent($page.url.hash)
+            }
         }
 
         getDetail()
