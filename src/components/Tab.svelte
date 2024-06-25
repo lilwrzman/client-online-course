@@ -1,8 +1,5 @@
 <script>
-	import { goto } from "$app/navigation";
-    import Button from "@components/Button.svelte";
-
-    export let menus = []
+	export let menus = []
     export let type = 'link'
     export let value = null
 

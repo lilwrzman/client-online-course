@@ -1,6 +1,4 @@
 <script>
-	import { onMount } from 'svelte';
-
 	import ApiController from '$lib/ApiController.js';
 	import showToast from '$lib/Toast.js';
 	import { setCookie } from '$lib/Cookie.js';
@@ -11,6 +9,8 @@
 	import InputField from '@components/InputField.svelte';
 	import Toast from '@components/Toast.svelte';
 	import XLg from 'svelte-bootstrap-icons/lib/XLg.svelte';
+	import Spinner from './Spinner.svelte';
+	import { setFlash } from '$lib/Flash';
 
 	export let modalShow = false;
 
@@ -18,8 +18,10 @@
 	let toastVisible = false;
 
 	let errors = null;
+	let showSpinner = false
 
 	const login = () => {
+		showSpinner = true
 		const ids = ['email', 'password'];
 		let datas = getValue(ids);
 		datas.role = "Student"
@@ -32,10 +34,11 @@
 			})
 			.then((response) => {
 				if (response.status) {
-					setCookie('userData', response.userData)
-					clearInput(ids)
-					window.location.reload()
+					showSpinner = false
+					setCookie('datas', response.userData)
+					setFlash({ title: 'Berhasil', message: "Anda berhasil login!", type: 'success', redirect: '/' })
 				} else {
+					showSpinner = false
 					if (response.error) {
 						errors = response.error;
 					} else {
@@ -46,6 +49,10 @@
 			});
 	};
 </script>
+
+{#if showSpinner}
+	<Spinner/>
+{/if}
 
 <Modal bind:modalShow>
 	{#if toastVisible}
