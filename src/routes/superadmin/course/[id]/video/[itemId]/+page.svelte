@@ -32,7 +32,6 @@
 
     onMount(() => {
         user = checkLogin("Superadmin")
-        console.log(itemId)
         getDetail()
     })
 </script>
