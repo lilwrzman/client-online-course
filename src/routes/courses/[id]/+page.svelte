@@ -1,6 +1,11 @@
 <script>
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+
 	import Navbar from '@components/Navbar.svelte';
 	import Footer from '@components/Footer.svelte';
+	import Button from '@components/Button.svelte';
+	import Tab from '@components/Tab.svelte';
 
 	import {
 		BookFill,
@@ -11,34 +16,51 @@
 		Facebook,
 		PlayCircle,
 		Clock,
-		Folder2
+		Pass,
+		FileEarmarkText
 	} from 'svelte-bootstrap-icons';
-	import Button from '@components/Button.svelte';
-	import Tab from '@components/Tab.svelte';
+	import ApiController from '$lib/ApiController';
+	import formatTime from '$lib/Duration';
 
 	let active = 'description';
+	let detail, status = false
+
+	const getDetail = () => {
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: `course/get/${$page.params.id}`
+		}).then(response => {
+			detail = response.data
+			status = true
+		})
+	}
+
+	onMount(() => {
+		getDetail()
+	})
 </script>
 
 <Navbar active="materi" />
 
+{#if status}
 <main>
-	<section id="header" class="section">
+	<section id="header" class="section" style="padding-bottom: 5rem;">
 		<div class="container">
 			<div class="row justify-content-between">
 				<div class="col-md-6">
-					<img src="/images/sales-marketing4-courses-image.png" class="thumbnail" alt="thumbnail" />
+					<img src="http://127.0.0.1:8000/storage/{detail.thumbnail}" class="radius-sm thumbnail" alt="thumbnail" />
 				</div>
 				<div class="col-md-5">
 					<div class="flex-column justify-content-center h-100 gap-large">
 						<div class="flex-column gap-standard">
 							<div class="flex">
-								<h4 class="mb-0">Pengenalan Sales Marketing</h4>
+								<h4 class="mb-0">{ detail.title }</h4>
 							</div>
 						</div>
 						<div class="flex-column gap-standard">
 							<div class="flex align-items-center gap-4">
 								<BookFill color="#3951A8" />
-								<p class="body-super-large-reguler">10 item</p>
+								<p class="body-super-large-reguler">{ detail.items.length } item</p>
 							</div>
 							<div class="flex align-items-center gap-4">
 								<PeopleFill color="#3951A8" />
@@ -46,16 +68,16 @@
 							</div>
 							<div class="flex align-items-center gap-4">
 								<StarFill color="#FF9933" />
-								<p class="body-super-large-reguler">4.8</p>
+								<p class="body-super-large-reguler">{detail.rating}</p>
 							</div>
 							<div class="flex align-items-center gap-4">
 								<PersonFill color="#3951A8" />
-								<p class="body-super-large-reguler">Yunizel Bach</p>
+								<p class="body-super-large-reguler">{detail.teacher.info.fullname}</p>
 							</div>
 						</div>
 						<div class="flex justify-content-between align-items-center">
-							<p class="body-large-reguler">Rp 140.000</p>
-							<Button classList="btn btn-main">Mulai Belajar</Button>
+							<p class="body-large-reguler">{detail.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</p>
+							<Button type="link" href="/courses/{detail.id}/checkout" classList="btn btn-main">Mulai Belajar</Button>
 						</div>
 					</div>
 				</div>
@@ -79,8 +101,9 @@
 
 				<div class="row">
 					<div class="col-8">
-						<h5 class="mb-2">Sales Marketing</h5>
-						<p class="body-medium-regular">
+						{@html detail.description}
+						<!-- <h5 class="mb-2">Sales Marketing</h5> -->
+						<!-- <p class="body-medium-regular">
 							Sales marketing adalah konsep yang mencakup berbagai strategi dan taktik yang
 							digunakan oleh perusahaan untuk menjual produk atau jasa mereka kepada pelanggan.
 							Sales, atau penjualan, berfokus pada interaksi langsung dengan pelanggan, yang
@@ -97,30 +120,15 @@
 							yang digunakan oleh perusahaan untuk menjual produk atau jasa mereka kepada pelanggan.
 							Sales, atau penjualan, berfokus pada interaksi langsung dengan pelanggan, yang
 							melibatkan proses
-						</p>
+						</p> -->
 					</div>
 					<div class="col-4">
 						<div class="flex-column gap-5">
 							<div>
 								<p class="body-medium-semi-bold mb-2">Fasilitas Pembelajaran</p>
-								<p>Materi Elektronik : Materi disajikan dalam bentuk video</p>
-								<p>Forum diskusi : Setiap materi memiliki sebuah forum diskusi</p>
-								<p>Evaluasi pembelajaran : Ujian akhir kelas</p>
-								<p>Sertifikat kompetensi</p>
-							</div>
-							<div>
-								<p class="body-medium-semi-bold mb-2">Fasilitas Pembelajaran</p>
-								<p>Materi Elektronik : Materi disajikan dalam bentuk video</p>
-								<p>Forum diskusi : Setiap materi memiliki sebuah forum diskusi</p>
-								<p>Evaluasi pembelajaran : Ujian akhir kelas</p>
-								<p>Sertifikat kompetensi</p>
-							</div>
-							<div>
-								<p class="body-medium-semi-bold mb-2">Fasilitas Pembelajaran</p>
-								<p>Materi Elektronik : Materi disajikan dalam bentuk video</p>
-								<p>Forum diskusi : Setiap materi memiliki sebuah forum diskusi</p>
-								<p>Evaluasi pembelajaran : Ujian akhir kelas</p>
-								<p>Sertifikat kompetensi</p>
+								{#each detail.facilities as facility}
+								<p>{ facility }</p>
+								{/each}
 							</div>
 						</div>
 					</div>
@@ -132,26 +140,44 @@
 	<section id="syllabus" class="section">
 		<div class="container">
 			<div class="course-step body-large-semi-bold">Silabus</div>
+			{#each detail.items as item}
 			<div class="row justify-content-center w-100" style="padding: 20px 0;">
 				<div class="col-12 col-md-10">
 					<div class="card radius-sm neutral-border">
 						<div class="flex-column gap-7">
 							<div class="flex-column gap-3">
-								<p class="body-super-large-semi-bold">Persiapan Belajar</p>
-								<p class="body-small-reguler">
-									Memahami rincian materi, fasilitas pembelajaran, dan lainnya. Memahami rincian
-									materi, fasilitas pembelajaran, dan lainnya.
-								</p>
+								<p class="body-super-large-semi-bold">{ item.title }</p>
+								<p class="body-small-reguler">{@html item.description }</p>
 								<div class="flex body-medium-reguler justify-content-between">
 									<div class="flex align-items-center gap-3">
+										{#if item.type == 'Video'}
 										<div class="flex gap-2 p-2 neutral-border radius-sm">
-											<PlayCircle color="#000000" />
+											<PlayCircle />
 											<p class="caption-small-reguler">Video</p>
 										</div>
 										<div class="flex gap-2">
 											<Clock color="#8191AC" />
-											<p class="caption-small-reguler tc-neutral-disabled">12 menit</p>
+											<p class="caption-small-reguler tc-neutral-disabled">{ formatTime(item.info.duration) }</p>
 										</div>
+										{:else if item.type == 'Quiz'}
+										<div class="flex gap-2 p-2 neutral-border radius-sm">
+											<FileEarmarkText />
+											<p class="caption-small-reguler">Kuis</p>
+										</div>
+										<div class="flex gap-2">
+											<Clock color="#8191AC" />
+											<p class="caption-small-reguler tc-neutral-disabled">{ item.questions.length } soal</p>
+										</div>
+										{:else if item.type == 'Exam'}
+										<div class="flex gap-2 p-2 neutral-border radius-sm">
+											<Pass />
+											<p class="caption-small-reguler">Ujian</p>
+										</div>
+										<div class="flex gap-2">
+											<Clock color="#8191AC" />
+											<p class="caption-small-reguler tc-neutral-disabled">{ item.questions.length } soal</p>
+										</div>
+										{/if}
 									</div>
 								</div>
 							</div>
@@ -159,114 +185,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row justify-content-center w-100" style="padding: 20px 0;">
-				<div class="col-12 col-md-10">
-					<div class="card radius-sm neutral-border">
-						<div class="flex-column gap-7">
-							<div class="flex-column gap-3">
-								<p class="body-super-large-semi-bold">Persiapan Belajar</p>
-								<p class="body-small-reguler">
-									Memahami rincian materi, fasilitas pembelajaran, dan lainnya. Memahami rincian
-									materi, fasilitas pembelajaran, dan lainnya.
-								</p>
-								<div class="flex body-medium-reguler justify-content-between">
-									<div class="flex align-items-center gap-3">
-										<div class="flex gap-2 p-2 neutral-border radius-sm">
-											<PlayCircle color="#000000" />
-											<p class="caption-small-reguler">Video</p>
-										</div>
-										<div class="flex gap-2">
-											<Clock color="#8191AC" />
-											<p class="caption-small-reguler tc-neutral-disabled">12 menit</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row justify-content-center w-100" style="padding: 20px 0;">
-				<div class="col-12 col-md-10">
-					<div class="card radius-sm neutral-border">
-						<div class="flex-column gap-7">
-							<div class="flex-column gap-3">
-								<p class="body-super-large-semi-bold">Persiapan Belajar</p>
-								<p class="body-small-reguler">
-									Memahami rincian materi, fasilitas pembelajaran, dan lainnya. Memahami rincian
-									materi, fasilitas pembelajaran, dan lainnya.
-								</p>
-								<div class="flex body-medium-reguler justify-content-between">
-									<div class="flex align-items-center gap-3">
-										<div class="flex gap-2 p-2 neutral-border radius-sm">
-											<PlayCircle color="#000000" />
-											<p class="caption-small-reguler">Video</p>
-										</div>
-										<div class="flex gap-2">
-											<Clock color="#8191AC" />
-											<p class="caption-small-reguler tc-neutral-disabled">12 menit</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row justify-content-center w-100" style="padding: 20px 0;">
-				<div class="col-12 col-md-10">
-					<div class="card radius-sm neutral-border">
-						<div class="flex-column gap-7">
-							<div class="flex-column gap-3">
-								<p class="body-super-large-semi-bold">Persiapan Belajar</p>
-								<p class="body-small-reguler">
-									Memahami rincian materi, fasilitas pembelajaran, dan lainnya. Memahami rincian
-									materi, fasilitas pembelajaran, dan lainnya.
-								</p>
-								<div class="flex body-medium-reguler justify-content-between">
-									<div class="flex align-items-center gap-3">
-										<div class="flex gap-2 p-2 neutral-border radius-sm">
-											<PlayCircle color="#000000" />
-											<p class="caption-small-reguler">Video</p>
-										</div>
-										<div class="flex gap-2">
-											<Clock color="#8191AC" />
-											<p class="caption-small-reguler tc-neutral-disabled">12 menit</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row justify-content-center w-100" style="padding: 20px 0;">
-				<div class="col-12 col-md-10">
-					<div class="card radius-sm neutral-border">
-						<div class="flex-column gap-7">
-							<div class="flex-column gap-3">
-								<p class="body-super-large-semi-bold">Persiapan Belajar</p>
-								<p class="body-small-reguler">
-									Memahami rincian materi, fasilitas pembelajaran, dan lainnya. Memahami rincian
-									materi, fasilitas pembelajaran, dan lainnya.
-								</p>
-								<div class="flex body-medium-reguler justify-content-between">
-									<div class="flex align-items-center gap-3">
-										<div class="flex gap-2 p-2 neutral-border radius-sm">
-											<PlayCircle color="#000000" />
-											<p class="caption-small-reguler">Video</p>
-										</div>
-										<div class="flex gap-2">
-											<Clock color="#8191AC" />
-											<p class="caption-small-reguler tc-neutral-disabled">12 menit</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			{/each}
 		</div>
 	</section>
 
@@ -278,28 +197,32 @@
 					<div class="card radius-sm neutral-border">
 						<div class="flex align-items-center gap-5">
 							<img
-								src="/images/testimoni-karyawan-image.png"
+								src="http://127.0.0.1:8000/storage/{detail.teacher.avatar}"
 								alt="thumbnail student"
 								class="w-25 teacher-img"
 							/>
 							<div class="flex-column gap-5">
 								<div class="flex-column gap-5">
-									<p class="body-super-large-semi-bold">Michael Hernandez</p>
+									<p class="body-super-large-semi-bold">{detail.teacher.info.fullname}</p>
 									<p class="body-small-reguler">
 										Memahami rincian materi, fasilitas pembelajaran, dan lainnya. Memahami rincian
 										materi, fasilitas pembelajaran, dan lainnya.
 									</p>
 									<div class="flex body-medium-reguler justify-content-between">
 										<div class="flex align-items-center gap-8">
-											<div class="flex gap-2">
-												<Instagram color="#3951A8" />
-												<p>naaandez</p>
-											</div>
-
-											<div class="flex gap-2">
+											{#each detail.teacher.info.social_media as sosmed}
+											{#if sosmed.type == 'Facebook'}
+											<a href="{sosmed.url}" class="flex gap-2">
 												<Facebook color="#3951A8" />
-												<p>michaelhernandezz</p>
-											</div>
+												<p>{sosmed.username}</p>
+											</a>
+											{:else if sosmed.type == 'Instagram'}
+											<a href="{sosmed.url}" class="flex gap-2">
+												<Instagram color="#3951A8" />
+												<p>{sosmed.username}</p>
+											</a>
+											{/if}
+											{/each}
 										</div>
 									</div>
 								</div>
@@ -445,8 +368,10 @@
 
 <Footer />
 
+{/if}
+
 <svelte:head>
-	<title>Loading...</title>
+	<title>{ status ? 'Materi: ' + detail.title : 'Loading...' }</title>
 
 	<style>
 		.section {

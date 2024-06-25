@@ -3,6 +3,22 @@
 	import InputField from '@components/InputField.svelte';
 	import Button from '@components/Button.svelte';
 	import Footer from '@components/Footer.svelte';
+	import ApiController from '$lib/ApiController';
+	import { onMount } from 'svelte';
+
+	let status = false
+	let learningPaths = []
+
+	const getLearningPaths = () => {
+		ApiController.sendRequest({
+			endpoint: "learning-path/get",
+			method: "GET"
+		}).then(response => {
+			learningPaths = response.data
+			status = true
+			console.log(learningPaths)
+		})
+	}
 
 	let option = [
 		{ value: 'newest', text: 'Terbaru' },
@@ -23,10 +39,15 @@
 			handler.sortDesc('title');
 		}
 	};
+
+	onMount(() => {
+		getLearningPaths()
+	})
 </script>
 
 <Navbar active="alur belajar" />
 
+{#if status}
 <main class="mb-6">
 	<section id="learning-paths" class="section">
 		<div class="container">
@@ -45,66 +66,20 @@
 				</div>
 
 				<div class="row">
+					{#each learningPaths as lp}
 					<div class="col-xs-12 col-sm-6 col-md-3 mb-5">
 						<div class="card">
 							<div class="card-body gap-3">
-								<img src="/images/learning-path-image.png" alt="gambar learning path" />
+								<img src="http://127.0.0.1:8000/storage/{ lp.thumbnail }" alt="gambar learning path" class="radius-sm" />
 								<div class="flex-column">
-									<p class="body-small-medium">Sales Marketing</p>
-									<p class="caption-small-reguler">24 Materi</p>
+									<p class="body-small-medium">{ lp.title }</p>
+									<p class="caption-small-reguler">{ lp.courses } Materi</p>
 								</div>
-								<Button type="link" href="/learning-paths/detail" classList="btn btn-main">Lihat Detail</Button>
+								<Button type="link" href="/learning-paths/{ lp.slug }" classList="btn btn-main">Lihat Detail</Button>
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-12 col-sm-6 col-md-3 mb-5">
-						<div class="card">
-							<div class="card-body gap-3">
-								<img src="/images/building-trust-image.png" alt="gambar learning path" />
-								<div class="flex-column">
-									<p class="body-small-medium">Building Trust</p>
-									<p class="caption-small-reguler">21 Materi</p>
-								</div>
-								<Button classList="btn btn-main">Lihat Detail</Button>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-6 col-md-3 mb-5">
-						<div class="card">
-							<div class="card-body gap-3">
-								<img src="/images/learning-path-image.png" alt="gambar learning path" />
-								<div class="flex-column">
-									<p class="body-small-medium">Sales Marketing</p>
-									<p class="caption-small-reguler">22 Materi</p>
-								</div>
-								<Button classList="btn btn-main">Lihat Detail</Button>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-6 col-md-3 mb-5">
-						<div class="card">
-							<div class="card-body gap-3">
-								<img src="/images/building-trust-image.png" alt="gambar learning path" />
-								<div class="flex-column">
-									<p class="body-small-medium">Building Trust</p>
-									<p class="caption-small-reguler">23 Materi</p>
-								</div>
-								<Button classList="btn btn-main">Lihat Detail</Button>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-6 col-md-3 mb-5">
-						<div class="card">
-							<div class="card-body gap-3">
-								<img src="/images/learning-path-image.png" alt="gambar learning path" />
-								<div class="flex-column">
-									<p class="body-small-medium">Sales Marketing</p>
-									<p class="caption-small-reguler">14 Materi</p>
-								</div>
-								<Button classList="btn btn-main">Lihat Detail</Button>
-							</div>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 		</div>
@@ -112,3 +87,5 @@
 </main>
 
 <Footer />
+
+{/if}
