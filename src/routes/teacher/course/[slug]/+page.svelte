@@ -1,24 +1,20 @@
 <script>
     import { onMount } from "svelte";
-    import { goto, replaceState } from "$app/navigation";
+    import { replaceState } from "$app/navigation";
 
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 
 	import ApiController from "$lib/ApiController";
-    import { extract } from "$lib/Cookie";
-    import { setFlash } from "$lib/Flash.js";
     
     import Navbar from "@components/Navbar.svelte";
     import Sidebar from "@components/Sidebar.svelte";
     import InputField from "@components/InputField.svelte";
-    import Button from "@components/Button.svelte";
     import Toast from "@components/Toast.svelte";
     import Dropzone from "@components/Dropzone.svelte";
     import Spinner from "@components/Spinner.svelte";
-    import Modal from "@components/Modal.svelte";
 
-    import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill, PencilFill, PassFill, LightbulbFill, Trash, TrashFill } from "svelte-bootstrap-icons"
+    import { ImageFill, ExclamationLg, NutFill, CheckLg, PersonWorkspace, Coin, PersonFill, PassFill, LightbulbFill, Trash, TrashFill } from "svelte-bootstrap-icons"
 	import checkLogin from "$lib/CheckLogin.js";
 
     export let data
@@ -50,7 +46,7 @@
             price = detail.price
             selected_teacher = detail.teacher
             teachers = detail.teachers
-            thumbnail_url = `http://127.0.0.1:8000/storage/${detail.thumbnail}`
+            thumbnail_url = `${PUBLIC_SERVER_PATH}/storage/${detail.thumbnail}`
             
             replaceState(`/teacher/course/${detail.slug}`)
             status = true

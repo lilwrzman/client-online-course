@@ -2,10 +2,25 @@
     import { Splide, SplideSlide } from '@splidejs/svelte-splide';
     import '@splidejs/svelte-splide/css';
 
+    import {getFlash} from "$lib/Flash"
+
     import Navbar from "@components/Navbar.svelte";
     import Footer from "@components/Footer.svelte";
     import Button from "@components/Button.svelte";
     import StarFill from "svelte-bootstrap-icons/lib/StarFill.svelte"
+	import { onMount } from 'svelte';
+
+    onMount(() => {
+        let flashes = getFlash()
+        if(flashes){
+            toastData = {
+                title: flashes.title,
+                message: flashes.message,
+                color: `toast-${flashes.type}`
+            }
+            toastVisible = true
+        }
+    })
 </script>
 
 <Navbar active="beranda"/>

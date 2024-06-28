@@ -11,6 +11,7 @@
 	import XLg from 'svelte-bootstrap-icons/lib/XLg.svelte';
 	import Spinner from './Spinner.svelte';
 	import { setFlash } from '$lib/Flash';
+	import { goto } from '$app/navigation';
 
 	export let modalShow = false;
 
@@ -34,9 +35,8 @@
 			})
 			.then((response) => {
 				if (response.status) {
-					showSpinner = false
 					setCookie('datas', response.userData)
-					setFlash({ title: 'Berhasil', message: "Anda berhasil login!", type: 'success', redirect: '/' })
+					return window.location.href = "/student/dashboard"
 				} else {
 					showSpinner = false
 					if (response.error) {

@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
     import { onMount } from "svelte";
 
     import { fly } from "svelte/transition"
@@ -279,7 +280,7 @@
                                             }}>
                                                 <div class="card-body gap-3">
                                                     <div class="w-100 position-relative">
-                                                        <img src="http://127.0.0.1:8000/storage/{c.thumbnail}" 
+                                                        <img src="{PUBLIC_SERVER_PATH}/storage/{c.thumbnail}" 
                                                             class="card-img-fluid radius-sm" alt="course-thumbnail"
                                                             loading="lazy">
                                                     </div>

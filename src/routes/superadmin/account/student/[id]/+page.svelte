@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import { onMount } from "svelte"
     import { goto } from "$app/navigation"
 
@@ -56,7 +57,7 @@
             fullname = detail.fullname
             username = detail.username
             email = detail.email
-            avatar_url = `http://127.0.0.1:8000/storage/${detail.avatar}`
+            avatar_url = `${PUBLIC_SERVER_PATH}/storage/${detail.avatar}`
 
             myCourses = detail.my_courses
             handlerCourses = new DataHandler(myCourses)
@@ -352,7 +353,7 @@
                                 <div class="card radius-sm p-0">
                                     <div class="card-body">
                                         <div class="w-100">
-                                            <img src="http://127.0.0.1:8000/storage/{course.thumbnail}" 
+                                            <img src="{PUBLIC_SERVER_PATH}/storage/{course.thumbnail}" 
                                                 class="card-img-fluid radius-sm-top" alt="course-thumbnail"
                                                 loading="lazy">
                                         </div>

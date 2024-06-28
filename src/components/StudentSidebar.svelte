@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
     import { BarChartFill, GearFill, HouseDoorFill, TicketFill } from "svelte-bootstrap-icons";
 
     export let user
@@ -8,7 +9,7 @@
 <aside>
     <div class="sidebar neutral-border radius-sm">
         <div class="flex-column p-3" style="gap: 14px;">
-            <img src="{user ? `http://127.0.0.1:8000/storage/${user.avatar}` : '/images/default.png'}" alt="user-avatar" width="90" height="90">
+            <img src="{user ? `${PUBLIC_SERVER_PATH}/storage/${user.avatar}` : '/images/default.png'}" alt="user-avatar" width="90" height="90">
             <div class="flex-column">
                 <p class="body-large-semi-bold">{ user ? user.fullname : ''}</p>
                 <p class="body-medium-reguler">{ user ? 'Karyawan' : ''}</p>
@@ -59,7 +60,7 @@
     aside {
 		background-color: var(--neutral-white);
 		display: flex;
-		width: 17.5rem;
+		width: 20rem;
         height: fit-content;
 		position: sticky;
 		position: -webkit-sticky;
@@ -83,7 +84,7 @@
 		list-style: none;
 		display: flex;
 		flex-direction: column;
-		gap: 14px;
+		gap: .875rem;
 	}
 
 	.menu {

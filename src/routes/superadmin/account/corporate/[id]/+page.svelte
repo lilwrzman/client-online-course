@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import { onMount } from "svelte"
     import { goto } from "$app/navigation"
 
@@ -51,7 +52,7 @@
             contact = corporate.contact
             username = corporate.username
             email = corporate.email
-            avatar_url = `http://127.0.0.1:8000/storage/${corporate.avatar}`
+            avatar_url = `${PUBLIC_SERVER_PATH}/storage/${corporate.avatar}`
             myStudents = corporate.my_students
             handlerStudents = new DataHandler(myStudents)
             students = handlerStudents.getRows()

@@ -1,9 +1,8 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
 
 	import ApiController from "$lib/ApiController";
-	import { extract } from "$lib/Cookie";
     import { getFlash } from "$lib/Flash";
 
     import Toast from "@components/Toast.svelte";
@@ -115,7 +114,7 @@
                         <div class="card radius-sm">
                             <div class="card-body gap-3">
                                 <div class="w-100">
-                                    <img src="http://127.0.0.1:8000/storage/{path.thumbnail}" 
+                                    <img src="{PUBLIC_SERVER_PATH}/storage/{path.thumbnail}" 
                                         class="card-img-fluid radius-sm" alt="course-thumbnail"
                                         loading="lazy">
                                 </div>

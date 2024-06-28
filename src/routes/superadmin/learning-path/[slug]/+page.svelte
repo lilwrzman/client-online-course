@@ -116,7 +116,7 @@
 
             if(response.status){
                 if(section == 'Thumbnail'){
-                    thumbnail_url = `http://127.0.0.1:8000/storage/${response.data.thumbnail}`
+                    thumbnail_url = `${PUBLIC_SERVER_PATH}/storage/${response.data.thumbnail}`
                     isChangingThumbnail = false
                 }else if(section == 'Course'){
                     selectedCourse = []
@@ -148,7 +148,7 @@
             
             title = learningPath.title
             description = learningPath.description
-            thumbnail_url = `http://127.0.0.1:8000/storage/${learningPath.thumbnail}`
+            thumbnail_url = `${PUBLIC_SERVER_PATH}/storage/${learningPath.thumbnail}`
             
             replaceState(`/superadmin/learning-path/${learningPath.slug}`)
             status = true

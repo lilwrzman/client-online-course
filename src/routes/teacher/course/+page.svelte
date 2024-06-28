@@ -1,21 +1,18 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
 
 	import ApiController from "$lib/ApiController";
-	import { extract } from "$lib/Cookie";
     import { getFlash } from "$lib/Flash";
 
     import Sidebar from "@components/Sidebar.svelte";
     import Navbar from "@components/Navbar.svelte";
     import Button from "@components/Button.svelte";
-    import InputField from "@components/InputField.svelte";
     import Toast from "@components/Toast.svelte";
     import { Hourglass } from "svelte-bootstrap-icons";
     import {DataHandler} from "@vincjo/datatables"
     import Tab from "@components/Tab.svelte";
     import SortMenu from "@components/SortMenu.svelte";
-    import FilterMenu from "@components/FilterMenu.svelte";
     import SearchMenu from "@components/SearchMenu.svelte";
 	import checkLogin from "$lib/CheckLogin";
 
@@ -129,7 +126,7 @@
                         <div class="card radius-sm">
                             <div class="card-body">
                                 <div class="w-100 position-relative">
-                                    <img src="http://127.0.0.1:8000/storage/{course.thumbnail}" 
+                                    <img src="{PUBLIC_SERVER_PATH}/storage/{course.thumbnail}" 
                                         class="card-img-fluid radius-sm" alt="course-thumbnail"
                                         loading="lazy">
                                 </div>

@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import ApiController from "$lib/ApiController";
     import Button from "@components/Button.svelte";
 	import Footer from "@components/Footer.svelte";
@@ -67,7 +68,7 @@
                     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
                         <div class="card">
                             <div class="card-body gap-3">
-                                <img src="http://127.0.0.1:8000/storage/{ course.thumbnail }" class="radius-sm" alt="gambar courses" />
+                                <img src="{PUBLIC_SERVER_PATH}/storage/{ course.thumbnail }" class="radius-sm" alt="gambar courses" />
                                 <div class="flex-column gap-1">
                                     {#if course.learning_path}
                                     <p class="body-small-medium label-bullet" style="color: { course.learning_path.color } ;">{ course.learning_path.title }</p>
