@@ -24,3 +24,13 @@
 	</section>
 </main>
 <Footer />
+
+<svelte:head>
+	<title>Online Course | Acara</title>
+</svelte:head>
+
+<style>
+    .section { 
+        padding-bottom: 0;
+    }
+</style>

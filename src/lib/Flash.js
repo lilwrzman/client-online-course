@@ -1,11 +1,9 @@
-import { goto } from "$app/navigation"
-
 const setFlash = (flash) => {
     sessionStorage.setItem('flashTitle', flash.title)
     sessionStorage.setItem('flashMessage', flash.message)
     sessionStorage.setItem('flashType', flash.type)
 
-    return goto(flash.redirect)
+    return window.location.href = flash.redirect
 }
 
 const getFlash = () => {

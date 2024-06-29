@@ -124,3 +124,7 @@
 {/if}
 
 <Footer/>
+
+<svelte:head>
+    <title>Daftar</title>
+</svelte:head>

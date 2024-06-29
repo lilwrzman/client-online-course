@@ -51,8 +51,6 @@
     }
 
     onMount(() => {
-        user = checkLogin("Teacher")
-        
         let flashes = getFlash()
         if(flashes){
             toastData = {
@@ -62,6 +60,8 @@
             }
             toastVisible = true
         }
+        
+        user = checkLogin("Teacher")
 
         getCourses()
     })

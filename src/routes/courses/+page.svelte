@@ -68,7 +68,7 @@
                     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
                         <div class="card">
                             <div class="card-body gap-3">
-                                <img src="{PUBLIC_SERVER_PATH}/storage/{ course.thumbnail }" class="radius-sm" alt="gambar courses" />
+                                <img src="{PUBLIC_SERVER_PATH}/storage/{ course.thumbnail }" class="course-thumbnail" alt="gambar courses" />
                                 <div class="flex-column gap-1">
                                     {#if course.learning_path}
                                     <p class="body-small-medium label-bullet" style="color: { course.learning_path.color } ;">{ course.learning_path.title }</p>
@@ -172,3 +172,20 @@
 <Footer/>
 
 {/if}
+
+<style>
+    .course-thumbnail {
+        border-radius: .25rem;
+        aspect-ratio: 4/3; 
+        object-fit: cover; 
+        object-position: center;
+    }
+
+    .section { 
+        padding-bottom: 0;
+    }
+</style>
+
+<svelte:head>
+	<title>Online Course | Materi</title>
+</svelte:head>

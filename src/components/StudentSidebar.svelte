@@ -106,17 +106,6 @@
 		padding: 1.375rem 0.875rem;
 	}
 
-	.menu-dropdown-item {
-		padding: 20px 14px;
-		transition: all 0.25s ease;
-		border-radius: 0.25rem;
-	}
-
-	.menu-dropdown-item:hover {
-		background-color: var(--hover);
-		padding: 1.375rem 0.875rem;
-	}
-
 	.menu-active {
 		background-color: var(--hover);
 	}

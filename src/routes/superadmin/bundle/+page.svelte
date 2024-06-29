@@ -36,9 +36,7 @@
     }
 
     onMount(() => {
-        user = checkLogin("Superadmin")
         let flashes = getFlash()
-
         if(flashes){
             toastData = {
                 title: flashes.title,
@@ -47,6 +45,8 @@
             }
             toastVisible = true
         }
+        
+        user = checkLogin("Superadmin")
 
         getBundles()
     })

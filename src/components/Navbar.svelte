@@ -9,7 +9,7 @@
 	import { extract } from '$lib/Cookie';
 
 	export let user
-	export let active
+	export let active = ''
 	export let variant = 'outside'
 	export let pageTitle = ''
 

@@ -96,6 +96,7 @@
 
             if(response.status){
                 setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/bundle' })
+                return
             }else{
                 toastData = {
                     title: "Gagal",

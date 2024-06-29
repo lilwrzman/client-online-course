@@ -190,6 +190,7 @@
         }).then(response => {
             if(response.status){
                 setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/learning-path' })
+                return
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",
@@ -200,7 +201,8 @@
             }else{
                 errors = response.error
             }
-
+            
+            modalShow = false
             showSpinner = false
         })
     }

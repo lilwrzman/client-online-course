@@ -5,7 +5,7 @@
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 
-	import ApiController from "$lib/ApiController";
+	import ApiController from "$lib/ApiController.js";
     
     import Navbar from "@components/Navbar.svelte";
     import Sidebar from "@components/Sidebar.svelte";

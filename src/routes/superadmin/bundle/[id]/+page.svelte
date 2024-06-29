@@ -5,7 +5,7 @@
     import { quintOut } from "svelte/easing"
     
 	import checkLogin from "$lib/CheckLogin";
-	import ApiController from "$lib/ApiController";
+	import ApiController from "$lib/ApiController.js";
     import { getDay } from "$lib/Date"
 
     import Navbar from "@components/Navbar.svelte";
