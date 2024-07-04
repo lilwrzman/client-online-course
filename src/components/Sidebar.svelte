@@ -2,7 +2,7 @@
     import { 
         HouseDoorFill, BriefcaseFill, WalletFill, BookFill, 
         Calendar2EventFill, PeopleFill, ChevronDown, ChevronUp, BoxFill,
-        BarChartFill
+        BarChartFill, PersonVcardFill
     } from "svelte-bootstrap-icons";
     
     export let role 
