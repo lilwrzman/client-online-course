@@ -56,14 +56,6 @@
             showSpinner = false
         })
     }
-
-    $: {
-        console.log(fullname)
-        console.log(username)
-        console.log(email)
-        console.log(password)
-        console.log(password_confirmation)
-    }
 </script>
 
 <Navbar/>
@@ -132,3 +124,7 @@
 {/if}
 
 <Footer/>
+
+<svelte:head>
+    <title>Daftar</title>
+</svelte:head>

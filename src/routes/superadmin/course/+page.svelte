@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import { onMount } from "svelte";
 
 	import ApiController from "$lib/ApiController";
@@ -53,8 +54,6 @@
     }
 
     onMount(() => {
-        user = checkLogin('Superadmin')
-        
         let flashes = getFlash()
         if(flashes){
             toastData = {
@@ -64,6 +63,8 @@
             }
             toastVisible = true
         }
+        
+        user = checkLogin('Superadmin')
 
         getCourses()
     })
@@ -113,7 +114,7 @@
                         <div class="card radius-sm">
                             <div class="card-body gap-3">
                                 <div class="w-100 position-relative">
-                                    <img src="http://127.0.0.1:8000/storage/{course.thumbnail}" 
+                                    <img src="{PUBLIC_SERVER_PATH}/storage/{course.thumbnail}" 
                                         class="card-img-fluid radius-sm" alt="course-thumbnail"
                                         loading="lazy">
                                 </div>

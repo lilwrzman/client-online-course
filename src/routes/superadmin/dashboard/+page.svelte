@@ -31,8 +31,6 @@
     }
 
     onMount(() => {
-        user = checkLogin('Superadmin')
-
         let flashes = getFlash()
         if(flashes){
             toastData = {
@@ -42,6 +40,8 @@
             }
             toastVisible = true
         }
+        
+        user = checkLogin('Superadmin')
 
         getDashboard()
     })

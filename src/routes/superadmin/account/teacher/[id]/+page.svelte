@@ -1,12 +1,11 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import { onMount } from "svelte"
-    import { goto } from "$app/navigation"
 
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 
     import ApiController from "$lib/ApiController.js"
-    import { extract } from "$lib/Cookie.js"
     import { setFlash } from "$lib/Flash"
 
     import InputField from "@components/InputField.svelte"
@@ -167,7 +166,7 @@
                 instagram.url = ""
             }
 
-            avatar_url = `http://127.0.0.1:8000/storage/${teacher.avatar}`
+            avatar_url = `${PUBLIC_SERVER_PATH}/storage/${teacher.avatar}`
             status = true
 
             if(callback != null && typeof callback === 'function'){
@@ -364,7 +363,7 @@
                                 <div class="card radius-sm p-0">
                                     <div class="card-body">
                                         <div class="w-100">
-                                            <img src="http://127.0.0.1:8000/storage/{course.thumbnail}" 
+                                            <img src="{PUBLIC_SERVER_PATH}/storage/{course.thumbnail}" 
                                                 class="card-img-fluid radius-sm-top" alt="course-thumbnail"
                                                 loading="lazy">
                                         </div>

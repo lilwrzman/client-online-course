@@ -4,7 +4,10 @@
     import Button from "@components/Button.svelte";
     import { Bar } from "svelte-chartjs";
     import { Chart, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Colors } from "chart.js"
+	import { onMount } from "svelte";
+	import checkLogin from "$lib/CheckLogin";
 
+    let user
     const data = {
         labels: ['Building Trust', 'Building Need', 'Handling Objection', 'Trying to Clos', 'Closing'],
         datasets: [
@@ -19,6 +22,10 @@
     Chart.register(
         Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Colors
     )
+
+    onMount(() => {
+        user = checkLogin('Student', true)
+    })
 </script>
 
 <Navbar/>
@@ -28,13 +35,13 @@
         <div class="container">
             <div class="flex-column gap-8">
                 <div class="flex-column gap-2 tc-neutral-white">
-                    <h4 class="mb-0">Selamat Datang Username!</h4>
+                    <h4 class="mb-0">Selamat Datang {user ? user.username + '!' : '' }</h4>
                     <p class="body-medium-light">Dapatkan pengalaman belajar yang menyenangkan dan bermanfaat.</p>
                 </div>
                 <div class="card p-4 radius-sm">
                     <div class="card-body">
                         <div class="flex justify-content-between align-items-center neutral-border p-4 radius-sm">
-                            <p class="body-small-light" style="max-width: 60%;">Anda belum mengikuti kelas apapun. Jelajahi materi dari berbagai alur pembelajaran yang anda minati sekarang juga.</p>
+                            <p class="body-small-light" style="max-width: 60%;">Mari kembangkan diri dengan menjelajahi materi dari berbagai alur pembelajaran yang anda minati sekarang juga.</p>
                             <Button type="link" href="/courses" classList="btn btn-main">Jelajahi Sekarang</Button>
                         </div>
                     </div>
@@ -47,12 +54,19 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
-                    <div class="flex-column justify-content-center align-items-center h-100">
-                        <Bar {data} options={{ 
-                            responsive: true, 
-                            indexAxis: 'y', 
-                            colors: { forceOveride: true }
-                        }} />
+                    <div class="card neutral-border radius-sm p-0 h-100">
+                        <div class="card-header neutral-border-bottom p-standard">
+                            <p class="body-medium-semi-bold">Progress Belajar</p>
+                        </div>
+                        <div class="card-body flex-column gap-3 p-standard">
+                            <div class="flex-column justify-content-center align-items-center h-100">
+                                <Bar {data} options={{ 
+                                    responsive: true, 
+                                    indexAxis: 'y', 
+                                    colors: { forceOveride: true }
+                                }} />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-7">
@@ -83,7 +97,7 @@
                                 <Button classList="btn btn-main-outline">Lihat Sertifikat</Button>
                             </div>
                             <div class="flex-row-reverse">
-                                <Button type="link" href="#" classList="link">Lihat Selengkapnya</Button>
+                                <Button type="link" href="/student/my-courses" classList="link">Lihat Selengkapnya</Button>
                             </div>
                         </div>
                     </div>

@@ -301,3 +301,13 @@
 </main>
 
 <Footer />
+
+<svelte:head>
+	<title>Online Course | Umpan Balik</title>
+</svelte:head>
+
+<style>
+    .section { 
+        padding-bottom: 0;
+    }
+</style>

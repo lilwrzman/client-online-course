@@ -2,15 +2,39 @@
     import { Splide, SplideSlide } from '@splidejs/svelte-splide';
     import '@splidejs/svelte-splide/css';
 
+    import { getFlash } from "$lib/Flash"
+
     import Navbar from "@components/Navbar.svelte";
     import Footer from "@components/Footer.svelte";
     import Button from "@components/Button.svelte";
+    import Toast from '@components/Toast.svelte';
     import StarFill from "svelte-bootstrap-icons/lib/StarFill.svelte"
+	import { onMount } from 'svelte';
+
+    let toastData
+    let toastVisible = false
+
+    let flashes
+
+    onMount(() => {
+        flashes = getFlash()
+        if(flashes){
+            toastData = {
+                title: flashes.title,
+                message: flashes.message,
+                color: `toast-${flashes.type}`
+            }
+            toastVisible = true
+        }
+    })
 </script>
 
 <Navbar active="beranda"/>
 
 <main>
+    {#if toastVisible}
+        <Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color} />
+    {/if}
     <section id="header" class="section">
         <div class="container">
             <div class="row">
@@ -208,3 +232,13 @@
 </main>
 
 <Footer/>
+
+<svelte:head>
+	<title>Online Course | Beranda</title>
+</svelte:head>
+
+<style>
+    .section { 
+        padding-bottom: 0;
+    }
+</style>

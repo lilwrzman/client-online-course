@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
     import { onMount } from "svelte";
     import { page } from "$app/stores";
     import { flip } from "svelte/animate";
@@ -101,7 +102,7 @@
 
             if(response.status){
                 if(section == 'Thumbnail'){
-                    thumbnail_url = `http://127.0.0.1:8000/storage/${response.data.thumbnail}`
+                    thumbnail_url = `${PUBLIC_SERVER_PATH}/storage/${response.data.thumbnail}`
                     isChangingThumbnail = false
                 }else if(section == 'Teacher'){
                     teacherListExpand = false
@@ -172,7 +173,7 @@
             price = detail.price
             selected_teacher = detail.teacher
             teachers = detail.teachers
-            thumbnail_url = `http://127.0.0.1:8000/storage/${detail.thumbnail}`
+            thumbnail_url = `${PUBLIC_SERVER_PATH}/storage/${detail.thumbnail}`
             detail.facilities = formatedFacilities(detail.facilities)
             facilities = JSON.parse(JSON.stringify(detail.facilities))
 
@@ -213,6 +214,7 @@
         }).then(response => {
             if(response.status){
                 setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/course' })
+                return
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",
@@ -223,7 +225,8 @@
             }else{
                 errors = response.error
             }
-
+            
+            modalShow = false
             showSpinner = false
         })
     }
@@ -307,12 +310,6 @@
     }
 
     onMount(() => {
-        user = checkLogin("Superadmin")
-
-        if($page.url.searchParams.has('active')){
-            active = $page.url.searchParams.get('active')
-        }
-
         let flashes = getFlash()
         if(flashes){
             toastData = {
@@ -321,6 +318,12 @@
                 color: `toast-${flashes.type}`
             }
             toastVisible = true
+        }
+        
+        user = checkLogin("Superadmin")
+
+        if($page.url.searchParams.has('active')){
+            active = $page.url.searchParams.get('active')
         }
 
         getDetail()

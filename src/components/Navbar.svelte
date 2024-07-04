@@ -9,7 +9,7 @@
 	import { extract } from '$lib/Cookie';
 
 	export let user
-	export let active
+	export let active = ''
 	export let variant = 'outside'
 	export let pageTitle = ''
 
@@ -68,7 +68,7 @@
 					<a href="/courses">Materi</a>
 				</li>
 				<li class="navbar-menu-item {active == 'event' ? 'active' : ''}">
-					<a href="/events">Event</a>
+					<a href="/events">Acara</a>
 				</li>
 				<li class="navbar-menu-item {active == 'artikel' ? 'active' : ''}">
 					<a href="/articles">Artikel</a>

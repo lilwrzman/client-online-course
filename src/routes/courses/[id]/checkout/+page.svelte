@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
     import { PUBLIC_MIDTRANS_CLIENT_KEY } from "$env/static/public"
 
     import { onMount } from "svelte";
@@ -8,14 +9,19 @@
 
     import Navbar from "@components/Navbar.svelte";
 	import Button from "@components/Button.svelte";
-	import { Arrow90degLeft } from "svelte-bootstrap-icons";
+	import { Arrow90degLeft, FileEarmarkText, Pass, PlayCircle } from "svelte-bootstrap-icons";
 	import checkLogin from "$lib/CheckLogin";
 	import Spinner from "@components/Spinner.svelte";
+	import { error } from "@sveltejs/kit";
+	import { setFlash } from "$lib/Flash";
 
     let user
     let id = $page.params.id
     let transaction, course, isNew
     let status = false, showSpinner = false
+
+    let toastData
+    let toastVisible = false
 
     const checkout = () => {
 		ApiController.sendRequest({
@@ -28,7 +34,12 @@
 			course = response.course
 			isNew = response.new
 			status = true
-		})
+		}).catch(e => {
+            let response = e.response.data
+            if(response.error == "You have already purchased this course"){
+                return window.location.href = `/student/my-courses/${id}`
+            }
+        })
 	}
 
     const pay = () => {
@@ -99,19 +110,51 @@
             <div class="row justify-content-center py-5">
                 <div class="col-12 col-md-8">
                     <h4>Proses Pembayaran</h4>
-                    <div class="card radius-sm neutral-border p-standard">
+                    <div class="card radius-sm neutral-border p-standard pb-0">
                         <div class="card-body">
-                            <div class="flex justify-content-between align-items-center neutral-border radius-sm p-standard">
-                                <p class="body-medium">{ course.title }</p>
-                                <p class="body-small-reguler">{ transaction.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0}) }</p>
+                            <p class="body-large-semi-bold">Materi dibeli</p>
+                            <div class="row">
+                                <div class="col-12 col-md-4">
+                                    <img src="{PUBLIC_SERVER_PATH}/storage/{course.thumbnail}" alt="course-thumbnail" class="thumbnail">
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <div class="flex-column gap-4">
+                                        <p class="body-medium-semi-bold">{course.title}</p>
+                                        <div class="flex-column gap-1">
+                                            <p class="body-small-medium">Fasilitas Pembelajaran</p>
+                                            <ul class="my-0">
+                                                {#each course.facilities as facility}
+                                                <li><p class="body-small-reguler">{facility}</p></li>
+                                                {/each}
+                                            </ul>
+                                        </div>
+                                        <div class="flex gap-3">
+                                            {#if course.items.filter(elm => elm.type == 'Video').length > 0}
+                                            <div class="flex align-items-center gap-2 p-standard neutral-border radius-sm">
+                                                <PlayCircle/>
+                                                <p class="caption-small-reguler my-0">{course.items.filter(elm => elm.type == 'Video').length} Video</p>
+                                            </div>
+                                            {/if}
+                                            {#if course.items.filter(elm => elm.type == 'Quiz').length > 0}
+                                            <div class="flex align-items-center gap-2 p-standard neutral-border radius-sm">
+                                                <FileEarmarkText/>
+                                                <p class="caption-small-reguler my-0">{course.items.filter(elm => elm.type == 'Quiz').length} Kuis</p>
+                                            </div>
+                                            {/if}
+                                            {#if course.items.filter(elm => elm.type == 'Exam').length > 0}
+                                            <div class="flex align-items-center gap-2 p-standard neutral-border radius-sm">
+                                                <Pass/>
+                                                <p class="caption-small-reguler my-0">{course.items.filter(elm => elm.type == 'Exam').length} Ujian</p>
+                                            </div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex justify-content-between align-items-center neutral-border radius-sm p-standard">
-                                <p class="body-medium">Metode Pembayaran</p>
-                            </div>
-                            <div class="flex justify-content-between align-items-center">
-                                <div class="flex-column">
-                                    <p class="body-medium">Total jumlah yang harus dibayar</p>
-                                    <p class="body-small-reguler">{ transaction.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0}) }</p>
+                            <div class="flex justify-content-between align-items-center" style="border-top: 1px solid var(--neutral-border);">
+                                <div class="flex-column gap-2 p-standard">
+                                    <p class="body-large-semi-bold">Total jumlah yang harus dibayar</p>
+                                    <p class="body-medium-reguler">{course.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</p>
                                 </div>
                                 <Button classList="btn btn-main" onClick={pay}>Bayar Sekarang</Button>
                             </div>
@@ -125,5 +168,15 @@
 {/if}
 
 <svelte:head>
+    <title>Pembelian Materi</title>
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key={PUBLIC_MIDTRANS_CLIENT_KEY}></script>
 </svelte:head>
+
+<style>
+    .thumbnail {
+        object-fit: cover; 
+        width: 100%; 
+        aspect-ratio: 4 / 3;
+        border-radius: .25rem;
+    }
+</style>

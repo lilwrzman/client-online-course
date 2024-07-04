@@ -52,6 +52,7 @@
         }).then(response => {
             if(response.status){
                 setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/course' })
+                return
             }else if(!response.status){
                 toastData = {
                     title: "Gagal",

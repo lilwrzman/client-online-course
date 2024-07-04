@@ -1,4 +1,5 @@
 <script>
+	import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 
@@ -48,7 +49,7 @@
 		<div class="container">
 			<div class="row justify-content-between">
 				<div class="col-md-6">
-					<img src="http://127.0.0.1:8000/storage/{detail.thumbnail}" class="radius-sm thumbnail" alt="thumbnail" />
+					<img src="{PUBLIC_SERVER_PATH}/storage/{detail.thumbnail}" class="radius-sm thumbnail" alt="thumbnail" />
 				</div>
 				<div class="col-md-5">
 					<div class="flex-column justify-content-center h-100 gap-large">
@@ -197,7 +198,7 @@
 					<div class="card radius-sm neutral-border">
 						<div class="flex align-items-center gap-5">
 							<img
-								src="http://127.0.0.1:8000/storage/{detail.teacher.avatar}"
+								src="{PUBLIC_SERVER_PATH}/storage/{detail.teacher.avatar}"
 								alt="thumbnail student"
 								class="w-25 teacher-img"
 							/>

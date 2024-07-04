@@ -1,4 +1,5 @@
 <script>
+	import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import Navbar from '@components/Navbar.svelte';
 	import InputField from '@components/InputField.svelte';
 	import Button from '@components/Button.svelte';
@@ -70,7 +71,7 @@
 					<div class="col-xs-12 col-sm-6 col-md-3 mb-5">
 						<div class="card">
 							<div class="card-body gap-3">
-								<img src="http://127.0.0.1:8000/storage/{ lp.thumbnail }" alt="gambar learning path" class="radius-sm" />
+								<img src="{PUBLIC_SERVER_PATH}/storage/{ lp.thumbnail }" alt="gambar learning path" class="learning-path-thumbnail" />
 								<div class="flex-column">
 									<p class="body-small-medium">{ lp.title }</p>
 									<p class="caption-small-reguler">{ lp.courses } Materi</p>
@@ -89,3 +90,20 @@
 <Footer />
 
 {/if}
+
+<style>
+    .learning-path-thumbnail {
+        border-radius: .25rem;
+        aspect-ratio: 4/3; 
+        object-fit: cover; 
+        object-position: center;
+    }
+
+	.section { 
+        padding-bottom: 0;
+    }
+</style>
+
+<svelte:head>
+	<title>Online Course | Alur Belajar</title>
+</svelte:head>

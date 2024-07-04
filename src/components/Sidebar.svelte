@@ -104,6 +104,25 @@
 					</li>
 					<li>
 						<a
+							href="/superadmin/bundle"
+							class="menu {active == 'Paket Kursus' ? 'menu-active' : ''}"
+						>
+							<BoxFill
+								width="20"
+								height="20"
+								color={active == 'Paket Kursus' ? '#3951A8' : '#8191AC'}
+							/>
+							<p
+								class="body-small-semi-bold {active == 'Paket Kursus'
+									? 'tc-primary-main'
+									: 'tc-neutral-primary'}"
+							>
+								Paket Kursus
+							</p>
+						</a>
+					</li>
+					<li>
+						<a
 							href="/superadmin/article"
 							class="menu {active == 'Manajemen Artikel' ? 'menu-active' : ''}"
 						>
@@ -156,25 +175,6 @@
 									: 'tc-neutral-primary'}"
 							>
 								Manajemen Akun
-							</p>
-						</a>
-					</li>
-					<li>
-						<a
-							href="/superadmin/bundle"
-							class="menu {active == 'Manajemen Bundel' ? 'menu-active' : ''}"
-						>
-							<BoxFill
-								width="20"
-								height="20"
-								color={active == 'Manajemen Bundel' ? '#3951A8' : '#8191AC'}
-							/>
-							<p
-								class="body-small-semi-bold {active == 'Manajemen Bundel'
-									? 'tc-primary-main'
-									: 'tc-neutral-primary'}"
-							>
-								Manajemen Bundel
 							</p>
 						</a>
 					</li>

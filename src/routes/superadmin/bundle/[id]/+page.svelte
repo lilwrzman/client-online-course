@@ -1,10 +1,11 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
     import { onMount } from "svelte";
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
     
 	import checkLogin from "$lib/CheckLogin";
-	import ApiController from "$lib/ApiController";
+	import ApiController from "$lib/ApiController.js";
     import { getDay } from "$lib/Date"
 
     import Navbar from "@components/Navbar.svelte";
@@ -296,7 +297,7 @@
                                             <div class="card radius-sm neutral-border course">
                                                 <div class="card-body gap-3">
                                                     <div class="w-100 position-relative">
-                                                        <img src="http://127.0.0.1:8000/storage/{item.course.thumbnail}" 
+                                                        <img src="{PUBLIC_SERVER_PATH}/storage/{item.course.thumbnail}" 
                                                             class="card-img-fluid radius-sm" alt="course-thumbnail"
                                                             loading="lazy">
                                                     </div>
