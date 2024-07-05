@@ -48,9 +48,9 @@
 </script>
 
 <div class="flex">
-    <Sidebar active="Dashboard" role="Superadmin"/>
+    <Sidebar active="Dasbor" role="Superadmin"/>
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Dashboard" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Dasbor" bind:user={user}/>
         <main>
             <div class="container flex-column py-4 gap-8">
                 {#if toastVisible}

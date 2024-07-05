@@ -1,11 +1,9 @@
 <script>
     import { onMount } from "svelte";
-    import { goto } from "$app/navigation"
 
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 
-    import { extract } from "$lib/Cookie"
     import { getFlash } from "$lib/Flash";
 
     import Sidebar from "@components/Sidebar.svelte"
