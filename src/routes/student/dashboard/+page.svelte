@@ -1,11 +1,14 @@
 <script>
+	import { onMount } from "svelte";
+
+	import checkLogin from "$lib/CheckLogin";
+    
     import Navbar from "@components/Navbar.svelte";
     import Footer from "@components/Footer.svelte";
     import Button from "@components/Button.svelte";
+    import StudentSidebar from "@components/StudentSidebar.svelte";
     import { Bar } from "svelte-chartjs";
     import { Chart, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Colors } from "chart.js"
-	import { onMount } from "svelte";
-	import checkLogin from "$lib/CheckLogin";
 
     let user
     const data = {
@@ -30,46 +33,31 @@
 
 <Navbar/>
 
-<main>
-    <section id="header" class="section">
-        <div class="container">
-            <div class="flex-column gap-8">
-                <div class="flex-column gap-2 tc-neutral-white">
-                    <h4 class="mb-0">Selamat Datang {user ? user.username + '!' : '' }</h4>
-                    <p class="body-medium-light">Dapatkan pengalaman belajar yang menyenangkan dan bermanfaat.</p>
-                </div>
-                <div class="card p-4 radius-sm">
-                    <div class="card-body">
-                        <div class="flex justify-content-between align-items-center neutral-border p-4 radius-sm">
-                            <p class="body-small-light" style="max-width: 60%;">Mari kembangkan diri dengan menjelajahi materi dari berbagai alur pembelajaran yang anda minati sekarang juga.</p>
-                            <Button type="link" href="/courses" classList="btn btn-main">Jelajahi Sekarang</Button>
-                        </div>
+<section id="header" class="section">
+    <div class="container">
+        <div class="flex-column gap-8">
+            <div class="flex-column gap-2 tc-neutral-white">
+                <h4 class="mb-0">Selamat Datang {user ? user.username + '!' : '' }</h4>
+                <p class="body-medium-light">Dapatkan pengalaman belajar yang menyenangkan dan bermanfaat.</p>
+            </div>
+            <div class="card p-4 radius-sm">
+                <div class="card-body">
+                    <div class="flex justify-content-between align-items-center neutral-border p-4 radius-sm">
+                        <p class="body-small-light" style="max-width: 60%;">Mari kembangkan diri dengan menjelajahi materi dari berbagai alur pembelajaran yang anda minati sekarang juga.</p>
+                        <Button type="link" href="/courses" classList="btn btn-main">Jelajahi Sekarang</Button>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section id="content" class="section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="card neutral-border radius-sm p-0 h-100">
-                        <div class="card-header neutral-border-bottom p-standard">
-                            <p class="body-medium-semi-bold">Progress Belajar</p>
-                        </div>
-                        <div class="card-body flex-column gap-3 p-standard">
-                            <div class="flex-column justify-content-center align-items-center h-100">
-                                <Bar {data} options={{ 
-                                    responsive: true, 
-                                    indexAxis: 'y', 
-                                    colors: { forceOveride: true }
-                                }} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-7">
+<section id="content" class="section">
+    <div class="container">
+        <div class="flex gap-4">
+            <StudentSidebar bind:user={user} active="Dasbor"/>
+            <main class="w-100">
+                <div class="flex-column gap-4">
                     <div class="card neutral-border radius-sm p-0">
                         <div class="card-header neutral-border-bottom p-standard">
                             <p class="body-medium-semi-bold">Materi Saya</p>
@@ -101,24 +89,41 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card neutral-border radius-sm p-0 h-100">
+                        <div class="card-header neutral-border-bottom p-standard">
+                            <p class="body-medium-semi-bold">Progress Belajar</p>
+                        </div>
+                        <div class="card-body flex-column gap-3 p-standard">
+                            <div class="flex-column justify-content-center align-items-center h-100">
+                                <Bar {data} options={{ 
+                                    responsive: true, 
+                                    indexAxis: 'y', 
+                                    colors: { forceOveride: true }
+                                }} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </main>
         </div>
-    </section>
-</main>
+    </div>
+</section>
 
 <Footer/>
 
 <svelte:head>
-    <title>Dashboard</title>
+    <title>Dasbor</title>
+    <style>
+        #header {
+            background-image: url('/images/dashboard-header.svg');
+        }
+    
+        aside {
+            top: 100px !important;
+        }
+    
+        .course-bg{
+            background-color: var(--neutral-surface);
+        }
+    </style>
 </svelte:head>
-
-<style>
-    #header {
-        background-image: url('/images/dashboard-header.svg');
-    }
-
-    .course-bg{
-        background-color: var(--neutral-surface);
-    }
-</style>
