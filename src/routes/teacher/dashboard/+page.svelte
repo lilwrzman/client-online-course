@@ -37,9 +37,9 @@
 </script>
 
 <div class="flex">
-    <Sidebar active="Dashboard" role="Teacher"/>
+    <Sidebar active="Dasbor" role="Teacher"/>
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Dashboard" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Dasbor" bind:user={user}/>
         <main>
             <div class="container flex-column py-4 gap-8">
                 <div class="card px-4 pt-4 pb-0 drop-shadow">
@@ -129,7 +129,7 @@
 </div>
 
 <svelte:head>
-    <title>Dashboard</title>
+    <title>Dasbor</title>
 </svelte:head>
 
 <style>

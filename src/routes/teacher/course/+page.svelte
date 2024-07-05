@@ -47,6 +47,9 @@
                 
                 status = true
             }
+        }).catch(e => {
+            let error = r.response.data
+            console.error(error)
         })
     }
 
@@ -78,11 +81,11 @@
 </script>
 
 <div class="flex">
-    <Sidebar active="Course" role="Teacher" />
+    <Sidebar isOpen={true} active="Materi" role="Teacher" />
     <div class="neutral-wrapper px-3">
         <Navbar active="" variant="inside" pageTitle="Materi" bind:user={user}/>
         <main style="flex-grow: 1;" class="flex-column">
-            <div class="container flex-column py-4 gap-8" style="flex-grow: 1;">
+            <div class="container flex-column py-4 gap-4" style="flex-grow: 1;">
                 {#if toastVisible}
                     <Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color} redirectTo={toastData.redirectTo}/>
                 {/if}
@@ -121,7 +124,7 @@
                 {:else}
                 {#if $rows.length > 0}
                 <div class="row">
-                    {#each $rows as course, index}
+                    {#each $rows as course, index (course.id)}
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
                         <div class="card radius-sm">
                             <div class="card-body">
@@ -130,7 +133,11 @@
                                         class="card-img-fluid radius-sm" alt="course-thumbnail"
                                         loading="lazy">
                                 </div>
+                                {#if course.learning_path}
                                 <p class="label-bullet body-small-medium" style="color: {course.learning_path.color};">{course.learning_path.title}</p>
+                                {:else}
+                                <p class="label-bullet body-small-medium">Belum ada alur belajar</p>
+                                {/if}
                                 <div class="flex-column gap-1">
                                     <div class="body-small-medium">{course.title}</div>
                                     <div class="flex justify-content-between">
@@ -138,7 +145,7 @@
                                         <div class="caption-small-reguler">{course.items} Item</div>
                                     </div>
                                 </div>
-                                <Button type="link" href="/teacher/course/{course.slug}" classList="btn btn-main radius-sm">Lihat Detail</Button>
+                                <Button type="link" href="/teacher/course/{course.id}" classList="btn btn-main radius-sm">Lihat Detail</Button>
                             </div>
                         </div>
                     </div>
@@ -160,10 +167,12 @@
 
 <svelte:head>
     <title>Materi</title>
-
-    <style>
-        .card-img-fluid {
-            aspect-ratio: 4/3;
-        }
-    </style>
 </svelte:head>
+
+<style>
+    .card-img-fluid {
+        object-fit: cover;
+        object-position: center;
+        aspect-ratio: 4/3;
+    }
+</style>
