@@ -34,7 +34,7 @@
 </script>
 
 <div class="flex">
-    <Sidebar active="Dashboard" role="Corporate Admin"/>
+    <Sidebar active="Dasbor" role="Corporate Admin"/>
     <div class="neutral-wrapper px-3">
         <Navbar active="" variant="inside" pageTitle="Beranda" bind:user={user}/>
         <main>

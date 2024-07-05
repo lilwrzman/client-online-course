@@ -6,17 +6,49 @@
 	import Button from '@components/Button.svelte';
     import Toast from '@components/Toast.svelte';
 	import { Copy } from 'svelte-bootstrap-icons';
+	import { onMount } from 'svelte';
+	import checkLogin from '$lib/CheckLogin';
+	import ApiController from '$lib/ApiController';
+	import { DataHandler } from '@vincjo/datatables';
 
-	let user;
-	let handler, rows;
+	let user
+	let handler, rows, pageNumber, rowsPerPage = 10, pageCount
 	let options = [
 		{ val: 'newest', label: 'Terbaru' },
 		{ val: 'asc', label: 'A-Z' },
 		{ val: 'desc', label: 'Z-A' }
 	];
 
+	let bundles
+
     let toastData = null
     let toastVisible = false
+
+	const getBundles = () => {
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: "bundle/get",
+			authToken: user.token
+		}).then(response => {
+			if(response.status){
+				bundles = response.data
+				console.log(bundles)
+				handler = new DataHandler(bundles, {rowsPerPage})
+				rows = handler.getRows()
+                pageCount = handler.getPageCount()
+                pageNumber = handler.getPageNumber()
+			}
+		}).catch(e => {
+			let error = e.response.data
+			console.error(error)
+		})
+	}
+
+	onMount(() => {
+		user = checkLogin("Corporate Admin", true)
+
+		getBundles()
+	})
 
 </script>
 
@@ -61,23 +93,26 @@
 								<th>Kode Paket</th>
 								<th class="text-center">Isi Materi</th>
 								<th>Harga</th>
-								<th>Kode Tukar</th>
+								<th class="text-center">Kode Tukar</th>
 								<th class="text-center">Penukaran</th>
 								<th class="text-center">Limit</th>
-								<th>Aksi</th>
+								<th class="text-center">Aksi</th>
 							</tr>
 						</thead>
 						<tbody class="table-border-bottom">
+							{#if $rows}
+							{#if $rows.length > 0}
+							{#each $rows as bundle, index (bundle.id)}
 							<tr>
-								<td class="text-center">1</td>
-								<td>#BANKBNI_17181139201473</td>
-								<td class="text-center">13</td>
-								<td>Rp 152.500.000</td>
-								<td>
+								<td class="text-center">{index + 1}</td>
+								<td>{bundle.bundle_code}</td>
+								<td class="text-center">{bundle.bundle_items.length}</td>
+								<td>{bundle.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0}) }</td>
+								<td class="text-center">
 									<div class="flex justify-content-center gap-2 align-items-center">
-										TU239028
+										{bundle.redeem_code.code}
 										<Button classList="btn btn-no-padding" onClick={() => {
-                                            navigator.clipboard.writeText("TU239028")
+                                            navigator.clipboard.writeText(bundle.redeem_code.code)
                                             toastData = {title: "Berhasil", message:"Kode berhasil disalin", color: "toast-success"}
                                             toastVisible = true
                                         }}>
@@ -86,12 +121,15 @@
                                             
 									</div>
 								</td>
-								<td class="text-center">1</td>
-								<td class="text-center">2500x</td>
-								<td>
-									<Button classList="btn btn-info py-1 px-2">Detail</Button>
+								<td class="text-center">{bundle.redeem_code.redeem_history.length}</td>
+								<td class="text-center">{bundle.quota}x</td>
+								<td class="text-center">
+									<Button type="link" href="/corporate/bundle/{bundle.id}" classList="btn btn-info py-1 px-2">Detail</Button>
 								</td>
 							</tr>
+							{/each}
+							{/if}
+							{/if}
 						</tbody>
 					</table>
 				</div>
