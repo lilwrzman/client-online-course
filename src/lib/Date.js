@@ -11,13 +11,18 @@ const amOrPm = hours >= 12 ? 'PM' : 'AM';
 hours = hours % 12 || 12;
 
 const addLeadingZero = (num) => (num < 10 ? '0' + num : num)
-const formattedTime = `${addLeadingZero(hours)}.${addLeadingZero(minutes)} ${amOrPm}`
+let formattedTime = `${addLeadingZero(hours)}.${addLeadingZero(minutes)} ${amOrPm}`
 
 const getCurrentDay = () => {
     return `${dayName}, ${dayOfMonth} ${monthName} ${year}`
 }
 
-const getCurrentTime = () => {
+const getCurrentTime = (date = null) => {
+    if(date){
+        now = new Date(date)
+        formattedTime = `${addLeadingZero(hours)}.${addLeadingZero(minutes)} ${amOrPm}`
+    }
+    
     return `${formattedTime}`
 }
 

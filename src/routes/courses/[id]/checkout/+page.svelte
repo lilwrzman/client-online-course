@@ -130,19 +130,19 @@
                                         </div>
                                         <div class="flex gap-3">
                                             {#if course.items.filter(elm => elm.type == 'Video').length > 0}
-                                            <div class="flex align-items-center gap-2 p-standard neutral-border radius-sm">
+                                            <div class="flex align-items-center gap-2 p-2 neutral-border radius-sm">
                                                 <PlayCircle/>
                                                 <p class="caption-small-reguler my-0">{course.items.filter(elm => elm.type == 'Video').length} Video</p>
                                             </div>
                                             {/if}
                                             {#if course.items.filter(elm => elm.type == 'Quiz').length > 0}
-                                            <div class="flex align-items-center gap-2 p-standard neutral-border radius-sm">
+                                            <div class="flex align-items-center gap-2 p-2 neutral-border radius-sm">
                                                 <FileEarmarkText/>
                                                 <p class="caption-small-reguler my-0">{course.items.filter(elm => elm.type == 'Quiz').length} Kuis</p>
                                             </div>
                                             {/if}
                                             {#if course.items.filter(elm => elm.type == 'Exam').length > 0}
-                                            <div class="flex align-items-center gap-2 p-standard neutral-border radius-sm">
+                                            <div class="flex align-items-center gap-2 p-2 neutral-border radius-sm">
                                                 <Pass/>
                                                 <p class="caption-small-reguler my-0">{course.items.filter(elm => elm.type == 'Exam').length} Ujian</p>
                                             </div>
