@@ -80,6 +80,7 @@
 	.btn-main:disabled {
 		background-color: var(--primary-disabled);
 		border: 1px solid var(--primary-disabled);
+		color: var(--neutral-disabled);
 		cursor: not-allowed;
 	}
 

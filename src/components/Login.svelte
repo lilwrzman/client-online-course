@@ -99,7 +99,7 @@
                 {:else if role == 'Teacher'}
                 <div class="h4">Login Pemateri LPK</div>
                 {:else if role == 'Corporate Admin'}
-                <div class="h4">Logi Admin Mitra</div>
+                <div class="h4">Login Admin Mitra</div>
                 {/if}
             </div>
 

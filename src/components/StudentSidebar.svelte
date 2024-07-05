@@ -1,9 +1,9 @@
 <script>
     import { PUBLIC_SERVER_PATH } from "$env/static/public"
-    import { BarChartFill, GearFill, HouseDoorFill, TicketFill } from "svelte-bootstrap-icons";
+    import { BarChartFill, ClockHistory, GearFill, HouseDoorFill, TicketFill, Window } from "svelte-bootstrap-icons";
 
     export let user
-    export let active = 'Kursus Saya'
+    export let active = 'Dasbor'
 </script>
 
 <aside>
@@ -16,9 +16,18 @@
             </div>
             <ul class="sidebar-menu">
                 <li>
+                    <a href="/student/dashboard"
+                        class="menu {active == 'Dasbor' ? 'menu-active' : ''}" >
+                        <HouseDoorFill width="20" height="20" color={active == 'Dasbor' ? '#3951A8' : '#8191AC'} />
+                        <p class="body-small-semi-bold {active == 'Dasbor' ? 'tc-primary-main' : 'tc-neutral-primary'}" >
+                            Dasbor
+                        </p>
+                    </a>
+                </li>
+                <li>
                     <a href="/student/my-courses"
                         class="menu {active == 'Kursus Saya' ? 'menu-active' : ''}" >
-                        <HouseDoorFill width="20" height="20" color={active == 'Kursus Saya' ? '#3951A8' : '#8191AC'} />
+                        <Window width="20" height="20" color={active == 'Kursus Saya' ? '#3951A8' : '#8191AC'} />
                         <p class="body-small-semi-bold {active == 'Kursus Saya' ? 'tc-primary-main' : 'tc-neutral-primary'}" >
                             Kursus Saya
                         </p>
@@ -26,10 +35,10 @@
                 </li>
                 <li>
                     <a href="/student/progress"
-                        class="menu {active == 'Progress Belajar' ? 'menu-active' : ''}" >
-                        <BarChartFill width="20" height="20" color={active == 'Progress Belajar' ? '#3951A8' : '#8191AC'} />
-                        <p class="body-small-semi-bold {active == 'Progress Belajar' ? 'tc-primary-main' : 'tc-neutral-primary'}" >
-                            Progress Belajar
+                        class="menu {active == 'Progres Belajar' ? 'menu-active' : ''}" >
+                        <BarChartFill width="20" height="20" color={active == 'Progres Belajar' ? '#3951A8' : '#8191AC'} />
+                        <p class="body-small-semi-bold {active == 'Progres Belajar' ? 'tc-primary-main' : 'tc-neutral-primary'}" >
+                            Progres Belajar
                         </p>
                     </a>
                 </li>
@@ -39,6 +48,15 @@
                         <TicketFill width="20" height="20" color={active == 'Tukar Kode' ? '#3951A8' : '#8191AC'} />
                         <p class="body-small-semi-bold {active == 'Tukar Kode' ? 'tc-primary-main' : 'tc-neutral-primary'}" >
                             Tukar Kode
+                        </p>
+                    </a>
+                </li>
+                <li>
+                    <a href="/student/transactions"
+                        class="menu {active == 'Riwayat Transaksi' ? 'menu-active' : ''}" >
+                        <ClockHistory width="20" height="20" color={active == 'Riwayat Transaksi' ? '#3951A8' : '#8191AC'} />
+                        <p class="body-small-semi-bold {active == 'Riwayat Transaksi' ? 'tc-primary-main' : 'tc-neutral-primary'}" >
+                            Riwayat Transaksi
                         </p>
                     </a>
                 </li>
