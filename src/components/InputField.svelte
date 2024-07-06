@@ -51,10 +51,10 @@
     }
 
     $: {        
-        if(!inputClass.includes('invalid')) {
-            inputClass += error ? 'invalid' : ''
+        if(!inputClass.includes(' invalid')) {
+            inputClass += error ? ' invalid' : ''
         }else{
-            inputClass = inputClass.replace('invalid', '')
+            inputClass = inputClass.replace(' invalid', '')
         }
     }
 </script>

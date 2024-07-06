@@ -16,6 +16,7 @@
 	import InputField from "@components/InputField.svelte";
     import Spinner from "@components/Spinner.svelte"
     import { Arrow90degLeft, PlayCircle, CheckCircleFill, FileEarmarkText, Pass, Clock, Folder2 } from "svelte-bootstrap-icons"
+	import { error } from "@sveltejs/kit";
 
     const returnNada = () => ''
 
@@ -111,6 +112,21 @@
         }
     }
 
+    const getFeedback = () => {
+        ApiController.sendRequest({
+            method: "GET",
+            endpoint: "student/feedback",
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                console.log(response.data)
+            }
+        }).catch(e => {
+            let error = e.response.data
+            console.error(error)
+        })
+    }
+
     onMount(() => {
         let flashes = getFlash()
         if(flashes){
@@ -125,6 +141,7 @@
         user = checkLogin('Student', true)
 
         getItem(null, false, getSilabus)
+        getFeedback()
     })
 </script>
 
@@ -204,6 +221,12 @@
                             {/if}
                             {/if}
                         </ul>
+                    </div>
+                    <div class="feedback-nav">
+
+                    </div>
+                    <div class="certificate-nav">
+
                     </div>
                 </div>
             </aside>
