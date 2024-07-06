@@ -301,16 +301,4 @@
     .card-cap-secondary{
         border-top: 8px solid var(--primary-focus);
     }
-
-    .ghost {
-        pointer-events: none;
-        z-index: 2;
-        position: absolute;
-        top: 0;
-        border: 2px dashed var(--success-main);
-    }
-
-    .invisible {
-        opacity: 0;
-    }
 </style>
