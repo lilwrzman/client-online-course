@@ -5,7 +5,7 @@
     import ApiController from '$lib/ApiController.js';
     import showToast from '$lib/Toast.js';
 	import { extract, setCookie } from '$lib/Cookie.js';
-    import { setFlash } from "$lib/Flash";
+    import { setFlash } from "$lib/Flash.js";
 
     import InputField from "@components/InputField.svelte"
     import Button from "@components/Button.svelte"

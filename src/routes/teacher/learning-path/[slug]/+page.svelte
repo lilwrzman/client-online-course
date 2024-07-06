@@ -263,10 +263,6 @@
 </svelte:head>
 
 <style>
-    .draggable{
-        cursor: move;
-    }
-
     .row-menu-container {
         display: flex;
         flex-wrap: wrap;

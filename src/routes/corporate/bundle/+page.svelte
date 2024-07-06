@@ -7,8 +7,8 @@
     import Toast from '@components/Toast.svelte';
 	import { Copy } from 'svelte-bootstrap-icons';
 	import { onMount } from 'svelte';
-	import checkLogin from '$lib/CheckLogin';
-	import ApiController from '$lib/ApiController';
+	import checkLogin from '$lib/CheckLogin.js';
+	import ApiController from '$lib/ApiController.js';
 	import { DataHandler } from '@vincjo/datatables';
 
 	let user
