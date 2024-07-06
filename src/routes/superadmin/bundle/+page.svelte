@@ -30,7 +30,6 @@
             handler = new DataHandler(bundles, {rowsPerPage})
             row = handler.getRows()
             pageNumber = handler.getPageNumber()
-            console.log($pageNumber)
             status = true
         })
     }
