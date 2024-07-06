@@ -8,7 +8,8 @@ const ApiController = {
         data = null,
         headers = { 'Content-Type': 'application/x-www-form-urlencoded' },
         authToken = null,
-        onUploadProgress = null
+        onUploadProgress = null,
+        responseType = 'json'
     }) {
         const config = {
             method,
@@ -18,6 +19,7 @@ const ApiController = {
                 ...headers,
                 Authorization: authToken ? `Bearer ${authToken}` : null,
             },
+            responseType,
             onUploadProgress
         };
 
