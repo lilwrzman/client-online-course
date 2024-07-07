@@ -38,8 +38,7 @@ const validateInput = (value, rules) => {
 
         if (rule.type && rule.type == 'password') {
             if(!/^(?=.*[a-zA-Z])(?=.*\d).{8,16}$/.test(value)){
-                errors.push(rule.message || 'Password harus terdiri dari 8-16 karakter dan terdapat setid
-                    aknya satu huruf dan satu angka!');
+                errors.push(rule.message || 'Password harus terdiri dari 8-16 karakter dan terdapat setidaknya satu huruf dan satu angka!');
             }
         }
     }

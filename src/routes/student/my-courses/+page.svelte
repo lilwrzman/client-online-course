@@ -89,12 +89,12 @@
                                         </div>
                                         {#if access.status == 'Completed'}
                                         {#if access.feedback}
-                                        <Button type="link" href="/student/my-courses/{access.course.slug}" classList="btn btn-main">Lihat Sertifikat</Button>
+                                        <Button type="link" href="/student/my-courses/{access.course.id}" classList="btn btn-main">Lihat Sertifikat</Button>
                                         {:else}
-                                        <Button type="link" href="/student/my-courses/{access.course.slug}" classList="btn btn-main-outline">Beri Umpan Balik</Button>
+                                        <Button type="link" href="/student/my-courses/{access.course.id}" classList="btn btn-main-outline">Beri Umpan Balik</Button>
                                         {/if}
                                         {:else}
-                                        <Button type="link" href="/student/my-courses/{access.course.slug}" classList="btn btn-main">
+                                        <Button type="link" href="/student/my-courses/{access.course.id}" classList="btn btn-main">
                                             { access.completed_items ? access.completed_items > 0 ? 'Lanjut Belajar' : 'Mulai Belajar' : 'Mulai Belajar' }
                                         </Button>
                                         {/if}
@@ -129,9 +129,9 @@
                                             </div>                          
                                         </div>
                                         {#if access.feedback}
-                                        <Button type="link" href="/student/my-courses/1" classList="btn btn-main">Lihat Sertifikat</Button>
+                                        <Button type="link" href="/student/my-courses/{access.course.id}" classList="btn btn-main">Lihat Sertifikat</Button>
                                         {:else}
-                                        <Button type="link" href="/student/my-courses/1" classList="btn btn-main-outline">Beri Umpan Balik</Button>
+                                        <Button type="link" href="/student/my-courses/{access.course.id}" classList="btn btn-main-outline">Beri Umpan Balik</Button>
                                         {/if}
                                     </div>
                                 </div>

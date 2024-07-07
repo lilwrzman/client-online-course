@@ -15,8 +15,8 @@
     import Tab from "@components/Tab.svelte"
 	import InputField from "@components/InputField.svelte";
     import Spinner from "@components/Spinner.svelte"
-    import { Arrow90degLeft, PlayCircle, CheckCircleFill, FileEarmarkText, Pass, Clock, Folder2 } from "svelte-bootstrap-icons"
-	import { error } from "@sveltejs/kit";
+    import { Arrow90degLeft, PlayCircle, CheckCircleFill, FileEarmarkText, Pass, Clock, Folder2, ChevronBarDown, ChevronUp, ChevronDown, StarFill } from "svelte-bootstrap-icons"
+	import Modal from "@components/Modal.svelte";
 
     const returnNada = () => ''
 
@@ -39,6 +39,18 @@
     let showSpinner = false
     let toastData
     let toastVisible = false
+
+    let silabusOpen = true
+    let feedbackOpen = false
+    let cetificateOpen = false
+
+    let courseFeedback
+    let myFeedback
+    let rating = 0
+    let review = ''
+
+    let modalShow = false
+
 
     const getItem = (item_id = null, next_item = false, callback = null) => {
         doneWatching = false
@@ -112,18 +124,93 @@
         }
     }
 
+    const getCourseFeedback = () => {
+        ApiController.sendRequest({
+            method: "GET",
+            endpoint: `course/${$page.params.course}/feedback`,
+        }).then(response => {
+            if(response.status){
+                courseFeedback = response.data
+
+                if(myFeedback){
+                    courseFeedback = courseFeedback.filter(elm => elm.id != myFeedback.id)
+                }
+            }
+        }).catch(e => {
+            console.error(e)
+        })
+    }
+
     const getFeedback = () => {
         ApiController.sendRequest({
             method: "GET",
-            endpoint: "student/feedback",
+            endpoint: `course/${$page.params.course}/student/feedback`,
             authToken: user.token
         }).then(response => {
             if(response.status){
-                console.log(response.data)
+                myFeedback = response.data
+                getCourseFeedback()
             }
         }).catch(e => {
             let error = e.response.data
             console.error(error)
+        })
+    }
+
+    const postFeedback = () => {
+        if(rating == 0){
+            return alert('Mohon berikan rating, setidaknya 1!')
+        }
+
+        if(!review){
+            return alert('Mohon berikan ulasan anda mengenai materi ini!')
+        }
+
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: "course/feedback/post",
+            data: {
+                course_id: $page.params.course,
+                rating, review
+            },
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                getFeedback()
+                toastData = {
+                    title: "Berhasil",
+                    message: response.message,
+                    color: 'toast-success'
+                }
+
+                modalShow = false
+                toastVisible = true
+                showSpinner = false
+            }
+        }).catch(e => {
+            let error = e.response.data
+
+            showSpinner = false
+            modalShow = false
+
+            if(error.error){
+                if(error.error == 'Anda telah memberikan umpan balik.'){
+                    toastData = {
+                        title: "Oops",
+                        message: error.error,
+                        color: 'toast-warning'
+                    }
+                }else if(error.error == 'Gagal menambahkan umpan balik!'){
+                    toastData = {
+                        title: "Gagal",
+                        message: error.error,
+                        color: 'toast-danger'
+                    }
+                }
+
+                toastVisible = true
+            }
         })
     }
 
@@ -164,69 +251,164 @@
                             <p class="body-small-reguler">Kembali</p>
                         </div>
                     </Button>
-                    <div class="silabus-nav">
-                        <p class="body-super-large-semi-bold">Daftar Silabus</p>
-                        <ul class="silabus-item-container">
-                            {#if silabus_status}
-                            {#each silabus as item, index (item.id)}
-                            <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                            <li class="silabus-item
-                                {selected_item.id === item.id ? 'active' : ''}
-                                {index <= completed_items.length ? 'unlocked' : 'locked'}
-                                "
-                                on:click={() => {
-                                    if(index <= completed_items.length){
-                                        getItem(item.id, false, null)
+                    <div class="flex-column gap-2 w-100">
+                        <div class="silabus-nav">
+                            <div class="flex align-items-center justify-content-between gap-4">
+                                <p class="body-super-large-semi-bold">Daftar Silabus</p>
+                                <Button classList="btn btn-no-padding" onClick={() => silabusOpen = !silabusOpen}>
+                                    <div class="flex justify-content-center align-items-center">
+                                        {#if silabusOpen}
+                                        <ChevronUp/>
+                                        {:else}
+                                        <ChevronDown/>
+                                        {/if}
+                                    </div>
+                                </Button>
+                            </div>
+                            {#if silabusOpen}
+                            <ul class="silabus-item-container">
+                                {#if silabus_status}
+                                {#each silabus as item, index (item.id)}
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+                                <li class="silabus-item
+                                    {selected_item.id === item.id ? 'active' : ''}
+                                    {index <= completed_items.length ? 'unlocked' : 'locked'}
+                                    "
+                                    on:click={() => {
+                                        if(index <= completed_items.length){
+                                            getItem(item.id, false, null)
+                                        }
+                                    }}>
+                                    <div class="flex gap-2 align-items-center">
+                                        {#if item.type == 'Video'}
+                                        <PlayCircle width=20 height=20/>
+                                        {:else if item.type == 'Quiz'}
+                                        <FileEarmarkText width=20 height=20/>
+                                        {:else if item.type == 'Exam'}
+                                        <Pass width=20 height=20/>
+                                        {/if}
+                                        <p class="body-small-reguler">{index + 1}. {item.title}</p>
+                                    </div>
+                                    <div class="flex align-items-center justify-content-center">
+                                        {#if completed_items.filter(elm => elm.item.id == item.id).pop()}
+                                        <CheckCircleFill width=20 height=20 color="#A1E0C5"/>
+                                        {/if}
+                                    </div>
+                                </li>
+                                {/each}
+                                {#if exam}
+                                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+                                <li class="silabus-item 
+                                    {selected_item.id === exam.id ? 'active' : ''}
+                                    {completed_items.length === silabus.length || completed_items.map(elm => elm.item_id).includes(exam.id) ? 'unlocked' : 'locked'}" 
+                                    on:click={() => {
+                                        if(completed_items.length == silabus.length || completed_items.map(elm => elm.item_id).includes(exam.id)){
+                                            getItem(exam.id, false, null)
+                                        }
+                                    }}>
+                                    <div class="flex gap-2 align-items-center">
+                                        <Pass width=20 height=20/>
+                                        <p class="body-small-reguler">{silabus.length + 1}. {exam.title}</p>
+                                    </div>
+                                    <div class="flex align-items-center justify-content-center">
+                                        {#if completed_items.filter(elm => elm.item.id == exam.id).pop()}
+                                        <CheckCircleFill width=20 height=20 color="#A1E0C5"/>
+                                        {/if}
+                                    </div>
+                                </li> 
+                                {/if}
+                                {/if}
+                            </ul>
+                            {/if}
+                        </div>
+                        {#if completed_items.length == silabus.length + 1}
+                        <div class="feedback-nav">
+                            <div class="flex align-items-center justify-content-between gap-4">
+                                <p class="body-super-large-semi-bold">Umpan Balik</p>
+                                <Button classList="btn btn-no-padding" onClick={() => {
+                                    feedbackOpen = !feedbackOpen
+    
+                                    if(feedbackOpen){
+                                        silabusOpen = false
                                     }
                                 }}>
-                                <div class="flex gap-2 align-items-center">
-                                    {#if item.type == 'Video'}
-                                    <PlayCircle width=20 height=20/>
-                                    {:else if item.type == 'Quiz'}
-                                    <FileEarmarkText width=20 height=20/>
-                                    {:else if item.type == 'Exam'}
-                                    <Pass width=20 height=20/>
-                                    {/if}
-                                    <p class="body-medium-reguler">{index + 1}. {item.title}</p>
+                                    <div class="flex justify-content-center align-items-center">
+                                        {#if feedbackOpen}
+                                        <ChevronUp/>
+                                        {:else}
+                                        <ChevronDown/>
+                                        {/if}
+                                    </div>
+                                </Button>
+                            </div>
+                            {#if feedbackOpen}
+    
+                            <div class="flex-column gap-3 pb-2 neutral-border-bottom w-100">
+                                {#if !myFeedback}
+                                <Button classList="btn btn-main-outline" onClick={() => modalShow = true}>Beri Umpan Balik</Button>
+                                {:else}
+                                <div class="flex align-items-center justify-content-evenly">
+                                    {#each Array.from({length: myFeedback.rating}, (_,i) => i) as i}
+                                    <StarFill width=32 height=32 color="#3951A8"/>
+                                    {/each}
+                                    {#each Array.from({length: 5 - myFeedback.rating}, (_,i) => i) as i}
+                                    <StarFill width=32 height=32 color="#E6EBF7"/>
+                                    {/each}
                                 </div>
-                                <div class="flex align-items-center justify-content-center">
-                                    {#if completed_items.filter(elm => elm.item.id == item.id).pop()}
-                                    <CheckCircleFill width=20 height=20 color="#A1E0C5"/>
-                                    {/if}
+                                <p class="body-small-reguler mb-0">{myFeedback.review}</p>
+                                {/if}
+                            </div>
+                            
+                            {#if courseFeedback}
+                            <ul class="feedback-item-container">
+                            {#if courseFeedback.length > 0}
+                            {#each courseFeedback as feedback, index (feedback.id)}
+                            <li>
+                                <div class="flex gap-2 align-items-center">
+                                    <img src="/images/default.png" class="radius-sm" alt="avatar" width="80" height="80">
+                                    <div class="flex-column w-100 gap-1">
+                                        <div class="flex align-items-center justify-content-between">
+                                            <p class="body-small-semi-bold mb-0">Michael Hernandez</p>
+                                            <div class="flex gap-1 align-items-center">
+                                                <p class="caption-reguler mb-0">4.8</p>
+                                                <StarFill color="#FF9933" width=12 height=12 />
+                                            </div>
+                                        </div>
+                                        <p class="caption-light mb-0">
+                                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
+                                        </p>
+                                    </div>
                                 </div>
                             </li>
                             {/each}
-                            {#if exam}
-                            <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                            <li class="silabus-item 
-                                {selected_item.id === exam.id ? 'active' : ''}
-                                {completed_items.length === silabus.length || completed_items.map(elm => elm.item_id).includes(exam.id) ? 'unlocked' : 'locked'}" 
-                                on:click={() => {
-                                    if(completed_items.length == silabus.length || completed_items.map(elm => elm.item_id).includes(exam.id)){
-                                        getItem(exam.id, false, null)
-                                    }
-                                }}>
-                                <div class="flex gap-2 align-items-center">
-                                    <Pass width=20 height=20/>
-                                    <p class="body-medium-reguler">{silabus.length + 1}. {exam.title}</p>
-                                </div>
-                                <div class="flex align-items-center justify-content-center">
-                                    {#if completed_items.filter(elm => elm.item.id == exam.id).pop()}
-                                    <CheckCircleFill width=20 height=20 color="#A1E0C5"/>
-                                    {/if}
-                                </div>
-                            </li> 
+                            {:else}
+                            <li>
+                                <p class="body-small-reguler mb-0">
+                                    Belum ada umpan balik dari pengguna lain
+                                </p>
+                            </li>
                             {/if}
+                            </ul>
+                            {:else}
+                            Memuat data
                             {/if}
-                        </ul>
-                    </div>
-                    <div class="feedback-nav">
 
-                    </div>
-                    <div class="certificate-nav">
-
+                            {#if courseFeedback.length > 0}
+                            <div class="h-line-spaced p-0">
+                                <Button type="link" href="/testimonials" classList="btn btn-no-padding tc-primary-main">
+                                    <div>Lihat Selengkapnya</div>
+                                </Button>
+                            </div>
+                            {/if}
+    
+                            {/if}
+                        </div>
+                        {/if}
+                        <div class="certificate-nav">
+    
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -341,7 +523,9 @@
                         {#if selected_item.type == 'Quiz'}
                         <Button classList="btn btn-main" onClick={nextProgress}>Berikutnya</Button>
                         {:else if selected_item.type == 'Exam' && completed_items.map(elm => elm.item_id).includes(exam.id)}
-                        <Button classList="btn btn-main" onClick={nextProgress}>Beri Umpan Balik</Button>
+                        {#if !myFeedback}
+                        <Button classList="btn btn-main" onClick={() => modalShow = true}>Beri Umpan Balik</Button>
+                        {/if}
                         {/if}
                         {:else}
                         <Button type="link" href="/student/my-courses/{$page.params.course}/assessment/{selected_item.id}" classList="btn btn-main">Ulang {selected_item.type == 'Quiz' ? 'Kuis' : 'Ujian'}</Button>
@@ -423,15 +607,66 @@
     </div>
 </section>
 
+{#if modalShow}
+    <Modal width="28.125rem" bind:modalShow>
+        <div class="card-body gap-4">
+            <div class="flex-column gap-3">
+                <h5 class="mb-0">Umpan Balik</h5>
+                <div class="flex-column w-100 gap-2">
+                    <p class="body-large-reguler">
+                        Nilai
+                    </p>
+                    <div class="flex align-items-center justify-content-evenly">
+                        {#each Array.from({length: rating}, (_,i) => i) as i}
+                        <Button classList="btn btn-no-padding" onClick={() => {
+                            rating = i + 1
+                        }}>
+                            <StarFill width=40 height=40 color="#3951A8"/>
+                        </Button>
+                        {/each}
+                        {#each Array.from({length: 5 - rating}, (_,i) => i) as i}
+                        <Button classList="btn btn-no-padding" onClick={() => {
+                            rating = rating + (i + 1)
+                        }}>
+                            <StarFill width=40 height=40 color="#E6EBF7"/>
+                        </Button>
+                        {/each}
+                    </div>
+                </div>
+                <div class="flex-column w-100 gap-2">
+                    <p class="body-large-reguler">
+                        Ulasan
+                    </p>
+                    <textarea rows="8" class="feedback-review" id="feedback" bind:value={review}></textarea>
+                </div>
+            </div>
+            <div class="flex justify-content-end gap-2">
+                <Button classList="btn btn-main-outline" onClick={() => {
+                    rating = 0
+                    review = ""
+                    modalShow = false
+                }}>Batal</Button>
+                <Button classList="btn btn-main" onClick={postFeedback}>Simpan</Button>
+            </div>
+        </div>  
+    </Modal> 
+{/if}
+
+<svelte:head>
+    <title>{course ? course.title : ''}</title>
+</svelte:head>
+
 <style>
     aside {
-        height: fit-content;
+        width: 25%;
+        height: 100%;
 		position: sticky;
 		position: -webkit-sticky;
 		top: 104px;
     }
 
-    .silabus-nav {
+    .silabus-nav, .feedback-nav {
+        width: 100%;
         display: flex;
         flex-direction: column;
         padding: .875rem;
@@ -441,9 +676,7 @@
         background-color: var(--neutral-white);
     }
 
-    .silabus-item-container {
-        min-width: 18rem;
-        max-width: 20rem;
+    .silabus-item-container, .feedback-item-container {
         padding: 0;
         margin: 0;
         list-style: none;
@@ -510,5 +743,21 @@
 
     .discuss-footer {
         display: flex;
+    }
+
+    .feedback-review {
+        padding: .875rem;
+        border-radius: .5rem;
+        background-color: #F5F6F7;
+        border: none;
+        font-family: Poppins;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        letter-spacing: 0.20000000298023224px;
+    }
+
+    .feedback-review:focus {
+        outline: none;
     }
 </style>
