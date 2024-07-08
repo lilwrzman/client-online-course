@@ -138,12 +138,14 @@
         user = checkLogin("Teacher", true)
         getDetail()
     })
+
+    let isSidebarOpen = true
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Materi" role="Teacher" />
+    <Sidebar isOpen={true} active="Materi" role="Teacher" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
