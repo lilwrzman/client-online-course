@@ -31,6 +31,8 @@
     let toastVisible = false
     let showSpinner = false
 
+    let isSidebarOpen = true
+
     const appendCourse = (id) => {
         let temp = selectedCourse
         if (temp.includes(id)) {
@@ -102,9 +104,9 @@
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Alur Belajar" role="Superadmin" />
+    <Sidebar isOpen={true} active="Alur Belajar" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
