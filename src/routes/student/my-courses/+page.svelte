@@ -13,8 +13,8 @@
 
     let user, active = "Semua Materi"
     let status = false
-    let myCourses = []
-    let completedCourses = []
+    let myCourses
+    let completedCourses
 
     let toastData
     let toastVisible = false
@@ -27,7 +27,6 @@
         }).then(response => {
             myCourses = response.data
             completedCourses = myCourses.filter(elm => elm.status == 'Completed')
-            console.log(completedCourses)
 
             status = true
         }).catch(e => {
@@ -59,8 +58,8 @@
         <div class="flex gap-4">
             <StudentSidebar bind:user={user} active="Kursus Saya" />
             <main class="w-100">
-                <div class="container {(active == 'Semua Materi' && myCourses.length == 0) || (active == 'Selesai' && completedCourses.length == 0) ? 'h-100' : ''}">
-                    <div class="flex-column gap-standard {(active == 'Semua Materi' && myCourses.length == 0) || (active == 'Selesai' && completedCourses.length == 0) ? 'h-100' : ''}">
+                <div class="container h-100">
+                    <div class="flex-column gap-standard h-100">
                         <h4>Kursus Saya</h4>
                         
                         <Tab bind:value={active} type="variable" menus={[
@@ -69,7 +68,8 @@
                         ]}/>
 
                         {#if active == 'Semua Materi'}
-                        <div class="row {myCourses.length == 0 ? 'h-100' : ''}">
+                        <div class="row h-100">
+                            {#if myCourses}
                             {#if myCourses.length > 0}
                             {#each myCourses as access}
                             <div class="col-xs-12 col-sm-6 col-md-3 mb-4">
@@ -108,9 +108,15 @@
                                 <Button type="link" href="/courses" classList="btn btn-main">Jelajahi Materi</Button>
                             </div>  
                             {/if}
+                            {:else}
+                            <div class="flex-column gap-2 grow-item align-items-center justify-content-center h-100">
+                                <p class="body-small-reguler">Memuat data</p>
+                            </div> 
+                            {/if}
                         </div>
                         {:else if active == 'Selesai'}
-                        <div class="row {completedCourses.length == 0 ? 'h-100' : ''}">
+                        <div class="row h-100">
+                            {#if completedCourses}
                             {#if completedCourses.length > 0}
                             {#each completedCourses as access}
                             <div class="col-xs-12 col-sm-6 col-md-3 mb-4">
@@ -141,6 +147,11 @@
                             <div class="flex-column gap-2 grow-item align-items-center justify-content-center h-100">
                                 <p class="body-small-reguler">Belum ada materi yang selesai!</p>
                                 <Button classList="btn btn-main" onClick={() => active = 'Semua Materi'}>Kembali Belajar</Button>
+                            </div>
+                            {/if}
+                            {:else}
+                            <div class="flex-column gap-2 grow-item align-items-center justify-content-center h-100">
+                                <p class="body-small-reguler">Memuat data</p>
                             </div>
                             {/if}
                         </div>

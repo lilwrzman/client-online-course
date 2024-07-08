@@ -17,6 +17,7 @@
     import Spinner from "@components/Spinner.svelte"
     import { Arrow90degLeft, PlayCircle, CheckCircleFill, FileEarmarkText, Pass, Clock, Folder2, ChevronBarDown, ChevronUp, ChevronDown, StarFill } from "svelte-bootstrap-icons"
 	import Modal from "@components/Modal.svelte";
+	import { getCurrentTime, getDay } from "$lib/Date";
 
     const returnNada = () => ''
 
@@ -32,27 +33,29 @@
     let exam
     let completed_items = []
     let histories = null
-
-    let replyTypeShow = false
-
+    
     let doneWatching = false
     let showSpinner = false
     let toastData
     let toastVisible = false
-
+    
     let silabusOpen = true
     let feedbackOpen = false
     let cetificateOpen = false
-
+    
     let courseFeedback
     let myFeedback
     let rating = 0
     let review = ''
-
+    
     let modalShow = false
-
+    let discussions
+    let activeDiscussion
+    let showReplies = false
+    let replyTypeShow = false
 
     const getItem = (item_id = null, next_item = false, callback = null) => {
+        showSpinner = true
         doneWatching = false
         item_status = false
         ApiController.sendRequest({
@@ -72,6 +75,7 @@
 
                 item_status = true
                 haveAccess = true
+                showSpinner = false
             }
         })
     }
@@ -130,7 +134,7 @@
             endpoint: `course/${$page.params.course}/feedback`,
         }).then(response => {
             if(response.status){
-                courseFeedback = response.data
+                courseFeedback = response.data.feedbacks
 
                 if(myFeedback){
                     courseFeedback = courseFeedback.filter(elm => elm.id != myFeedback.id)
@@ -214,6 +218,47 @@
         })
     }
 
+    const getDiscussion = () => {
+        ApiController.sendRequest({
+            method: "GET",
+            endpoint: `course/${$page.params.course}/discussion`,
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                discussions = response.data.discussions
+            }
+        })
+    }
+
+    const postDiscussion = (content, parent_id = null) => {
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: "discussion/post",
+            data: {
+                course_id: $page.params.course,
+                parent_id, content
+            },
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                if(window.document.getElementById('new-discuss')){
+                    window.document.getElementById('new-discuss').value = ''
+                }
+
+                if(window.document.getElementById(`reply-discuss-${parent_id}`)){
+                    window.document.getElementById(`reply-discuss-${parent_id}`).value = ''
+                }
+                
+                getDiscussion()
+                showSpinner = false
+            }
+        }).catch(e => {
+            console.error(e)
+            showSpinner = false
+        })
+    }
+
     onMount(() => {
         let flashes = getFlash()
         if(flashes){
@@ -229,6 +274,7 @@
 
         getItem(null, false, getSilabus)
         getFeedback()
+        getDiscussion()
     })
 </script>
 
@@ -405,10 +451,11 @@
     
                             {/if}
                         </div>
-                        {/if}
                         <div class="certificate-nav">
-    
+                            <p class="body-super-large-semi-bold">Sertifikat</p>
+                            <Button classList="btn btn-main-outline">Lihat Sertifikat</Button>
                         </div>
+                        {/if}
                     </div>
                 </div>
             </aside>
@@ -434,71 +481,151 @@
                     </div>
 
                     <div class="flex-column gap-3">
-                        <Tab bind:value={tabActive} type="variable" menus={[
-                            {value: "Deskripsi", title: "Deskripsi"},
-                            {value: "Forum Diskusi", title: "Forum Diskusi"},
-                        ]}/>
+                        <Tab bind:value={tabActive} type="link" menus={[
+                            {title: "Deskripsi", href: "#deskripsi", active: $page.url.hash == '#deskripsi'},
+                            {title: "Forum Diskusi", href: "#forum-diskusi", active: $page.url.hash == '#forum-diskusi'},
+                        ]} />
 
-                        <section id="deskripsi" class="mb-5">
+                        <section id="deskripsi" class="mb-5" style="scroll-margin-top: 10rem;">
                             {@html selected_item.description}
                         </section>
 
-                        <section id="forum-diskusi">
+                        <section id="forum-diskusi" style="scroll-margin-top: 6rem;">
                             <div class="flex-column gap-5">
                                 <div class="flex-column gap-3">
                                     <h5 class="mb-0">Forum Diskusi</h5>
                                     <div class="flex-column gap-2">
-                                        <InputField type="tinymce" id="new-discuss" />
+                                        <textarea id="new-discuss" rows="10" class="text-discuss" placeholder="Masukkan pertanyaan disini..."></textarea>
                                         <div class="flex justify-content-end gap-2">
-                                            <Button classList="btn btn-main-outline">Batal</Button>
-                                            <Button classList="btn btn-main">Kirim</Button>
+                                            <Button classList="btn btn-main-outline" onClick={() => {
+                                                window.document.getElementById('new-discuss').value = ""
+                                            }}>Batal</Button>
+                                            <Button classList="btn btn-main" onClick={() => {
+                                                let content = window.document.getElementById('new-discuss').value
+                                                
+                                                if(!content){
+                                                    return alert('Mohon isi sesuatu pada area input!')
+                                                }
+
+                                                postDiscussion(content)
+                                            }}>Kirim</Button>
                                         </div>
                                     </div>
                                 </div>
 
+                                {#if discussions}
                                 <div class="flex-column gap-3">
+                                    {#if discussions.length > 0}
+                                    {#each discussions as discuss, index (discuss.id)}
                                     <div class="discuss-container">
                                         <div class="discuss-header">
                                             <div class="flex gap-3">
-                                                <img src="/images/default.png" alt="avatar" width="60" height="60" style="border-radius: 100%;">
+                                                <img src="{PUBLIC_SERVER_PATH}/storage/{discuss.user.avatar}" alt="avatar" width="60" height="60" style="border-radius: 100%;">
                                                 <div class="flex-column gap-2 align-items-start">
-                                                    <p class="body-large-semi-bold">Michael Hernandez</p>
+                                                    <p class="body-large-semi-bold">{discuss.user.info.fullname}</p>
                                                     <div class="neutral-border px-2 py-1 radius-sm">
+                                                        {#if discuss.user.role == 'Student'}
                                                         <p class="body-small-reguler">Karyawan</p>
+                                                        {:else if discuss.user.role == 'Teacher'}
+                                                        <p class="body-small-reguler">Pemateri</p>
+                                                        {/if}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="flex-column align-items-end">
-                                                <p class="caption-reguler tc-neutral-disabled">14.00</p>
-                                                <p class="caption-reguler tc-neutral-disabled">27 Aug 2024</p>
+                                                <p class="caption-reguler tc-neutral-disabled">{getCurrentTime(discuss.created_at)}</p>
+                                                <p class="caption-reguler tc-neutral-disabled">{getDay(discuss.created_at)}</p>
                                             </div>
                                         </div>
                                         <div class="discuss-body">
-                                            <p>Apakah bisa melakukan perkenalan melalui sosial media? </p>
+                                            <p class="body-small-reguler">{discuss.content}</p>
                                         </div>
                                         <div class="discuss-footer">
+                                            {#if discuss.replies.length > 0}
+                                            <Button classList="btn btn-no-padding" onClick={() => {
+                                                if(showReplies && activeDiscussion && activeDiscussion == discuss.id){
+                                                    showReplies = false
+                                                    activeDiscussion = null
+                                                }else{
+                                                    showReplies = true
+                                                    activeDiscussion = discuss.id
+                                                }
+                                            }}>
+                                                <p class="body-small-semi-bold tc-primary-main">
+                                                    {showReplies && activeDiscussion ? activeDiscussion == discuss.id ? 'Tutup' : 'Lihat' : 'Lihat'} Balasan [{discuss.replies.length}]
+                                                </p>
+                                            </Button>
+                                            {/if}
+
                                             {#if !replyTypeShow}
                                             <Button classList="btn btn-no-padding" onClick={() => {
+                                                activeDiscussion = discuss.id
                                                 replyTypeShow = true
                                             }}>
                                                 <p class="body-small-semi-bold tc-primary-main">
                                                     Beri Tanggapan
                                                 </p>
                                             </Button>
-                                            {:else}
-                                            <div class="flex-column gap-2 w-100">
-                                                <InputField type="tinymce" id="reply-discuss"/>
-                                                <div class="flex justify-content-end gap-2">
-                                                    <Button classList="btn btn-main-outline" onClick={() => {
-                                                        replyTypeShow = false
-                                                    }}>Batal</Button>
-                                                    <Button classList="btn btn-main">Kirim</Button>
-                                                </div>
-                                            </div>
                                             {/if}
                                         </div>
+                                        
+                                        {#if discuss.replies.length > 0 && showReplies && activeDiscussion == discuss.id}    
+                                        <div id="discuss-replies-{index + 1}" class="flex-column w-100 pl-5 mt-3">
+                                            {#each discuss.replies as reply, reply_index (reply.id)}
+                                            <div class="flex-column w-100 gap-standard">
+                                                <div class="flex align-items-center justify-content-between">
+                                                    <div class="flex gap-3">
+                                                        <img src="{PUBLIC_SERVER_PATH}/storage/{reply.user.avatar}" alt="avatar" width="60" height="60" style="border-radius: 100%;">
+                                                        <div class="flex-column gap-2 align-items-start">
+                                                            <p class="body-small-semi-bold">{reply.user.info.fullname}</p>
+                                                            <div class="neutral-border px-2 py-1 radius-sm">
+                                                                {#if reply.user.role == 'Student'}
+                                                                <p class="caption-reguler-thin">Karyawan</p>
+                                                                {:else if reply.user.role == 'Teacher'}
+                                                                <p class="caption-reguler-thin">Pemateri</p>
+                                                                {/if}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-column align-items-end">
+                                                        <p class="caption-reguler tc-neutral-disabled">{getCurrentTime(reply.created_at)}</p>
+                                                        <p class="caption-reguler tc-neutral-disabled">{getDay(reply.created_at)}</p>
+                                                    </div>
+                                                </div>
+                                                <p class="body-small-reguler">{reply.content}</p>
+                                            </div>
+                                            {/each}
+                                        </div>
+                                        {/if}
+
+                                        {#if replyTypeShow && activeDiscussion == discuss.id}
+                                        <div class="flex-column gap-2 w-100">
+                                            <textarea id="reply-discuss-{discuss.id}" rows="10" class="text-discuss" placeholder="Masukkan balasan disini..."></textarea>
+                                            <div class="flex justify-content-end gap-2">
+                                                <Button classList="btn btn-main-outline" onClick={() => {
+                                                    window.document.getElementById(`reply-discuss-${discuss.id}`).value = ""
+                                                    replyTypeShow = false
+                                                    activeDiscussion = null
+                                                }}>Batal</Button>
+                                                <Button classList="btn btn-main" onClick={() => {
+                                                    let content = window.document.getElementById(`reply-discuss-${discuss.id}`).value
+                                                    
+                                                    if(!content){
+                                                        return alert('Mohon isi sesuatu pada area input!')
+                                                    }
+                                                    
+                                                    replyTypeShow = false
+                                                    activeDiscussion = null
+                                                    postDiscussion(content, discuss.id)
+                                                }}>Kirim</Button>
+                                            </div>
+                                        </div>
+                                        {/if}
                                     </div>
+                                    {/each}
+                                    {/if}
                                 </div>
+                                {/if}
                             </div>
                         </section>
                     </div>
@@ -665,7 +792,7 @@
 		top: 104px;
     }
 
-    .silabus-nav, .feedback-nav {
+    .silabus-nav, .feedback-nav, .certificate-nav {
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -683,6 +810,10 @@
         display: flex;
         flex-direction: column;
         gap: .875rem;
+    }
+
+    .silabus-item-container {
+        overflow-y: scroll;
     }
 
     .silabus-item {
@@ -743,6 +874,7 @@
 
     .discuss-footer {
         display: flex;
+        gap: 1rem;
     }
 
     .feedback-review {
@@ -753,11 +885,25 @@
         font-family: Poppins;
         font-size: 16px;
         font-weight: 400;
-        line-height: 24px;
-        letter-spacing: 0.20000000298023224px;
     }
 
     .feedback-review:focus {
         outline: none;
+    }
+
+    .text-discuss {
+        border-radius: .25rem;
+        background-color: var(--neutral-white) !important;
+        border: 1px solid var(--neutral-border);
+        padding: .875rem;
+        font-family: Poppins;
+        font-size: 14px;
+        font-weight: 400;
+        white-space: normal;
+    }
+
+    .text-discuss:focus {
+        outline: none;
+        border: 1px solid var(--neutral-border);
     }
 </style>
