@@ -89,12 +89,6 @@
                 curTime = player.currentTime()
             }
         })
-
-        window.addEventListener('keydown', function(event){
-            if(event.key === ' ' || event.key === 'Spacebar'){
-                event.preventDefault()
-            }
-        })
     })
 
     onDestroy(() => {
