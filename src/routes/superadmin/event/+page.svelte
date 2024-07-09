@@ -20,6 +20,7 @@
     import SortMenu from "@components/SortMenu.svelte";
     import SearchMenu from "@components/SearchMenu.svelte";
     import Pagination from '@components/Pagination.svelte';
+	import { getDay } from "$lib/Date";
 
     let user
     let handler, rows, pageNumber, rowsPerPage = 10, pageCount
@@ -29,72 +30,24 @@
         {val: "desc", label: "Z-A"}
     ]
 
+    let events
     let toastData = null
     let toastVisible = false
     let modalShow = false
     let showSpinner = false
 
-    let teachers, status = false
-    let selectedTeacher
-
-    const getTeachers = (callback = null) => {
+    const getEvents = () => {
         ApiController.sendRequest({
             method: "GET",
-            endpoint: "account/get?role=Teacher",
-            authToken: user.token
+            endpoint: "events/get"
         }).then(response => {
-            teachers = response.data
-            handler = new DataHandler(teachers, {rowsPerPage})
-            rows = handler.getRows()
-            pageCount = handler.getPageCount()
-            pageNumber = handler.getPageNumber()
-            handler.sortDesc('created_at')
-            status = true
-
-            if(callback != null && typeof callback === 'function'){
-                callback()
-            }
-        })
-    }
-
-    const deleteTeacher = () => {
-        if(!selectedTeacher){
-            return
-        }
-
-        showSpinner = true
-
-        ApiController.sendRequest({
-            method: "POST",
-            endpoint: "account/delete",
-            data: {id: selectedTeacher.id},
-            authToken: user.token
-        }).then(response => {
-            if(response.error){
-                showSpinner = false
-                return alert('Mohon coba lagi!')
-            }
-
             if(response.status){
-                getTeachers(() => {
-                    toastData = {
-                        title: "Berhasil",
-                        message: response.message,
-                        color: 'toast-success'
-                    }
-                    modalShow = false
-                    showSpinner = false
-                    toastVisible = true
-                })
-            }else{
-                toastData = {
-                    title: "Gagal",
-                    message: response.message,
-                    color: 'toast-danger'
-                }
-                modalShow = false
-                showSpinner = false
-                toastVisible = true
+                events = response.data
+                handler = new DataHandler(events, {rowsPerPage})
+                rows = handler.getRows()
+                pageCount = handler.getPageCount()
+                pageNumber = handler.getPageNumber()
+                handler.sortDesc('created_at')
             }
         })
     }
@@ -110,18 +63,17 @@
             toastVisible = true
         }
         
-        user = checkLogin('Superadmin')
-
-        getTeachers()
+        user = checkLogin('Superadmin', true)
+        getEvents()
     })
 
     let isSidebarOpen = true
 </script>
 
 <div class="flex">
-    <Sidebar active="Manajemen Akun" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
+    <Sidebar active="Manajemen Acara" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Manajemen Akun" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
+        <Navbar active="" variant="inside" pageTitle="Manajemen Acara" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-4" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -131,12 +83,6 @@
                 {#if showSpinner}
                     <Spinner/>    
                 {/if}
-
-                <Tab menus={[
-                    {'title': 'Karyawan', 'href': '/superadmin/account/student'},
-                    {'title': 'Pemateri', 'href': '/superadmin/account/teacher#', active: true},
-                    {'title': 'Admin Mitra', 'href': '/superadmin/account/corporate'}
-                ]}/>
 
                 <div class="flex-column gap-3">
                     <div class="flex flex-wrap justify-content-between align-items-center gap-4">
@@ -157,7 +103,7 @@
 
                             <SearchMenu action={(evt) => handler.search(evt.target.value, ['fullname'])}/>
                         </div>
-                        <Button type="link" href="/superadmin/account/teacher/add" classList="btn btn-main pl-4 grow-item grow-auto-md">
+                        <Button type="link" href="/superadmin/event/add" classList="btn btn-main pl-4 grow-item grow-auto-md">
                             <div class="flex align-items-center justify-content-center gap-2">
                                 <img src="/icons/plus-lg.svg" alt="plus-icon"/>
                                 <div>Tambah Baru</div>
@@ -171,41 +117,43 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
-                                        <th>Nama</th>
-                                        <th>Email</th>
-                                        <th>Jumlah Materi</th>
+                                        <th>Nama Acara</th>
+                                        <th>Tempat</th>
+                                        <th class="text-center">Tanggal</th>
+                                        <th class="text-center">Waktu</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom">
-                                    {#if status}
+                                    {#if $rows}
                                     {#if $rows.length > 0}
-                                    {#each $rows as row, index}
+                                    {#each $rows as event, index (event.id)}
                                     <tr>
                                         <td class="text-center">{index + 1}</td>
-                                        <td>{row.fullname}</td>
-                                        <td>{row.email}</td>
-                                        <td>{row.course_count} materi</td>
-                                        <td>
-                                            <Button type="link" href="/superadmin/account/teacher/{row.id}" 
+                                        <td>{event.title}</td>
+                                        <td>{event.place}</td>
+                                        <td class="text-center">{getDay(event.date)}</td>
+                                        <td class="text-center">{event.start.substring(0, 5)} - {event.end.substring(0, 5)}</td>
+                                        <td class="text-center">
+                                            <Button type="link" href="/superadmin/event/{event.id}" 
                                                 classList="btn btn-info py-1 px-2 w-100">Detail</Button>
                                         </td>
                                     </tr>
                                     {/each}
                                     {:else}
                                     <tr>
-                                        <td colspan="5">Tidak ada data...</td>
+                                        <td colspan="6">Tidak ada data...</td>
                                     </tr>
                                     {/if}
                                     {:else}
                                     <tr>
-                                        <td colspan="5">Loading...</td>
+                                        <td colspan="6">Loading...</td>
                                     </tr>
                                     {/if}
                                 </tbody>
                             </table>
                         </div>
-                        {#if status && handler && $pageCount > 1}
+                        {#if handler && $pageCount > 1}
                         <Pagination {handler} />
                         {/if}
                     </div>
