@@ -174,5 +174,6 @@
         width: 100%;
         height: calc(fit-content + 2rem);
         border-radius: 0.25rem;
+        overflow: hidden;
     }
 </style>

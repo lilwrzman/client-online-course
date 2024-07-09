@@ -6,6 +6,7 @@
 		List
     } from "svelte-bootstrap-icons";
 	import Button from "./Button.svelte";
+	import { onMount } from "svelte";
     
     export let role 
     export let active = "Dasbor"
@@ -15,6 +16,21 @@
     
     const handleOpen = () => isOpen = !isOpen
 	const toggleSidebar = () => isSidebarOpen = !isSidebarOpen
+
+	onMount(() => {
+		const mediaQuery = window.matchMedia('(max-width: 768px)')
+
+		function handleMediaQueryChange(event){
+			if(event.matches){
+				isSidebarOpen = false
+			}else{
+				isSidebarOpen = true
+			}
+		}
+
+		mediaQuery.addEventListener('change', handleMediaQueryChange)
+		handleMediaQueryChange(mediaQuery)
+	})
 </script>
 
 <aside class:is-open={isSidebarOpen}>
@@ -174,19 +190,19 @@
 					<li>
 						<a
 							href="/superadmin/event"
-							class="menu {active == 'Manajemen Event' ? 'menu-active' : ''}"
+							class="menu {active == 'Manajemen Acara' ? 'menu-active' : ''}"
 						>
 							<Calendar2EventFill
 								width="20"
 								height="20"
-								color={active == 'Manajemen Event' ? '#3951A8' : '#8191AC'}
+								color={active == 'Manajemen Acara' ? '#3951A8' : '#8191AC'}
 							/>
 							<p
-								class="body-small-semi-bold {active == 'Manajemen Event'
+								class="body-small-semi-bold {active == 'Manajemen Acara'
 									? 'tc-primary-main'
 									: 'tc-neutral-primary'}"
 							>
-								Manajemen Event
+								Manajemen Acara
 							</p>
 						</a>
 					</li>
@@ -487,17 +503,11 @@
 		background-color: var(--hover);
 	}
 
-	.toggle-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 10px;
-        margin: 10px;
-    }
-
     @media (max-width: 768px) {
         aside {
-            width: 100%;
+            width: 100% !important;
+			position: fixed;
+			z-index: 15;
         }
     }
 </style>

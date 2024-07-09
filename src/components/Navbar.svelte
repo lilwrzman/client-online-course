@@ -109,8 +109,9 @@
 					<Bell width={16} height={16}/>
 				</div>
 				
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="flex align-items-center gap-3 dropdown-menu-profile"
-				on:click={toggleDropdown}>
+				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
 					<p class="body-small-medium mb-0">{user ? username : ''}</p>
 					<div class="flex align-items-center gap-2">
 						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32">
@@ -151,8 +152,9 @@
 					<Bell width={16} height={16}/>
 				</div>
 				
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="flex align-items-center gap-3 dropdown-menu-profile"
-				on:click={toggleDropdown}>
+				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
 					<p class="body-small-medium mb-0">{user ? username : ''}</p>
 					<div class="flex align-items-center gap-2">
 						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32">
