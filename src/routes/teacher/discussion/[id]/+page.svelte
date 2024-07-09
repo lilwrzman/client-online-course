@@ -104,7 +104,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-md-8">
+                    <div class="col-12 col-md-8 bg-neutral-white p-standard">
                         <div class="flex-column gap-2 mb-5">
                             <textarea id="new-discuss" rows="10" class="text-discuss" placeholder="Masukkan pertanyaan disini..."></textarea>
                             <div class="flex justify-content-end gap-2">

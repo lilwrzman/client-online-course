@@ -570,7 +570,7 @@
                                         </div>
                                         
                                         {#if discuss.replies.length > 0 && showReplies && activeDiscussion == discuss.id}    
-                                        <div id="discuss-replies-{index + 1}" class="flex-column w-100 pl-5 mt-3">
+                                        <div id="discuss-replies-{index + 1}" class="flex-column w-100 pl-5 mt-3 gap-4">
                                             {#each discuss.replies as reply, reply_index (reply.id)}
                                             <div class="flex-column w-100 gap-standard">
                                                 <div class="flex align-items-center justify-content-between">
