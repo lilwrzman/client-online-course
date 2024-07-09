@@ -163,26 +163,6 @@
     </div>
 </div>
 
-{#if modalShow}
-    <Modal bind:modalShow>
-        <div class="card-body gap-5">
-            <div class="flex-column">
-                <div class="h4">Hapus Pemateri</div>
-                <div class="default-text-input">
-                    Apakah anda yakin ingin menghapus pemateri ? Proses ini tidak dapat dibatalkan!
-                </div>
-            </div>
-            <div class="flex-row-reverse gap-2">
-                <Button classList="btn btn-danger" onClick={deleteTeacher}>Ya, hapus!</Button>
-                <Button classList="btn btn-main-outline" onClick={() => {
-                    selectedTeacher = null
-                    modalShow = false
-                }}>Tidak</Button>
-            </div>
-        </div>  
-    </Modal> 
-{/if}
-
 <svelte:head>
-    <title>Manajemen Akun | Pemateri</title>
+    <title>Manajemen Acara</title>
 </svelte:head>
