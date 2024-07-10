@@ -74,7 +74,7 @@
                                         {:else}
                                         <div class="badge badge-danger">GAGAL</div>
                                         {/if}
-                                        <p class="body-small-reguler">{getDay(history.create_at)} | {getCurrentTime(history.create_at)}</p>
+                                        <p class="body-small-reguler">{getDay(history.created_at)} | {getCurrentTime(history.created_at)}</p>
                                         <p class="body-small-reguler">ID Transaksi: #{history.id}</p>
                                     </div>
                                     <div class="flex align-items-center justify-content-between flex-wrap">

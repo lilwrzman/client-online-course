@@ -459,7 +459,7 @@
                     </div>
                 </div>
             </aside>
-            <main class="grow-item">
+            <main class="w-75">
                 {#if item_status}
                 <div class="flex-column gap-5">
                     {#if selected_item.type === 'Video'}
