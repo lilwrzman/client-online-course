@@ -7,6 +7,9 @@
 	import LoginModal from '@components/LoginModal.svelte';
 	import { Bell, ChevronDown, HouseDoor, Gear, BoxArrowInLeft, List } from "svelte-bootstrap-icons"
 	import { extract, destroyCookie } from '$lib/Cookie';
+	import Modal from "./Modal.svelte";
+	import ApiController from "$lib/ApiController";
+	import Spinner from "./Spinner.svelte";
 
 	export let user
 	export let active = ''
@@ -20,6 +23,9 @@
 	let modalShow = false
 	let isLoggedIn = false
 	let username = ''
+
+	let modalLogoutShow = false
+	let showSpinner = false
 
 	let dropdownOpen = false
 
@@ -36,6 +42,25 @@
 		if(dropdownOpen && !event.target.closest('.dropdown-menu-profile')){
 			dropdownOpen = false
 		}
+	}
+
+	const logout = () => {
+		showSpinner = true
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: "logout",
+			authToken: user.token
+		}).then(response => {
+			if(response.status){
+				destroyCookie('datas')
+				setFlash({title: "Berhasil", message: "Akun anda telah berhasil dikeluarkan", type: 'success', redirect: "/"})
+				return
+			}
+		}).catch(e => {
+			let error = e.response.data
+
+			console.error(error)
+		})
 	}
 
 	onMount(() => {
@@ -61,6 +86,10 @@
 		}
 	}
 </script>
+
+{#if showSpinner}
+	<Spinner/>
+{/if}
 
 <header>
 	<nav class="nav
@@ -114,7 +143,7 @@
 				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
 					<p class="body-small-medium mb-0">{user ? username : ''}</p>
 					<div class="flex align-items-center gap-2">
-						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32">
+						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32" class="avatar">
 						<ChevronDown width={16} height={16}/>
 					</div>
 
@@ -126,17 +155,13 @@
 								<p class="body-small-reguler mb-0">Kembali ke Beranda</p>
 							</div>
 						</a>
-						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings">
+						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings/profile">
 							<div class="flex align-items-center gap-2 p-standard">
 								<Gear color="#8191AC" />
 								<p class="body-small-reguler mb-0">Pengaturan Akun</p>
 							</div>
 						</a>
-						<Button classList="btn btn-no-padding btn-logout" onClick={() => {
-							destroyCookie('datas')
-							setFlash({title: "Berhasil", message: "Akun anda telah berhasil dikeluarkan", type: 'success', redirect: "/"})
-							return
-						}}> 
+						<Button classList="btn btn-no-padding btn-logout" onClick={() => modalLogoutShow = true}> 
 							<div class="flex align-items-center gap-2 p-standard">
 								<BoxArrowInLeft color="#8191AC" />
 								<p class="body-small-reguler mb-0">Keluar</p>
@@ -157,7 +182,7 @@
 				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
 					<p class="body-small-medium mb-0">{user ? username : ''}</p>
 					<div class="flex align-items-center gap-2">
-						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32">
+						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32" class="avatar">
 						<ChevronDown width={16} height={16}/>
 					</div>
 
@@ -175,11 +200,7 @@
 								<p class="body-small-reguler mb-0">Pengaturan Akun</p>
 							</div>
 						</a>
-						<Button classList="btn btn-no-padding btn-logout" onClick={() => {
-							destroyCookie('datas')
-							setFlash({title: "Berhasil", message: "Akun anda telah berhasil dikeluarkan", type: 'success', redirect: "/"})
-							return
-						}}> 
+						<Button classList="btn btn-no-padding btn-logout" onClick={() => modalLogoutShow = true}> 
 							<div class="flex align-items-center gap-2 p-standard">
 								<BoxArrowInLeft color="#8191AC" />
 								<p class="body-small-reguler mb-0">Keluar</p>
@@ -205,8 +226,31 @@
 	<LoginModal bind:modalShow bind:isLoggedIn/>
 {/if}
 
+{#if modalLogoutShow}
+	<Modal bind:modalShow={modalLogoutShow}>
+		<div class="card-body gap-5">
+			<div class="flex-column">
+				<div class="h4">Keluar</div>
+				<div class="default-text-input">
+					Apakah anda yakin ingin keluar dari sistem?
+				</div>
+			</div>
+			<div class="flex-row-reverse gap-2">
+				<Button classList="btn btn-danger" onClick={logout}>Ya, keluar!</Button>
+				<Button classList="btn btn-main-outline" onClick={() => {
+					modalLogoutShow = false
+				}}>Tidak</Button>
+			</div>
+		</div>  
+	</Modal> 
+{/if}
+
 <style>
 	/* Navbar Section */
+
+	.avatar {
+		border-radius: 100%;
+	}
 
 	header{
 		position: sticky;

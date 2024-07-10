@@ -86,42 +86,21 @@
 		</div>
 	</section>
 
-	<section id="content" class="section">
+	<section id="description" class="section">
 		<div class="container">
 			<div class="flex-column gap-7">
-				<Tab
-					type="variable"
-					bind:value={active}
+				<Tab type="link"
 					menus={[
-						{ title: 'Deskripsi', value: 'description' },
-						{ title: 'Silabus', value: 'submateri' },
-						{ title: 'Pemateri', value: 'teacher' },
-						{ title: 'Testimoni', value: 'testimonials' }
+						{ title: 'Deskripsi', href: `/courses/${$page.params.id}#description`, active: $page.url.hash == '#description' },
+						{ title: 'Silabus', href: `/courses/${$page.params.id}#syllabus`, active: $page.url.hash == '#syllabus' },
+						{ title: 'Pemateri', href: `/courses/${$page.params.id}#teacher`, active: $page.url.hash == '#teacher' },
+						{ title: 'Testimoni', href: `/courses/${$page.params.id}#testimonials`, active: $page.url.hash == '#testimonials' }
 					]}
 				/>
 
 				<div class="row">
 					<div class="col-8">
 						{@html detail.description}
-						<!-- <h5 class="mb-2">Sales Marketing</h5> -->
-						<!-- <p class="body-medium-regular">
-							Sales marketing adalah konsep yang mencakup berbagai strategi dan taktik yang
-							digunakan oleh perusahaan untuk menjual produk atau jasa mereka kepada pelanggan.
-							Sales, atau penjualan, berfokus pada interaksi langsung dengan pelanggan, yang
-							melibatkan proses mulai dari prospekting, pendekatan, presentasi produk, menangani
-							keberatan, hingga menutup penjualan dan melakukan tindak lanjut. Sementara itu,
-							marketing, atau pemasaran, memiliki cakupan yang lebih luas yaitu mencakup berikut
-							dibawah ini. Sales marketing adalah konsep yang mencakup berbagai strategi dan taktik
-							yang digunakan oleh perusahaan untuk menjual produk atau jasa mereka kepada pelanggan.
-							Sales, atau penjualan, berfokus pada interaksi langsung dengan pelanggan, yang
-							melibatkan proses mulai dari prospekting, pendekatan, presentasi produk, menangani
-							keberatan, hingga menutup penjualan dan melakukan tindak lanjut. Sementara itu,
-							marketing, atau pemasaran, memiliki cakupan yang lebih luas yaitu mencakup berikut
-							dibawah ini. Sales marketing adalah konsep yang mencakup berbagai strategi dan taktik
-							yang digunakan oleh perusahaan untuk menjual produk atau jasa mereka kepada pelanggan.
-							Sales, atau penjualan, berfokus pada interaksi langsung dengan pelanggan, yang
-							melibatkan proses
-						</p> -->
 					</div>
 					<div class="col-4">
 						<div class="flex-column gap-5">
@@ -143,12 +122,12 @@
 			<div class="course-step body-large-semi-bold">Silabus</div>
 			{#each detail.items as item}
 			<div class="row justify-content-center w-100" style="padding: 20px 0;">
-				<div class="col-12 col-md-10">
+				<div class="col-12 col-md-8">
 					<div class="card radius-sm neutral-border">
 						<div class="flex-column gap-7">
 							<div class="flex-column gap-3">
 								<p class="body-super-large-semi-bold">{ item.title }</p>
-								<p class="body-small-reguler">{@html item.description }</p>
+								<p class="body-small-reguler truncate">{@html item.description }</p>
 								<div class="flex body-medium-reguler justify-content-between">
 									<div class="flex align-items-center gap-3">
 										{#if item.type == 'Video'}
@@ -205,10 +184,7 @@
 							<div class="flex-column gap-5">
 								<div class="flex-column gap-5">
 									<p class="body-super-large-semi-bold">{detail.teacher.info.fullname}</p>
-									<p class="body-small-reguler">
-										Memahami rincian materi, fasilitas pembelajaran, dan lainnya. Memahami rincian
-										materi, fasilitas pembelajaran, dan lainnya.
-									</p>
+									<p class="body-small-reguler">{detail.teacher.info.bio}</p>
 									<div class="flex body-medium-reguler justify-content-between">
 										<div class="flex align-items-center gap-8">
 											{#each detail.teacher.info.social_media as sosmed}
@@ -386,6 +362,8 @@
 		.thumbnail {
 			width: 100%;
 			aspect-ratio: 4 / 3;
+			object-fit: cover;
+			object-position: center;
 		}
 
 		.teacher-img {
@@ -429,6 +407,14 @@
 			flex: 1;
 			border-bottom: 1px solid var(--neutral-border);
 			margin: 0 1rem;
+		}
+
+		.truncate {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 	</style>
 </svelte:head>
