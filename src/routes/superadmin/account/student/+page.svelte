@@ -174,8 +174,9 @@
                                         <th>Nama</th>
                                         <th>Email</th>
                                         <th class="text-center">Karyawan</th>
-                                        <th>Jumlah Materi</th>
-                                        <th>Aksi</th>
+                                        <th class="text-center">Jumlah Materi</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom">
@@ -187,8 +188,14 @@
                                         <td>{row.fullname}</td>
                                         <td>{row.email}</td>
                                         <td class="text-center">{row.type}</td>
-                                        <td>{row.course_count} materi</td>
-                                        <td>
+                                        <td class="text-center">{row.course_count} materi</td>
+                                        <td class="text-center">
+                                            <div class="badge {row.status == 'Active' ? 'badge-success' : 'badge-danger'}">
+                                                {row.status == 'Active' ? 'Aktif' : row.status ? 'Non-Active' ? 'Tidak Aktif' : 'Pending': 'Pending'}
+
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
                                             <Button type="link" href="/superadmin/account/student/{row.id}" 
                                                 classList="btn btn-info py-1 px-2 w-100">Detail</Button>
                                         </td>
@@ -240,3 +247,24 @@
 <svelte:head>
     <title>Manajemen Akun | Karyawan</title>
 </svelte:head>
+
+<style>
+    .badge {
+        padding: .5rem;
+        border-radius: .25rem;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        text-align: center;
+    }
+
+    .badge-success {
+        background-color: var(--success-focus);
+        color: var(--success-main);
+    }
+
+    .badge-danger {
+        background-color: var(--danger-focus);
+        color: var(--danger-main);
+    }
+</style>

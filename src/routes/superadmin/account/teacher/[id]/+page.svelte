@@ -18,7 +18,7 @@
     import Modal from "@components/Modal.svelte"
     import { DataHandler } from "@vincjo/datatables/local"
 
-    import { PencilFill, TrashFill } from "svelte-bootstrap-icons"
+    import { LockFill, PencilFill, TrashFill, UnlockFill } from "svelte-bootstrap-icons"
 	import checkLogin from "$lib/CheckLogin.js";
 
     export let data
@@ -175,30 +175,29 @@
         })
     } 
 
-    const deleteTeacher = () => {
+    const changeStatus = () => {
         showSpinner = true
-
         ApiController.sendRequest({
             method: "POST",
-            endpoint: "account/delete",
-            data: {id: id},
+            endpoint: `account/${id}/change-status`,
+            data: { status: teacher.status == 'Active' ? 'Non-Active' : 'Active' },
             authToken: user.token
         }).then(response => {
-            if(response.error){
-                showSpinner = false
-                return alert('Mohon coba lagi!')
-            }
-
+            showSpinner = false
             if(response.status){
-                setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/teacher' })
-            }else{
-                toastData = {
-                    title: "Gagal",
-                    message: response.message,
-                    color: 'toast-danger'
-                }
-                modalShow = false
-                showSpinner = false
+                getDetail(() => {
+                    toastData = { title: "Berhasil", message: response.message, color: 'toast-success' }
+                    toastVisible = true
+                    modalShow = false
+                })
+            }
+        }).catch(e => {
+            let error = e.response.data
+            showSpinner = false
+            modalShow = false
+
+            if(error.error){
+                toastData = { title: "Gagal", message: error.error, color: 'toast-danger' }
                 toastVisible = true
             }
         })
@@ -337,12 +336,15 @@
                                 {/if}
                             </div>
                         </div>
-                        <Button classList="btn btn-danger" onClick={() => {
-                            modalShow = true
-                        }}>
+                        <Button classList="btn {teacher.status == 'Active' ? 'btn-warning' : 'btn-main'}" onClick={() => modalShow = true}>
                             <div class="flex gap-2 justify-content-center align-items-center">
-                                <TrashFill/>
-                                Hapus Akun
+                                {#if teacher.status == 'Active'}
+                                <LockFill/>
+                                Non-Aktifkan
+                                {:else if teacher.status == 'Non-Active'}
+                                <UnlockFill/>
+                                Aktifkan
+                                {/if}
                             </div>
                         </Button>
                     </div>
@@ -391,13 +393,13 @@
     <Modal bind:modalShow>
         <div class="card-body gap-5">
             <div class="flex-column">
-                <div class="h4">Hapus Pemateri</div>
+                <div class="h4">{teacher.status == 'Active' ? 'Non-Aktifkan' : 'Aktifkan'} Akun Pemateri</div>
                 <div class="default-text-input">
-                    Apakah anda yakin ingin menghapus pemateri {teacher.fullname} ? Proses ini tidak dapat dibatalkan!
+                    Apakah anda yakin ingin {teacher.status == 'Active' ? 'non-aktifkan' : 'aktifkan'} akun pemateri {teacher.fullname} ?
                 </div>
             </div>
             <div class="flex-row-reverse gap-2">
-                <Button classList="btn btn-danger" onClick={deleteTeacher}>Ya, hapus!</Button>
+                <Button classList="btn {teacher.status == 'Active' ? 'btn-warning' : 'btn-main'}" onClick={changeStatus}>Ya, {teacher.status == 'Active' ? 'Non-Aktifkan' : 'Aktifkan'}!</Button>
                 <Button classList="btn btn-main-outline" onClick={() => {
                     modalShow = false
                 }}>Tidak</Button>
