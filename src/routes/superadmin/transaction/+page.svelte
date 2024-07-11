@@ -61,20 +61,22 @@
             responseType: 'blob'
         }).then(response => {
             if(response){
-                showSpinner = false
                 const url = window.URL.createObjectURL(new Blob([response]))
                 const link = document.createElement('a')
+                
+                link.style.display = "none"
                 link.href = url
                 link.setAttribute('download', 'transactions.xlsx')
                 document.body.appendChild(link)
                 link.click()
-                document.body.removeChild(link)
+                
                 toastData = {
                     title: "Berhasil",
                     message: "Data transaksi berhasil di ekspor. Tunggu proses unduh selesai",
                     color: 'toast-success'
                 }
                 toastVisible = true
+                showSpinner = false
             }
         }).catch(e => {
             let error = e.response.data
