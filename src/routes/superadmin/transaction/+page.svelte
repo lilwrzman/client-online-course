@@ -13,6 +13,7 @@
 	import { BoxArrowInRight } from "svelte-bootstrap-icons";
     import Pagination from "@components/Pagination.svelte";
     import Spinner from "@components/Spinner.svelte"
+	import axios from "axios";
 
     let user
 
@@ -54,19 +55,30 @@
 
     const getExport = () => {
         showSpinner = true
-        ApiController.sendRequest({
-            method: "GET",
-            endpoint: "transaction/export",
-            authToken: user.token,
-            responseType: 'blob'
+        axios.get(PUBLIC_SERVER_PATH + '/api/' + "transaction/export", {
+            responseType: 'blob',
+            headers : {
+                'Authorization': `Bearer ${user.token}`
+            }
         }).then(response => {
             if(response){
-                const url = window.URL.createObjectURL(new Blob([response]))
+                const disposition = response.headers['content-disposition']
+                let filename = 'transactions.xlsx'
+
+                if(disposition && disposition.indexOf('attachment') !== -1) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                const url = window.URL.createObjectURL(new Blob([response.data]))
                 const link = document.createElement('a')
-                
+
                 link.style.display = "none"
                 link.href = url
-                link.setAttribute('download', 'transactions.xlsx')
+                link.setAttribute('download', filename)
                 document.body.appendChild(link)
                 link.click()
                 
