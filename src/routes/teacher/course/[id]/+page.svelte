@@ -286,12 +286,14 @@
             addItem = false
         }
     }
+
+    let isSidebarOpen = true
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Materi" role="Teacher" />
+    <Sidebar isOpen={true} active="Materi" role="Teacher" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -705,18 +707,7 @@
 {#if modalShow}
     <Modal bind:modalShow>
         <div class="card-body gap-5">
-            {#if deleteType == 'course'}
-            <div class="flex-column">
-                <div class="h4">Hapus Alur Belajar</div>
-                <div class="default-text-input">
-                    Apakah anda yakin ingin menghapus alur belajar {detail.title}? Proses ini tidak dapat dibatalkan!
-                </div>
-            </div>
-            <div class="flex-row-reverse gap-2">
-                <Button classList="btn btn-danger" onClick={deleteCourse}>Ya, hapus!</Button>
-                <Button classList="btn btn-main-outline" onClick={() => modalShow = false}>Tidak</Button>
-            </div>
-            {:else if deleteType == 'item'}
+            {#if deleteType == 'item'}
             {#if selectedItem.type == 'Video'}
             <div class="flex-column">
                 <div class="h4">Hapus Video</div>

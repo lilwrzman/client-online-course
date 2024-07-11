@@ -1,25 +1,66 @@
 <script>
+	import { PUBLIC_SERVER_PATH } from "$env/static/public";
 	import { onMount } from 'svelte';
 
+	import { setFlash } from "$lib/Flash"
 	import Button from '@components/Button.svelte';
 	import LoginModal from '@components/LoginModal.svelte';
-	import Bell from "svelte-bootstrap-icons/lib/Bell.svelte"
-	import PersonCircle from "svelte-bootstrap-icons/lib/PersonCircle.svelte"
-	import ChevronDown from "svelte-bootstrap-icons/lib/ChevronDown.svelte"
-	import { extract } from '$lib/Cookie';
+	import { Bell, ChevronDown, HouseDoor, Gear, BoxArrowInLeft, List } from "svelte-bootstrap-icons"
+	import { extract, destroyCookie } from '$lib/Cookie';
+	import Modal from "./Modal.svelte";
+	import ApiController from "$lib/ApiController";
+	import Spinner from "./Spinner.svelte";
 
 	export let user
 	export let active = ''
 	export let variant = 'outside'
 	export let pageTitle = ''
+	export let isSidebarOpen = true
+
+	const toggleSidebar = () => isSidebarOpen = !isSidebarOpen
 
 	let isFixed = false
 	let modalShow = false
 	let isLoggedIn = false
 	let username = ''
 
+	let modalLogoutShow = false
+	let showSpinner = false
+
+	let dropdownOpen = false
+
 	function handleScroll(){
 		isFixed = window.scrollY >= 50
+	}
+
+	function toggleDropdown(event) {
+		dropdownOpen = !dropdownOpen
+		event.stopPropagation()
+	}
+
+	function handleClickOutside(event){
+		if(dropdownOpen && !event.target.closest('.dropdown-menu-profile')){
+			dropdownOpen = false
+		}
+	}
+
+	const logout = () => {
+		showSpinner = true
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: "logout",
+			authToken: user.token
+		}).then(response => {
+			if(response.status){
+				destroyCookie('datas')
+				setFlash({title: "Berhasil", message: "Akun anda telah berhasil dikeluarkan", type: 'success', redirect: "/"})
+				return
+			}
+		}).catch(e => {
+			let error = e.response.data
+
+			console.error(error)
+		})
 	}
 
 	onMount(() => {
@@ -28,8 +69,11 @@
 		}
 
 		window.addEventListener('scroll', handleScroll)
+		window.addEventListener('click', handleClickOutside)
+
 		return () => {
 			window.removeEventListener('scroll', handleScroll)
+			document.removeEventListener('click', handleClickOutside)
 		}
 	})
 
@@ -43,6 +87,10 @@
 	}
 </script>
 
+{#if showSpinner}
+	<Spinner/>
+{/if}
+
 <header>
 	<nav class="nav
 		{variant == 'outside' ? 'nav-light' : 'nav-neutral'}
@@ -54,7 +102,16 @@
 				<div class="h5">Logo Disini</div>
 			</a>
 			{:else}
-			<div class="body-large-semi-bold">{pageTitle}</div>
+			<div class="flex gap-3 align-items-center">
+				{#if !isSidebarOpen}
+				<Button classList="btn btn-no-padding" onClick={toggleSidebar}>
+					<div class="flex align-items-center justify-content-center">
+						<List/>
+					</div>
+				</Button>
+				{/if}
+				<div class="body-large-semi-bold">{pageTitle}</div>
+			</div>
 			{/if}
 			{#if variant == 'outside'}
 			<ul class="navbar-menu">
@@ -76,27 +133,82 @@
 			</ul>
 			{/if}
 			{#if variant == 'inside'}
-			<div class="flex gap-2 align-items-center">
-				<p class="body-small-medium tc-primary-main">{user ? username : ''}</p>
-				<Button id="profile" classList="btn p-2">
-					<div class="flex align-items-center gap-1">
-						<PersonCircle width={24} height={24} color="#3951A8"/>
+			<div class="flex gap-4 align-items-center">
+				<div class="flex align-items-center justify-content-center">
+					<Bell width={16} height={16}/>
+				</div>
+				
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div class="flex align-items-center gap-3 dropdown-menu-profile"
+				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
+					<p class="body-small-medium mb-0">{user ? username : ''}</p>
+					<div class="flex align-items-center gap-2">
+						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32" class="avatar">
 						<ChevronDown width={16} height={16}/>
 					</div>
-				</Button>
+
+					{#if dropdownOpen}
+					<div class="dropdown-content-profile">
+						<a href="/">
+							<div class="flex align-items-center gap-2 p-standard">
+								<HouseDoor color="#8191AC"/>
+								<p class="body-small-reguler mb-0">Kembali ke Beranda</p>
+							</div>
+						</a>
+						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings/profile">
+							<div class="flex align-items-center gap-2 p-standard">
+								<Gear color="#8191AC" />
+								<p class="body-small-reguler mb-0">Pengaturan Akun</p>
+							</div>
+						</a>
+						<Button classList="btn btn-no-padding btn-logout" onClick={() => modalLogoutShow = true}> 
+							<div class="flex align-items-center gap-2 p-standard">
+								<BoxArrowInLeft color="#8191AC" />
+								<p class="body-small-reguler mb-0">Keluar</p>
+							</div>
+						</Button>
+					</div>
+					{/if}
+				</div>
 			</div>
 			{:else if user}
 			<div class="flex gap-2 align-items-center">
-				<Button id="notification" classList="btn btn-no-padding">
-					<Bell width={24} height={24}/>
-				</Button>
-				<p class="body-small-medium tc-secondary">Hi, {username}</p>
-				<Button id="profile" classList="btn p-2">
-					<div class="flex align-items-center gap-1">
-						<PersonCircle width={24} height={24}/>
+				<div class="flex align-items-center justify-content-center">
+					<Bell width={16} height={16}/>
+				</div>
+				
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div class="flex align-items-center gap-3 dropdown-menu-profile"
+				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
+					<p class="body-small-medium mb-0">{user ? username : ''}</p>
+					<div class="flex align-items-center gap-2">
+						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32" class="avatar">
 						<ChevronDown width={16} height={16}/>
 					</div>
-				</Button>
+
+					{#if dropdownOpen}
+					<div class="dropdown-content-profile">
+						<a href="/{user.role.toLowerCase().split(" ")[0]}/dashboard">
+							<div class="flex align-items-center gap-2 p-standard">
+								<HouseDoor color="#8191AC"/>
+								<p class="body-small-reguler mb-0">Kembali ke Dasbor</p>
+							</div>
+						</a>
+						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings">
+							<div class="flex align-items-center gap-2 p-standard">
+								<Gear color="#8191AC" />
+								<p class="body-small-reguler mb-0">Pengaturan Akun</p>
+							</div>
+						</a>
+						<Button classList="btn btn-no-padding btn-logout" onClick={() => modalLogoutShow = true}> 
+							<div class="flex align-items-center gap-2 p-standard">
+								<BoxArrowInLeft color="#8191AC" />
+								<p class="body-small-reguler mb-0">Keluar</p>
+							</div>
+						</Button>
+					</div>
+					{/if}
+				</div>
 			</div>
 			{:else}
 			<div class="flex gap-2 align-items-center">
@@ -114,8 +226,31 @@
 	<LoginModal bind:modalShow bind:isLoggedIn/>
 {/if}
 
+{#if modalLogoutShow}
+	<Modal bind:modalShow={modalLogoutShow}>
+		<div class="card-body gap-5">
+			<div class="flex-column">
+				<div class="h4">Keluar</div>
+				<div class="default-text-input">
+					Apakah anda yakin ingin keluar dari sistem?
+				</div>
+			</div>
+			<div class="flex-row-reverse gap-2">
+				<Button classList="btn btn-danger" onClick={logout}>Ya, keluar!</Button>
+				<Button classList="btn btn-main-outline" onClick={() => {
+					modalLogoutShow = false
+				}}>Tidak</Button>
+			</div>
+		</div>  
+	</Modal> 
+{/if}
+
 <style>
 	/* Navbar Section */
+
+	.avatar {
+		border-radius: 100%;
+	}
 
 	header{
 		position: sticky;
@@ -173,6 +308,34 @@
 
 	.navbar-shadow{
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.dropdown-menu-profile {
+		position: relative;
+		cursor: pointer;
+	}
+
+	.dropdown-content-profile {
+		display: flex;
+		flex-direction: column;
+		position: absolute;
+		top: calc(100% + 1rem);
+		right: 0;
+		background-color: var(--neutral-white);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		border-radius: .25rem;
+		z-index: 10;
+		overflow: hidden;
+	}
+
+	.dropdown-content-profile a {
+		text-wrap: nowrap;
+		text-decoration: none;
+		color: var(--dark);
+	}
+
+	.dropdown-content-profile a:hover {
+		background-color: var(--hover);
 	}
 
 	/* End of Navbar Section */

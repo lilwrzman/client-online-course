@@ -127,12 +127,14 @@
 
         getCorporates()
     })
+
+    let isSidebarOpen = true
 </script>
 
 <div class="flex">
-    <Sidebar active="Manajemen Akun" role="Superadmin" />
+    <Sidebar active="Manajemen Akun" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Manajemen Akun" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Manajemen Akun" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-4" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -186,8 +188,9 @@
                                     <th>Perusahaan</th>
                                     <th>Email</th>
                                     <th class="text-center">Referral</th>
-                                    <th>Karyawan</th>
-                                    <th>Aksi</th>
+                                    <th class="text-center">Karyawan</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom">
@@ -210,8 +213,14 @@
                                             </Button>
                                         </div>
                                     </td>
-                                    <td>{row.student_count} orang</td>
-                                    <td>
+                                    <td class="text-center">{row.student_count} orang</td>
+                                    <td class="text-center">
+                                        <div class="badge {row.status == 'Active' ? 'badge-success' : 'badge-danger'}">
+                                            {row.status == 'Active' ? 'Aktif' : row.status ? 'Non-Active' ? 'Tidak Aktif' : 'Pending': 'Pending'}
+
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
                                         <Button type="link" href="/superadmin/account/corporate/{row.id}" 
                                             classList="btn btn-info py-1 px-2 w-100">Detail</Button>
                                     </td>
@@ -262,3 +271,24 @@
 <svelte:head>
     <title>Manajemen Akun | Mitra</title>
 </svelte:head>
+
+<style>
+    .badge {
+        padding: .5rem;
+        border-radius: .25rem;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        text-align: center;
+    }
+
+    .badge-success {
+        background-color: var(--success-focus);
+        color: var(--success-main);
+    }
+
+    .badge-danger {
+        background-color: var(--danger-focus);
+        color: var(--danger-main);
+    }
+</style>

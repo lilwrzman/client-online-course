@@ -7,8 +7,8 @@
     import Toast from '@components/Toast.svelte';
 	import { Copy } from 'svelte-bootstrap-icons';
 	import { onMount } from 'svelte';
-	import checkLogin from '$lib/CheckLogin';
-	import ApiController from '$lib/ApiController';
+	import checkLogin from '$lib/CheckLogin.js';
+	import ApiController from '$lib/ApiController.js';
 	import { DataHandler } from '@vincjo/datatables';
 
 	let user
@@ -50,12 +50,13 @@
 		getBundles()
 	})
 
+	let isSidebarOpen = true
 </script>
 
 <div class="flex">
-	<Sidebar active="Paket Kursus" role="Corporate Admin" />
+	<Sidebar active="Paket Kursus" role="Corporate Admin" bind:isSidebarOpen={isSidebarOpen}/>
 	<div class="neutral-wrapper px-3">
-		<Navbar active="" variant="inside" pageTitle="Paket Kursus" />
+		<Navbar active="" variant="inside" pageTitle="Paket Kursus" bind:isSidebarOpen={isSidebarOpen}/>
 		<main style="flex-grow: 1: overvlow-y: hidden;" class="flex-column">
 			<div class="container flex-column py-4 gap-4" style="flex-grow: 1;">
                 {#if toastVisible}

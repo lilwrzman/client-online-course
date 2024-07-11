@@ -169,37 +169,32 @@
     }
 
     const changeStatus = () => {
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: `account/${id}/change-status`,
+            data: { status: detail.status == 'Active' ? 'Non-Active' : 'Active' },
+            authToken: user.token
+        }).then(response => {
+            showSpinner = false
+            if(response.status){
+                getDetail(() => {
+                    toastData = { title: "Berhasil", message: response.message, color: 'toast-success' }
+                    toastVisible = true
+                    modalShow = false
+                })
+            }
+        }).catch(e => {
+            let error = e.response.data
+            showSpinner = false
+            modalShow = false
 
+            if(error.error){
+                toastData = { title: "Gagal", message: error.error, color: 'toast-danger' }
+                toastVisible = true
+            }
+        })
     }
-
-    // const deleteStudent = () => {
-    //     showSpinner = true
-
-    //     ApiController.sendRequest({
-    //         method: "POST",
-    //         endpoint: "account/delete",
-    //         data: {id: id},
-    //         authToken: user.token
-    //     }).then(response => {
-    //         if(response.error){
-    //             showSpinner = false
-    //             return alert('Mohon coba lagi!')
-    //         }
-
-    //         if(response.status){
-    //             setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/student' })
-    //         }else{
-    //             toastData = {
-    //                 title: "Gagal",
-    //                 message: response.message,
-    //                 color: 'toast-danger'
-    //             }
-    //             modalShow = false
-    //             showSpinner = false
-    //             toastVisible = true
-    //         }
-    //     })
-    // }
 
     onMount(() => {
         user = checkLogin("Superadmin")
@@ -212,12 +207,14 @@
             corporate_id = null
         }
     }
+
+    let isSidebarOpen = true
 </script>
 
 <div class="flex">
-    <Sidebar active="Manajemen Akun" role="Superadmin" />
+    <Sidebar active="Manajemen Akun" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Manajemen Akun" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Manajemen Akun" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}

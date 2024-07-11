@@ -2,23 +2,48 @@
     import { 
         HouseDoorFill, BriefcaseFill, WalletFill, BookFill, 
         Calendar2EventFill, PeopleFill, ChevronDown, ChevronUp, BoxFill,
-        BarChartFill, PersonVcardFill,
-
-		EmojiSmileFill
-
+        BarChartFill, PersonVcardFill, EmojiSmileFill, ChatLeftDotsFill,
+		List
     } from "svelte-bootstrap-icons";
+	import Button from "./Button.svelte";
+	import { onMount } from "svelte";
     
     export let role 
     export let active = "Dasbor"
     export let isOpen = false
+
+	export let isSidebarOpen = true
     
     const handleOpen = () => isOpen = !isOpen
+	const toggleSidebar = () => isSidebarOpen = !isSidebarOpen
+
+	onMount(() => {
+		const mediaQuery = window.matchMedia('(max-width: 768px)')
+
+		function handleMediaQueryChange(event){
+			if(event.matches){
+				isSidebarOpen = false
+			}else{
+				isSidebarOpen = true
+			}
+		}
+
+		mediaQuery.addEventListener('change', handleMediaQueryChange)
+		handleMediaQueryChange(mediaQuery)
+	})
 </script>
 
-<aside>
+<aside class:is-open={isSidebarOpen}>
 	<div class="sidebar">
 		<div class="flex-column p-3" style="gap: 14px;">
-			<a href="/" class="h5 p-2">LOGO DISINI</a>
+			<div class="flex gap-3 align-items-center p-standard">
+				<Button classList="btn btn-no-padding" onClick={toggleSidebar}>
+					<div class="flex align-items-center justify-content-center">
+						<List />
+					</div>
+				</Button>
+				<a href="/" class="h5 mb-0">LOGO DISINI</a>
+			</div>
 			<ul class="sidebar-menu">
 				{#if role == 'Superadmin'}
 					<li>
@@ -165,19 +190,19 @@
 					<li>
 						<a
 							href="/superadmin/event"
-							class="menu {active == 'Manajemen Event' ? 'menu-active' : ''}"
+							class="menu {active == 'Manajemen Acara' ? 'menu-active' : ''}"
 						>
 							<Calendar2EventFill
 								width="20"
 								height="20"
-								color={active == 'Manajemen Event' ? '#3951A8' : '#8191AC'}
+								color={active == 'Manajemen Acara' ? '#3951A8' : '#8191AC'}
 							/>
 							<p
-								class="body-small-semi-bold {active == 'Manajemen Event'
+								class="body-small-semi-bold {active == 'Manajemen Acara'
 									? 'tc-primary-main'
 									: 'tc-neutral-primary'}"
 							>
-								Manajemen Event
+								Manajemen Acara
 							</p>
 						</a>
 					</li>
@@ -307,6 +332,21 @@
 							<p>Umpan Balik</p>
 						</a>
 					</li>
+					<li>
+						<a
+							href="/teacher/discussion"
+							class="menu body-small-semi-bold {active == 'Forum Diskusi'
+								? 'tc-primary-main menu-active'
+								: 'tc-neutral-primary'}"
+						>
+							<ChatLeftDotsFill
+								width="20"
+								height="20"
+								color={active == 'Forum Diskusi' ? '#3951A8' : '#8191AC'}
+							/>
+							<p>Forum Diskusi</p>
+						</a>
+					</li>
 				{:else if role == 'Corporate Admin'}
 					<li>
 						<a
@@ -396,7 +436,7 @@
 <style>
 	aside {
 		background-color: var(--neutral-white);
-		display: flex;
+		display: none;
 		width: 22.5rem;
 		height: 100vh;
 		max-height: 100%;
@@ -404,6 +444,10 @@
 		position: -webkit-sticky;
 		top: 0;
 	}
+
+	aside.is-open {
+        display: flex;
+    }
 
 	aside > div {
 		overflow-y: auto;
@@ -458,4 +502,12 @@
 	.menu-active {
 		background-color: var(--hover);
 	}
+
+    @media (max-width: 768px) {
+        aside {
+            width: 100% !important;
+			position: fixed;
+			z-index: 15;
+        }
+    }
 </style>

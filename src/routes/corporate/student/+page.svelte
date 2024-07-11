@@ -128,12 +128,14 @@
 
 		getStudents()
 	})
+
+	let isSidebarOpen = true
 </script>
 
 <div class="flex">
-	<Sidebar active="Daftar Karyawan" role="Corporate Admin" />
+	<Sidebar active="Daftar Karyawan" role="Corporate Admin" bind:isSidebarOpen={isSidebarOpen}/>
 	<div class="neutral-wrapper px-3">
-		<Navbar active="" variant="inside" pageTitle="Daftar Karyawan" />
+		<Navbar active="" variant="inside" pageTitle="Daftar Karyawan" bind:isSidebarOpen={isSidebarOpen}/>
 		<main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
 			{#if toastVisible}
 				<Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color}/>

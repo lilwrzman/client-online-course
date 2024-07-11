@@ -25,6 +25,8 @@
     let sortBy = option[0].value
     let toastData, toastVisible = false
 
+    let isSidebarOpen = true
+
     const getPaths = () => {
         ApiController.sendRequest({
             method: "GET",
@@ -69,9 +71,9 @@
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Alur Belajar" role="Superadmin" />
+    <Sidebar isOpen={true} active="Alur Belajar" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user} bind:isSidebarOpen={isSidebarOpen} />
         <main style="flex-grow: 1;" class="flex-column">
             <div class="container flex-column py-4 gap-8" style="flex-grow: 1;">
                 {#if toastVisible}

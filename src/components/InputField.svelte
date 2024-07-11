@@ -1,7 +1,7 @@
 <script>
     import { PUBLIC_TINYMCE_KEY } from "$env/static/public"
     
-    import { validateInput } from "$lib/Input.js"
+    import { validateInput } from "$lib/Input"
 
     import Button from "@components/Button.svelte"
     import Editor from '@tinymce/tinymce-svelte'
@@ -51,17 +51,17 @@
     }
 
     $: {        
-        if(!inputClass.includes('invalid')) {
-            inputClass += error ? 'invalid' : ''
+        if(!inputClass.includes(' invalid')) {
+            inputClass += error ? ' invalid' : ''
         }else{
-            inputClass = inputClass.replace('invalid', '')
+            inputClass = inputClass.replace(' invalid', '')
         }
     }
 </script>
 
 <div class="flex-column gap-2 {containerClass}">
     {#if label}
-        <label for={id} class="{labelClass}">{label}</label>
+        <label for={id} class="{labelClass}">{@html label}</label>
     {/if}
 
     {#if type == 'password'}

@@ -138,12 +138,14 @@
         user = checkLogin("Teacher", true)
         getDetail()
     })
+
+    let isSidebarOpen = true
 </script>
 
 <div class="flex">
-    <Sidebar isOpen={true} active="Materi" role="Teacher" />
+    <Sidebar isOpen={true} active="Materi" role="Teacher" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user}/>
+        <Navbar active="" variant="inside" pageTitle="Bank Kursus" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-5" style="flex-grow: 1;">
                 {#if toastVisible}
@@ -300,17 +302,5 @@
 
     .card-cap-secondary{
         border-top: 8px solid var(--primary-focus);
-    }
-
-    .ghost {
-        pointer-events: none;
-        z-index: 2;
-        position: absolute;
-        top: 0;
-        border: 2px dashed var(--success-main);
-    }
-
-    .invisible {
-        opacity: 0;
     }
 </style>

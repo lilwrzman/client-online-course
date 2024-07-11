@@ -84,7 +84,7 @@
                                             <p>{course.items} Item</p>
                                         </div>
                                     </div>
-                                    <Button type="link" href="/courses/{course.slug}" classList="btn btn-main">Lihat Detail</Button>
+                                    <Button type="link" href="/courses/{course.id}" classList="btn btn-main">Lihat Detail</Button>
                                 </div>
                             </div>
                         </div>

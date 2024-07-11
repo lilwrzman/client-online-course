@@ -96,7 +96,7 @@
                     <InputField type="password" label="Konfirmasi Password" id="password_confirmation" 
                         bind:value={password_confirmation}
                         placeholder="Maksimal 16 karakter" rules={[{required: true, type: 'password'}]}
-                        error={errors ? errors.password ? errors.password : '' : ''}/>
+                        error={errors ? errors.password_confirmation ? errors.password_confirmation : '' : ''}/>
                     
                     <InputField label="Kode Referral" id="referral" 
                         placeholder="Opsional" bind:value={referral}

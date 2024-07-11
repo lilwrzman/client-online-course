@@ -3,15 +3,13 @@
 	import showToast from '$lib/Toast.js';
 	import { setCookie } from '$lib/Cookie.js';
 	import { clearInput, getValue } from '$lib/Input.js';
-	
+
 	import Button from '@components/Button.svelte';
 	import Modal from '@components/Modal.svelte';
 	import InputField from '@components/InputField.svelte';
 	import Toast from '@components/Toast.svelte';
 	import XLg from 'svelte-bootstrap-icons/lib/XLg.svelte';
 	import Spinner from './Spinner.svelte';
-	import { setFlash } from '$lib/Flash';
-	import { goto } from '$app/navigation';
 
 	export let modalShow = false;
 
@@ -19,39 +17,37 @@
 	let toastVisible = false;
 
 	let errors = null;
-	let showSpinner = false
+	let showSpinner = false;
 
 	const login = () => {
-		showSpinner = true
+		showSpinner = true;
 		const ids = ['email', 'password'];
 		let datas = getValue(ids);
-		datas.role = "Student"
+		datas.role = 'Student';
 
-		ApiController
-			.sendRequest({
-				method: 'POST',
-				endpoint: 'login',
-				data: datas
-			})
-			.then((response) => {
-				if (response.status) {
-					setCookie('datas', response.userData)
-					return window.location.href = "/student/dashboard"
+		ApiController.sendRequest({
+			method: 'POST',
+			endpoint: 'login',
+			data: datas
+		}).then((response) => {
+			if (response.status) {
+				setCookie('datas', response.userData);
+				return (window.location.href = '/student/dashboard');
+			} else {
+				showSpinner = false;
+				if (response.error) {
+					errors = response.error;
 				} else {
-					showSpinner = false
-					if (response.error) {
-						errors = response.error;
-					} else {
-						toastData = showToast('Gagal!', response.msg, 'toast-danger');
-						toastVisible = true;
-					}
+					toastData = showToast('Gagal!', response.msg, 'toast-danger');
+					toastVisible = true;
 				}
-			});
+			}
+		});
 	};
 </script>
 
 {#if showSpinner}
-	<Spinner/>
+	<Spinner />
 {/if}
 
 <Modal bind:modalShow>

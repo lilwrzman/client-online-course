@@ -53,12 +53,14 @@
 
 		getStudents()
 	})
+
+	let isSidebarOpen = true
 </script>
 
 <div class="flex">
-	<Sidebar active="Daftar Karyawan" role="Teacher" />
+	<Sidebar active="Daftar Karyawan" role="Teacher" bind:isSidebarOpen={isSidebarOpen}/>
 	<div class="neutral-wrapper px-3">
-		<Navbar active="" variant="inside" pageTitle="Daftar Karyawan" />
+		<Navbar active="" variant="inside" pageTitle="Daftar Karyawan" bind:isSidebarOpen={isSidebarOpen}/>
 		<main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
 			{#if toastVisible}
 				<Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color}/>
@@ -98,7 +100,6 @@
 									<th>Nama</th>
 									<th>Email</th>
 									<th class="text-center">Jumlah Materi</th>
-									<th class="text-center">Aksi</th>
 								</tr>
 							</thead>
 							<tbody class="table-border-bottom">
@@ -110,14 +111,11 @@
 									<td>{student.info.fullname}</td>
 									<td>{student.email}</td>
 									<td class="text-center">{student.course_count} materi</td>
-									<td class="text-center">
-										<Button classList="btn btn-info py-1 px-2">Detail</Button>
-									</td>
 								</tr>
 								{/each}
 								{:else}
 								<tr>
-									<td colspan="5" class="text-center">Belum ada karyawan yang terdaftar di materi-materi anda.</td>
+									<td colspan="4" class="text-center">Belum ada karyawan yang terdaftar di materi-materi anda.</td>
 								</tr>
 								{/if}
 								{/if}

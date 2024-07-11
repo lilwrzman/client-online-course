@@ -313,5 +313,13 @@
 		color: var(--neutral-disabled);
 	}
 
+	.btn-logout {
+		border-radius: 0 !important;
+	}
+
+	.btn-logout:hover{
+		background-color: var(--hover);
+	}
+
 	/* End of Button Section */
 </style>

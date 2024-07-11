@@ -7,6 +7,7 @@
 	import StudentSidebar from "@components/StudentSidebar.svelte";
 	import Toast from "@components/Toast.svelte";
 	import { onMount } from "svelte";
+    import { Hourglass } from "svelte-bootstrap-icons"
 
     let user 
     let toastData
@@ -45,10 +46,10 @@
         <div class="flex gap-4">
             <StudentSidebar bind:user={user} active="Progres Belajar" />
             <main class="w-100">
-                <div class="container {progress ? progress.length == 0 ? 'h-100' : '' : ''}">
-                    <div class="flex-column gap-4 {progress ? progress.length == 0 ? 'h-100' : '' : ''}">
+                <div class="container {progress ? progress.length == 0 ? 'h-100' : '' : 'h-100'}">
+                    <div class="flex-column gap-4 {progress ? progress.length == 0 ? 'h-100' : '' : 'h-100'}">
                         <h4 class="mb-0">Progres Belajar</h4>
-                        <div class="flex-column gap-3 {progress ? progress.length == 0 ? 'h-100' : '' : ''}">
+                        <div class="flex-column gap-3 {progress ? progress.length == 0 ? 'h-100' : '' : 'h-100'}">
                         {#if progress}
                         {#if progress.length > 0}
                         {#each progress as p (p.id)}
@@ -62,7 +63,7 @@
                                 </div>
                                 <div class="col-12 col-md-5">
                                     <div class="flex-column h-100 justify-content-center">
-                                        <ProgressBar percentage={(p.completed_items / p.total_items) * 100}/>
+                                        <ProgressBar percentage={p.completed_items == 0 ? 0 : (p.completed_items / p.total_items) * 100}/>
                                     </div>
                                 </div>
                             </div>
@@ -74,6 +75,11 @@
                             <Button type="link" href="/courses" classList="btn btn-main">Jelajahi Materi</Button>
                         </div>
                         {/if}
+                        {:else}
+                        <div class="flex-column h-100 gap-3 align-items-center justify-content-center">
+                            <Hourglass color="#3951A8" width=45 height=45/>
+                            Memuat Data.
+                        </div>
                         {/if}    
                         </div>
                     </div>

@@ -89,12 +89,6 @@
                 curTime = player.currentTime()
             }
         })
-
-        window.addEventListener('keydown', function(event){
-            if(event.key === ' ' || event.key === 'Spacebar'){
-                event.preventDefault()
-            }
-        })
     })
 
     onDestroy(() => {
@@ -111,6 +105,7 @@
 </script>
 
 <div class="video-js-container">
+    <!-- svelte-ignore a11y-media-has-caption -->
     <video id="video-js-player" class="video-js vjs-default-skin"></video>
 </div>
 

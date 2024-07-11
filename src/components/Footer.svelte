@@ -18,25 +18,25 @@
                 <div class="flex-column gap-4">
                     <div class="body-super-large-semi-bold">Lorem Ipsum</div>
                     <div class="flex-column gap-3">
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
                     </div>
                 </div>
                 <div class="flex-column gap-4">
                     <div class="body-super-large-semi-bold">Lorem Ipsum</div>
                     <div class="flex-column gap-3">
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
-                        <a href="" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
+                        <a href="/" class="body-small-medium">Lorem Ipsum</a>
                     </div>
                 </div>
                 <div class="flex gap-4 align-items-center">
-                    <a href=""><Instagram class="tc-primary-main" width={24} height={24}/></a>
-                    <a href=""><Facebook class="tc-primary-main" width={24} height={24}/></a>
-                    <a href=""><Twitter class="tc-primary-main" width={24} height={24}/></a>
+                    <a href="/"><Instagram class="tc-primary-main" width={24} height={24}/></a>
+                    <a href="/"><Facebook class="tc-primary-main" width={24} height={24}/></a>
+                    <a href="/"><Twitter class="tc-primary-main" width={24} height={24}/></a>
                 </div>
             </div>
             <div class="body-small-reguler">
