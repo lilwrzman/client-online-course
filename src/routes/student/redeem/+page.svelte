@@ -1,10 +1,7 @@
 <script>
-<<<<<<< HEAD
-=======
 	import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 	import { PUBLIC_SERVER_PATH } from "$env/static/public"
->>>>>>> 6ec88616a878a9aff465bc34cdac1f494b0cb1cd
 	import { onMount } from 'svelte';
 	import checkLogin from '$lib/CheckLogin';
 	import Navbar from '@components/Navbar.svelte';
@@ -12,10 +9,6 @@
 	import Button from '@components/Button.svelte';
 	import InputField from '@components/InputField.svelte';
 	import { Search } from 'svelte-bootstrap-icons';
-<<<<<<< HEAD
-
-	let user;
-=======
 	import ApiController from '$lib/ApiController';
 	import Toast from "@components/Toast.svelte";
 	import Spinner from "@components/Spinner.svelte";
@@ -104,7 +97,6 @@
 			}
 		})
 	}
->>>>>>> 6ec88616a878a9aff465bc34cdac1f494b0cb1cd
 
 	onMount(() => {
 		user = checkLogin('Student', true);
@@ -114,54 +106,12 @@
 <Navbar />
 
 {#if user}
-<<<<<<< HEAD
-	<section class="section" id="redeem-code">
-=======
 	<section class="section" id="reedem-code">
->>>>>>> 6ec88616a878a9aff465bc34cdac1f494b0cb1cd
 		<div class="container">
 			<div class="flex gap-4">
 				<StudentSidebar active="Tukar Kode" bind:user />
 				<main class="w-100">
 					<div class="container">
-<<<<<<< HEAD
-						<div class="flex-column gap-standard">
-							<h4>Tukar Kode</h4>
-
-							<div class="row neutral-border radius-sm">
-								<div class="flex align-items-center mt-3 mb-3">
-									<p class="body-small-reguler">Masukkan kode tukar yang tepat</p>
-								</div>
-								<div class="flex body-medium-reguler justify-content-between mb-3">
-									<div class="col-md-8">
-										<InputField inputClass="input-bg-light"/>
-									</div>
-
-									<Button type="link" href="" classList="btn btn-main pl-4 grow-item grow-auto-md">
-										<div class="flex align-items-center justify-content-center gap-2">
-											<Search />
-											<div>Temukan</div>
-										</div>
-									</Button>
-								</div>
-
-								<div class="row neutral-border radius-sm ml-3 mr-3 mb-3">
-									<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
-										<div class="card">
-											<div class="card-body gap-3">
-												<img
-													src="/images/building-trust-image.png"
-													class="radius-sm"
-													alt="gambar courses"
-												/>
-												<div class="flex-column gap-1">
-													<p class="body-small-medium label-bullet">Sales Marketing</p>
-													<p class="body-small-medium">Building Trust</p>
-													<div class="flex justify-content-between align-items-center">
-														<p class="caption-small-reguler">0/9 Item</p>
-													</div>
-												</div>
-=======
 						{#if toastVisible}
 							<Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color}/>
 						{/if}
@@ -214,57 +164,10 @@
 													</div>
 												</div>
 												{/each}
->>>>>>> 6ec88616a878a9aff465bc34cdac1f494b0cb1cd
 											</div>
 										</div>
 									</div>
 
-<<<<<<< HEAD
-									<div class="col-xs-12 col-sm-6 col-md-4">
-										<div class="card">
-											<div class="card-body gap-3">
-												<img
-													src="/images/building-trust-image.png"
-													class="radius-sm"
-													alt="gambar courses"
-												/>
-												<div class="flex-column gap-1">
-													<p class="body-small-medium label-bullet">Sales Marketing</p>
-													<p class="body-small-medium">Building Trust</p>
-													<div class="flex justify-content-between align-items-center">
-														<p class="caption-small-reguler">0/7 Item</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-xs-12 col-sm-6 col-md-4">
-										<div class="card">
-											<div class="card-body gap-3">
-												<img
-													src="/images/building-trust-image.png"
-													class="radius-sm"
-													alt="gambar courses"
-												/>
-												<div class="flex-column gap-1">
-													<p class="body-small-medium label-bullet">Sales Marketing</p>
-													<p class="body-small-medium">Building Trust</p>
-													<div class="flex justify-content-between align-items-center">
-														<p class="caption-small-reguler">0/10 Item</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div class="flex body-medium-reguler justify-content-between mb-3">
-										<div class="flex align-items-center gap-6">
-											<Button type="link" href="" classList="btn btn-main">Tukar Sekarang</Button>
-											<Button type="link" href="" classList="btn btn-main-outline">Batal</Button>
-										</div>
-									</div>
-=======
 									<div class="flex" transition:fly={{ delay: 250, duration: 400, x: -100, opacity: 0, easing: quintOut }}>
 										<div class="flex align-items-center gap-2">
 											<Button classList="btn btn-main" onClick={redeem}>Tukar Sekarang</Button>
@@ -276,7 +179,6 @@
 										</div>
 									</div>
 									{/if}
->>>>>>> 6ec88616a878a9aff465bc34cdac1f494b0cb1cd
 								</div>
 							</div>
 						</div>
@@ -287,11 +189,6 @@
 	</section>
 {/if}
 
-<<<<<<< HEAD
-<svelte:head>
-	<title>Tukar Kode</title>
-</svelte:head>
-=======
 <style>
 	.thumbnail {
 		border-radius: .25rem;
@@ -301,4 +198,3 @@
 		object-position: center;	
 	}
 </style>
->>>>>>> 6ec88616a878a9aff465bc34cdac1f494b0cb1cd
