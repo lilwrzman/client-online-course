@@ -259,6 +259,49 @@
         })
     }
 
+    const downloadCertificate = () => {
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "GET",
+            endpoint: `certificate/${$page.params.course}`,
+            authToken: user.token,
+            responseType: 'blob'
+        }).then(response => {
+            if(response){
+                const url = window.URL.createObjectURL(new Blob([response]))
+                const link = document.createElement('a')
+                
+                link.href = url
+                link.setAttribute('download', 'certificate.png')
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                
+                toastData = {
+                    title: "Berhasil",
+                    message: "Sertifikat anda berhasil diunduh!",
+                    color: 'toast-success'
+                }
+                toastVisible = true
+                showSpinner = false
+            }
+        }).catch(e => {
+            let error = e.response.data
+            showSpinner = false
+
+            console.error(error)
+
+            if(error.error){
+                toastData = {
+                    title: "Gagal",
+                    message: error.error,
+                    color: 'toast-danger'
+                }
+                toastVisible = true
+            }
+        })
+    }
+
     onMount(() => {
         let flashes = getFlash()
         if(flashes){
@@ -451,10 +494,12 @@
     
                             {/if}
                         </div>
+                        {#if myFeedback}
                         <div class="certificate-nav">
                             <p class="body-super-large-semi-bold">Sertifikat</p>
-                            <Button classList="btn btn-main-outline">Lihat Sertifikat</Button>
+                            <Button classList="btn btn-main-outline" onClick={downloadCertificate}>Lihat Sertifikat</Button>
                         </div>
+                        {/if}
                         {/if}
                     </div>
                 </div>
