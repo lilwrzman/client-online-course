@@ -1,4 +1,5 @@
 <script>
+    import { PUBLIC_SERVER_PATH } from "$env/static/public"
 	import ApiController from "$lib/ApiController";
 	import checkLogin from "$lib/CheckLogin";
 	import Navbar from "@components/Navbar.svelte";
