@@ -58,7 +58,7 @@
 								<h4 class="mb-0">{ detail.title }</h4>
 							</div>
 						</div>
-						<div class="flex-column gap-standard">
+						<div class="flex-column gap-5">
 							<div class="flex align-items-center gap-4">
 								<BookFill color="#3951A8" />
 								<p class="body-super-large-reguler">{ detail.items.length } item</p>
