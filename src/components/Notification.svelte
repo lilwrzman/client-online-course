@@ -1,29 +1,42 @@
 <script>
-	import ApiController from "$lib/ApiController";
-	import { onMount } from "svelte";
 	import { X } from "svelte-bootstrap-icons";
 	import Button from "./Button.svelte";
+	import ApiController from "$lib/ApiController";
+	import Spinner from "./Spinner.svelte";
+	import { onMount } from "svelte";
 
-    export let user
+    export let token
     export let notificationOpen = false
+    export let notifications
 
-    let notifications 
+    let showSpinner = false
 
-    const getNotification = () => {
+    const updateIsSeen = (id, redirect = null) => {
+        showSpinner = true
         ApiController.sendRequest({
-            method: "GET",
-            endpoint: "notification/get",
-            authToken: user.token
+            method: "POST",
+            endpoint: "notification/update",
+            data: {id},
+            authToken: token
         }).then(response => {
             if(response.status){
-                notifications = response.data
-                for(let i = 0; i < 20; i++){
-                    notifications.push(notifications[0])
+                notifications = notifications.map(elm => {
+                    if(id == elm.id){
+                        return {...elm, is_seen: true}
+                    }else {
+                        return {...elm}
+                    }
+                })
+
+                if(redirect){
+                    window.location.href = redirect
                 }
-                console.log(response.data)
+
+                return
             }
         }).catch(e => {
             let error = e.response.data
+            showSpinner = false
             console.error(error)
         })
     }
@@ -50,11 +63,11 @@
             return `${days} hari yang lalu`
         }
     }
-
-    onMount(() => {
-        getNotification()
-    })
 </script>
+
+{#if showSpinner}
+    <Spinner/>
+{/if}
 
 {#if notificationOpen}
 <div class="dropdown-content-notification">
@@ -69,17 +82,60 @@
     <div class="notification-list">
         {#if notifications}
         {#if notifications.length > 0}
-        {#each notifications as notif, index}
-        {#if notif.notification.info.menu == 'articles'}
-        <a href="/articles/{notif.notification.info.article_id}">
-            <div class="flex-column p-standard neutral-border-bottom {notif.is_seen ? 'old' : 'new'}">
-                <p class="body-small-semi-bold mb-0">Artikel</p>
+        {#each notifications as notif, index (notif.id)}
+        <Button classList="btn btn-no-padding" onClick={() => {
+            let redirect = ""
+            if(notif.notification.info.menu == 'articles'){
+                redirect = `/articles/${notif.notification.info.article_id}`
+            }else if(notif.notification.info.menu == 'events'){
+                redirect = "/events"
+            }else if(notif.notification.info.menu == 'learning-paths'){
+                redirect = `/learning-paths/${notif.notification.info.learning_path_id}`
+            }else if(notif.notification.info.menu == 'course'){
+                if(notif.notification.info.target.includes("teacher")){
+                    redirect = `/teacher/course/${notif.notification.info.course_id}`
+                }else if(notif.notification.info.target.includes("superadmin")){
+                    redirect = `/superadmin/course/${notif.notification.info.course_id}`
+                }
+            }else if(notif.notification.info.menu == 'transactions'){
+                redirect = `/student/transactions`
+            }else if(notif.notification.info.menu == 'transaction'){
+                redirect = `/superadmin/transaction`
+            }else if(notif.notification.info.menu == 'bundle'){
+                if(notif.notification.info.target.includes("superadmin")){
+                    redirect = `/superadmin/bundle/${notif.notification.info.target.bundle_id}`
+                }else if(notif.notification.info.target.includes("corporate admin")){
+                    redirect = `/corporate/bundle/${notif.notification.info.target.bundle_id}`
+                }
+            }else if(notif.notification.info.menu == 'my-courses'){
+                redirect = `/student/my-courses/${notif.notification.info.course_id}`
+            }else if(notif.notification.info.menu == 'progress'){
+                redirect = `/teacher/progress/${notif.notification.info.course_id}`
+            }else if(notif.notification.info.menu == 'testimonials'){
+                redirect = `/testimonials`
+            }else if(notif.notification.info.menu == 'feedback'){
+                redirect = `/teacher/feedback/${notif.notification.info.course_id}`
+            }else if(notif.notification.info.menu == 'discussion'){
+                if(notif.notification.info.target.includes("teacher")){
+                    redirect = `/teacher/discussion/${notif.notification.info.target.course_id}`
+                }else if(notif.notification.info.target.includes("student")){
+                    redirect = `/student/my-courses/${notif.notification.info.target.course_id}`
+                }
+            }
+
+            updateIsSeen(notif.id, redirect)
+        }}>
+            <div class="flex-column align-items-start p-standard neutral-border-bottom {notif.is_seen ? 'old' : 'new'}">
+                <p class="body-small-semi-bold mb-0">{notif.notification.title}</p>
                 <p class="body-small-reguler mb-2">{notif.notification.message}</p>
                 <p class="caption-reguler-thin">{timeAgo(notif.notification.created_at)}</p>
             </div>
-        </a>
-        {/if}
+        </Button>
         {/each}
+        {:else}
+        <div class="flex align-items-center justify-content-center p-standard">
+            <p class="body-small-reguler">Belum ada notifikasi</p>
+        </div>
         {/if}
         {/if}
     </div>
@@ -115,5 +171,9 @@
 
     .new {
         background-color: var(--primary-surface);
+    }
+
+    p {
+        text-align: left;
     }
 </style>

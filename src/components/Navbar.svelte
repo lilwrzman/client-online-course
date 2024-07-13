@@ -31,6 +31,7 @@
 	let notificationOpen = false
 
 	let status = false
+	let notifications = []
 
 	function handleScroll(){
 		isFixed = window.scrollY >= 50
@@ -81,11 +82,27 @@
 		user = extract('datas')
 		if(user){
 			isLoggedIn = true
+			getNotification(user.token)
 		}else{
 			isLoggedIn = false
 		}
 
 		status = true
+	}
+
+	const getNotification = (token) => {
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: "notification/get",
+			authToken: token
+		}).then(response => {
+			if(response.status){
+				notifications = response.data
+			}
+		}).catch(e => {
+			let error = e.response.data
+			console.error(error)
+		})
 	}
 
 	onMount(() => {
@@ -109,11 +126,11 @@
 
 <header>
 	<nav class="nav
-		{variant == 'outside' ? 'nav-light' : 'nav-neutral'}
+		{variant == 'outside' || variant == 'combined' ? 'nav-light' : 'nav-neutral'}
 		{isFixed && variant == "outside" ? 'navbar-shadow' : ''}
 		w-100">
 		<div class="container flex justify-content-between align-items-center h-100">
-			{#if variant == 'outside'}
+			{#if variant == 'outside' || variant == 'combined'}
 			<a href="/" class="btn btn-no-padding">
 				<div class="h5">Logo Disini</div>
 			</a>
@@ -129,7 +146,7 @@
 				<div class="body-large-semi-bold">{pageTitle}</div>
 			</div>
 			{/if}
-			{#if variant == 'outside'}
+			{#if variant == 'outside' || variant == 'combined'}
 			<ul class="navbar-menu">
 				<li class="navbar-menu-item {active == 'beranda' ? 'active' : ''}">
 					<a href="/">Beranda</a>
@@ -156,13 +173,18 @@
 				<div class="flex gap-4 align-items-center">
 					<div class="dropdown-menu-notification">
 						<Button classList="btn btn-no-padding" onClick={toggleNotification}>
-							<div class="flex align-items-center justify-content-center">
+							<div class="flex align-items-center justify-content-center gap-1">
 								<Bell width={16} height={16}/>
+								{#if notifications.filter(elm => !elm.is_seen).length > 0}
+								<div class="flex px-1 align-items-center justify-content-center bg-danger-main radius-sm">
+									<p class="notification-count mb-0">{notifications.filter(elm => !elm.is_seen).length}</p>
+								</div>
+								{/if}
 							</div>
 						</Button>
 
 						{#if notificationOpen}
-							<Notification bind:notificationOpen={notificationOpen}  />
+							<Notification bind:notificationOpen={notificationOpen} bind:notifications={notifications} bind:token={user.token} />
 						{/if}
 					</div>
 					
@@ -177,12 +199,28 @@
 
 						{#if dropdownOpen}
 						<div class="dropdown-content-profile">
+							{#if variant == 'outside'}
+							<a href="/{user.role.toLowerCase().split(" ")[0]}/dashboard">
+								<div class="flex align-items-center gap-2 p-standard">
+									<HouseDoor color="#8191AC"/>
+									<p class="body-small-reguler mb-0">Kembali ke Dasbor</p>
+								</div>
+							</a>
+							{:else if variant == 'inside'}
 							<a href="/">
 								<div class="flex align-items-center gap-2 p-standard">
 									<HouseDoor color="#8191AC"/>
 									<p class="body-small-reguler mb-0">Kembali ke Beranda</p>
 								</div>
 							</a>
+							{:else if variant == 'combined'}
+							<a href="/">
+								<div class="flex align-items-center gap-2 p-standard">
+									<HouseDoor color="#8191AC"/>
+									<p class="body-small-reguler mb-0">Kembali ke Beranda</p>
+								</div>
+							</a>
+							{/if}
 							<a href="/{user.role.toLowerCase().split(" ")[0]}/settings/profile">
 								<div class="flex align-items-center gap-2 p-standard">
 									<Gear color="#8191AC" />
@@ -330,6 +368,12 @@
 
 	.dropdown-content-profile a:hover {
 		background-color: var(--hover);
+	}
+
+	.notification-count {
+		font-size: 8px;
+		font-weight: 400;
+		line-height: 18px;
 	}
 
 	/* End of Navbar Section */
