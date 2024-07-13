@@ -37,7 +37,7 @@
 				{#if events}
 				{#if events.length > 0}
 				{#each events as event, index (event.id)}
-				<div class="col-12 col-md-8">
+				<div class="col-12 col-md-8 mb-8">
 					<div class="flex-column align-items-center gap-3 neutral-border radius-sm">
 						<img src="{PUBLIC_SERVER_PATH}/storage/{event.thumbnail}" alt="gambar courses" class="thumbnail" />
 						<div class="flex-column align-items-center pb-3">
