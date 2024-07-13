@@ -194,7 +194,7 @@
 								<p class="body-small-reguler mb-0">Kembali ke Dasbor</p>
 							</div>
 						</a>
-						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings">
+						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings/profile">
 							<div class="flex align-items-center gap-2 p-standard">
 								<Gear color="#8191AC" />
 								<p class="body-small-reguler mb-0">Pengaturan Akun</p>
