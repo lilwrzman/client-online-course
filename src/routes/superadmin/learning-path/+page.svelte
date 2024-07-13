@@ -64,7 +64,7 @@
             toastVisible = true
         }
         
-        user = checkLogin('Superadmin')
+        user = checkLogin('Superadmin', true)
 
         getPaths()
     })
