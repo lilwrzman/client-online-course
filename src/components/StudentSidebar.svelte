@@ -61,7 +61,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/student/settings"
+                    <a href="/student/settings/profile"
                         class="menu {active == 'Pengaturan Akun' ? 'menu-active' : ''}" >
                         <GearFill width="20" height="20" color={active == 'Pengaturan Akun' ? '#3951A8' : '#8191AC'} />
                         <p class="body-small-semi-bold {active == 'Pengaturan Akun' ? 'tc-primary-main' : 'tc-neutral-primary'}" >
