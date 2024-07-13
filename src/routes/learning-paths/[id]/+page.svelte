@@ -8,13 +8,13 @@
 	import ApiController from "$lib/ApiController.js";
 
     export let data
-    let slug = data.slug
+    let id = data.id
 
     let detail, status = false
 
     onMount(() => {
         ApiController.sendRequest({
-            endpoint: `learning-path/get/${slug}`,
+            endpoint: `learning-path/get/${id}`,
             method: "GET",
         }).then(response => {
             console.log(response)
