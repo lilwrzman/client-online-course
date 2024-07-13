@@ -18,6 +18,7 @@
     import { Arrow90degLeft, PlayCircle, CheckCircleFill, FileEarmarkText, Pass, Clock, Folder2, ChevronBarDown, ChevronUp, ChevronDown, StarFill } from "svelte-bootstrap-icons"
 	import Modal from "@components/Modal.svelte";
 	import { getCurrentTime, getDay } from "$lib/Date";
+	import axios from "axios";
 
     const returnNada = () => ''
 
@@ -261,19 +262,30 @@
 
     const downloadCertificate = () => {
         showSpinner = true
-        ApiController.sendRequest({
-            method: "GET",
-            endpoint: `certificate/${$page.params.course}`,
-            authToken: user.token,
-            responseType: 'blob'
+        axios.get(PUBLIC_SERVER_PATH + '/api/' + `certificate/${$page.params.course}`, {
+            responseType: 'blob',
+            headers : {
+                'Authorization': `Bearer ${user.token}`
+            }
         }).then(response => {
             if(response){
-                const url = window.URL.createObjectURL(new Blob([response]))
+                const disposition = response.headers['content-disposition']
+                let filename = 'certificate.png'
+
+                if(disposition && disposition.indexOf('attachment') !== -1) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                const url = window.URL.createObjectURL(new Blob([response.data]))
                 const link = document.createElement('a')
-                
+
                 link.style.display = "none"
                 link.href = url
-                link.setAttribute('download', 'certificate.png')
+                link.setAttribute('download', filename)
                 document.body.appendChild(link)
                 link.click()
                 
@@ -694,7 +706,7 @@
                         {#if histories[histories.length-1].is_pass}
                         {#if selected_item.type == 'Quiz'}
                         <Button classList="btn btn-main" onClick={nextProgress}>Berikutnya</Button>
-                        {:else if selected_item.type == 'Exam' && completed_items.map(elm => elm.item_id).includes(exam.id)}
+                        {:else if selected_item.type == 'Exam' && exam && completed_items.map(elm => elm.item_id).includes(exam.id)}
                         {#if !myFeedback}
                         <Button classList="btn btn-main" onClick={() => modalShow = true}>Beri Umpan Balik</Button>
                         {/if}
