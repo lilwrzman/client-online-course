@@ -47,7 +47,7 @@
 
 </script>
 
-<Navbar bind:user={user} />
+<Navbar  />
 
 {#if user}
 <section class="section" id="my-courses">

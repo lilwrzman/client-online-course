@@ -36,7 +36,7 @@
     })
 </script>
 
-<Navbar bind:user={user} />
+<Navbar  />
 
 <section id="progress" class="section">
     <div class="container">

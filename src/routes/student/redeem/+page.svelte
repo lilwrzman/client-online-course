@@ -109,7 +109,7 @@
 	<section class="section" id="reedem-code">
 		<div class="container">
 			<div class="flex gap-4">
-				<StudentSidebar active="Tukar Kode" bind:user />
+				<StudentSidebar active="Tukar Kode" bind:user={user} />
 				<main class="w-100">
 					<div class="container">
 						{#if toastVisible}

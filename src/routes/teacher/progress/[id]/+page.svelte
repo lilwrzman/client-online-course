@@ -55,7 +55,7 @@
 <div class="flex">
     <Sidebar active="Progres Karyawan" role="Teacher" bind:isSidebarOpen={isSidebarOpen}/>
     <div class="neutral-wrapper px-3">
-        <Navbar variant="inside" pageTitle="Progres Karyawan" bind:user={user} bind:isSidebarOpen={isSidebarOpen}/>
+        <Navbar variant="inside" pageTitle="Progres Karyawan"  bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1; overflow-y: hidden;" class="flex-column">
             <div class="container flex-column py-4 gap-4" style="flex-grow: 1;">
                 <div class="flex gap-2">

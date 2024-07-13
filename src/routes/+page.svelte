@@ -10,6 +10,7 @@
     import Toast from '@components/Toast.svelte';
     import StarFill from "svelte-bootstrap-icons/lib/StarFill.svelte"
 	import { onMount } from 'svelte';
+	import { extract } from '$lib/Cookie';
 
     let toastData
     let toastVisible = false
@@ -29,7 +30,7 @@
     })
 </script>
 
-<Navbar active="beranda"/>
+<Navbar active="beranda" />
 
 <main>
     {#if toastVisible}

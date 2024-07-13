@@ -49,7 +49,7 @@
     })
 </script>
 
-<Navbar bind:user={user} />
+<Navbar  />
 
 <section id="transaction" class="section">
     <div class="container">

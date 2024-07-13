@@ -65,7 +65,7 @@
     })
 </script>
 
-<Navbar bind:user={user} />
+<Navbar  />
 
 <section id="assessment" class="section">
     <main>

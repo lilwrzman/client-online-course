@@ -333,7 +333,7 @@
     })
 </script>
 
-<Navbar bind:user={user}/>
+<Navbar />
 
 <section id="learning" class="section">
     <div class="container">
@@ -468,18 +468,16 @@
                             {#each courseFeedback as feedback, index (feedback.id)}
                             <li>
                                 <div class="flex gap-2 align-items-center">
-                                    <img src="/images/default.png" class="radius-sm" alt="avatar" width="80" height="80">
+                                    <img src="{PUBLIC_SERVER_PATH}/storage/{feedback.user.avatar}" class="radius-sm" alt="avatar" width="80" height="80">
                                     <div class="flex-column w-100 gap-1">
                                         <div class="flex align-items-center justify-content-between">
-                                            <p class="body-small-semi-bold mb-0">Michael Hernandez</p>
+                                            <p class="body-small-semi-bold mb-0">{feedback.user.info.fullname}</p>
                                             <div class="flex gap-1 align-items-center">
-                                                <p class="caption-reguler mb-0">4.8</p>
+                                                <p class="caption-reguler mb-0">{feedback.rating}</p>
                                                 <StarFill color="#FF9933" width=12 height=12 />
                                             </div>
                                         </div>
-                                        <p class="caption-light mb-0">
-                                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
-                                        </p>
+                                        <p class="caption-light mb-0">{feedback.review}</p>
                                     </div>
                                 </div>
                             </li>

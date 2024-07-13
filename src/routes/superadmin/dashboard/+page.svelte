@@ -52,7 +52,7 @@
 <div class="flex">
     <Sidebar active="Dasbor" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
-        <Navbar active="" variant="inside" pageTitle="Dasbor" bind:user={user} bind:isSidebarOpen={isSidebarOpen} />
+        <Navbar active="" variant="inside" pageTitle="Dasbor" bind:isSidebarOpen={isSidebarOpen} />
         <main>
             <div class="container flex-column py-4 gap-8">
                 {#if toastVisible}

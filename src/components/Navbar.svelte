@@ -10,8 +10,9 @@
 	import Modal from "./Modal.svelte";
 	import ApiController from "$lib/ApiController";
 	import Spinner from "./Spinner.svelte";
+	import Notification from "./Notification.svelte";
 
-	export let user
+	let user
 	export let active = ''
 	export let variant = 'outside'
 	export let pageTitle = ''
@@ -22,15 +23,28 @@
 	let isFixed = false
 	let modalShow = false
 	let isLoggedIn = false
-	let username = ''
 
 	let modalLogoutShow = false
 	let showSpinner = false
 
 	let dropdownOpen = false
+	let notificationOpen = false
+
+	let status = false
 
 	function handleScroll(){
 		isFixed = window.scrollY >= 50
+	}
+
+	function toggleNotification(event) {
+		notificationOpen = !notificationOpen
+		event.stopPropagation()
+	}
+
+	function handleClickOutsideNotification(event) {
+		if(notificationOpen && !event.target.closest('.dropdown-menu-notification')){
+			notificationOpen = false
+		}
 	}
 
 	function toggleDropdown(event) {
@@ -63,28 +77,30 @@
 		})
 	}
 
-	onMount(() => {
-		if(!user){
-			user = extract('datas')
+	const getUser = () => {
+		user = extract('datas')
+		if(user){
+			isLoggedIn = true
+		}else{
+			isLoggedIn = false
 		}
+
+		status = true
+	}
+
+	onMount(() => {
+		getUser()
 
 		window.addEventListener('scroll', handleScroll)
 		window.addEventListener('click', handleClickOutside)
+		window.addEventListener('click', handleClickOutsideNotification)
 
 		return () => {
 			window.removeEventListener('scroll', handleScroll)
 			document.removeEventListener('click', handleClickOutside)
+			document.removeEventListener('click', handleClickOutsideNotification)
 		}
 	})
-
-	$: {
-		if(user){
-			isLoggedIn = true
-			username = user.username
-		}else{
-			isLoggedIn = false
-		}
-	}
 </script>
 
 {#if showSpinner}
@@ -132,98 +148,72 @@
 				</li>
 			</ul>
 			{/if}
-			{#if variant == 'inside'}
-			<div class="flex gap-4 align-items-center">
-				<div class="flex align-items-center justify-content-center">
-					<Bell width={16} height={16}/>
-				</div>
-				
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<div class="flex align-items-center gap-3 dropdown-menu-profile"
-				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
-					<p class="body-small-medium mb-0">{user ? username : ''}</p>
-					<div class="flex align-items-center gap-2">
-						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32" class="avatar">
-						<ChevronDown width={16} height={16}/>
-					</div>
 
-					{#if dropdownOpen}
-					<div class="dropdown-content-profile">
-						<a href="/">
-							<div class="flex align-items-center gap-2 p-standard">
-								<HouseDoor color="#8191AC"/>
-								<p class="body-small-reguler mb-0">Kembali ke Beranda</p>
-							</div>
-						</a>
-						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings/profile">
-							<div class="flex align-items-center gap-2 p-standard">
-								<Gear color="#8191AC" />
-								<p class="body-small-reguler mb-0">Pengaturan Akun</p>
-							</div>
-						</a>
-						<Button classList="btn btn-no-padding btn-logout" onClick={() => modalLogoutShow = true}> 
-							<div class="flex align-items-center gap-2 p-standard">
-								<BoxArrowInLeft color="#8191AC" />
-								<p class="body-small-reguler mb-0">Keluar</p>
-							</div>
-						</Button>
-					</div>
-					{/if}
-				</div>
-			</div>
-			{:else if user}
-			<div class="flex gap-2 align-items-center">
-				<div class="flex align-items-center justify-content-center">
-					<Bell width={16} height={16}/>
-				</div>
-				
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<div class="flex align-items-center gap-3 dropdown-menu-profile"
-				on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
-					<p class="body-small-medium mb-0">{user ? username : ''}</p>
-					<div class="flex align-items-center gap-2">
-						<img src="{PUBLIC_SERVER_PATH}/storage/{user ? user.avatar : ''}" alt="" width="32" height="32" class="avatar">
-						<ChevronDown width={16} height={16}/>
-					</div>
-
-					{#if dropdownOpen}
-					<div class="dropdown-content-profile">
-						<a href="/{user.role.toLowerCase().split(" ")[0]}/dashboard">
-							<div class="flex align-items-center gap-2 p-standard">
-								<HouseDoor color="#8191AC"/>
-								<p class="body-small-reguler mb-0">Kembali ke Dasbor</p>
-							</div>
-						</a>
-						<a href="/{user.role.toLowerCase().split(" ")[0]}/settings">
-							<div class="flex align-items-center gap-2 p-standard">
-								<Gear color="#8191AC" />
-								<p class="body-small-reguler mb-0">Pengaturan Akun</p>
-							</div>
-						</a>
-						<Button classList="btn btn-no-padding btn-logout" onClick={() => modalLogoutShow = true}> 
-							<div class="flex align-items-center gap-2 p-standard">
-								<BoxArrowInLeft color="#8191AC" />
-								<p class="body-small-reguler mb-0">Keluar</p>
-							</div>
-						</Button>
-					</div>
-					{/if}
-				</div>
-			</div>
+			{#if !status}
+			<div></div>
 			{:else}
-			<div class="flex gap-2 align-items-center">
-				<Button classList="btn btn-main-outline" onClick={() => modalShow = true}>
-					Masuk
-				</Button>
-				<Button type="link" href="/registration" classList="btn btn-main">Daftar</Button>
-			</div>
+				{#if isLoggedIn}
+				<div class="flex gap-4 align-items-center">
+					<div class="dropdown-menu-notification">
+						<Button classList="btn btn-no-padding" onClick={toggleNotification}>
+							<div class="flex align-items-center justify-content-center">
+								<Bell width={16} height={16}/>
+							</div>
+						</Button>
+
+						{#if notificationOpen}
+							<Notification bind:notificationOpen={notificationOpen}  />
+						{/if}
+					</div>
+					
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<div class="flex align-items-center gap-3 dropdown-menu-profile"
+					on:click={toggleDropdown} role="button" aria-label="toggle-profile-dropdown" tabindex="0">
+						<p class="body-small-medium mb-0">{user.username}</p>
+						<div class="flex align-items-center gap-2">
+							<img src="{PUBLIC_SERVER_PATH}/storage/{user.avatar}" alt="" width="32" height="32" class="avatar">
+							<ChevronDown width={16} height={16}/>
+						</div>
+
+						{#if dropdownOpen}
+						<div class="dropdown-content-profile">
+							<a href="/">
+								<div class="flex align-items-center gap-2 p-standard">
+									<HouseDoor color="#8191AC"/>
+									<p class="body-small-reguler mb-0">Kembali ke Beranda</p>
+								</div>
+							</a>
+							<a href="/{user.role.toLowerCase().split(" ")[0]}/settings/profile">
+								<div class="flex align-items-center gap-2 p-standard">
+									<Gear color="#8191AC" />
+									<p class="body-small-reguler mb-0">Pengaturan Akun</p>
+								</div>
+							</a>
+							<Button classList="btn btn-no-padding btn-logout" onClick={() => modalLogoutShow = true}> 
+								<div class="flex align-items-center gap-2 p-standard">
+									<BoxArrowInLeft color="#8191AC" />
+									<p class="body-small-reguler mb-0">Keluar</p>
+								</div>
+							</Button>
+						</div>
+						{/if}
+					</div>
+				</div>
+				{:else}
+				<div class="flex gap-2 align-items-center">
+					<Button classList="btn btn-main-outline" onClick={() => modalShow = true}>
+						Masuk
+					</Button>
+					<Button type="link" href="/registration" classList="btn btn-main">Daftar</Button>
+				</div>
+				{/if}
 			{/if}
 		</div>
 	</nav>
 </header>
 
 {#if modalShow}
-	<LoginModal bind:modalShow bind:isLoggedIn/>
+	<LoginModal bind:modalShow />
 {/if}
 
 {#if modalLogoutShow}
@@ -308,6 +298,10 @@
 
 	.navbar-shadow{
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.dropdown-menu-notification {
+		position: relative;
 	}
 
 	.dropdown-menu-profile {

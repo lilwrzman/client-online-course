@@ -19,7 +19,7 @@
 <section class="section" id="settings" >
 	<div class="container">
 		<div class="flex gap-4">
-			<StudentSidebar active="Pengaturan Akun" bind:user />
+			<StudentSidebar active="Pengaturan Akun" bind:user={user} />
 			<main class="w-100">
 				<div class="container">
 					<div class="flex-column gap-4">
