@@ -31,7 +31,7 @@
     })
 </script>
 
-<Navbar/>
+<Navbar variant="combined" />
 
 <section id="header" class="section">
     <div class="container">

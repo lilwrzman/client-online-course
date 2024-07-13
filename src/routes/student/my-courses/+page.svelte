@@ -47,7 +47,7 @@
 
 </script>
 
-<Navbar  />
+<Navbar variant="combined" />
 
 {#if user}
 <section class="section" id="my-courses">

@@ -145,7 +145,7 @@
 	});
 </script>
 
-<Navbar bind:user={user} />
+<Navbar variant="combined" />
 
 <section class="section" id="settings">
 	<div class="container">

@@ -333,7 +333,7 @@
     })
 </script>
 
-<Navbar />
+<Navbar variant="combined" />
 
 <section id="learning" class="section">
     <div class="container">

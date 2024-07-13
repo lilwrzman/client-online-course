@@ -49,7 +49,7 @@
     })
 </script>
 
-<Navbar  />
+<Navbar variant="combined" />
 
 <section id="transaction" class="section">
     <div class="container">

@@ -36,7 +36,7 @@
     })
 </script>
 
-<Navbar  />
+<Navbar variant="combined" />
 
 <section id="progress" class="section">
     <div class="container">

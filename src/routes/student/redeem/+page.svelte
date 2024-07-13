@@ -103,7 +103,7 @@
 	});
 </script>
 
-<Navbar />
+<Navbar variant="combined" />
 
 {#if user}
 	<section class="section" id="reedem-code">

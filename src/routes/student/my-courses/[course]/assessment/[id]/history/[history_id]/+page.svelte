@@ -60,7 +60,7 @@
     })
 </script>
 
-<Navbar  />
+<Navbar variant="combined" />
 
 <section id="assessment" class="section">
     <main>
