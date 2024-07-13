@@ -98,6 +98,11 @@ main { overflow-x: hidden; }
     background-color: var(--neutral-white);
 }
 
+.bg-danger-main{
+    background-color: var(--danger-main);
+    color: var(--neutral-white);
+}
+
 .container { width: 100%; margin: 0 auto; padding: 0 0.75rem; }
 
 /* Typography Section */
