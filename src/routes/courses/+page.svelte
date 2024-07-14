@@ -5,19 +5,20 @@
 	import Footer from "@components/Footer.svelte";
     import InputField from "@components/InputField.svelte";
     import Navbar from "@components/Navbar.svelte";
+	import SortMenu from "@components/SortMenu.svelte";
+	import { DataHandler } from "@vincjo/datatables";
 	import { onMount } from "svelte";
     import StarFill from "svelte-bootstrap-icons/lib/StarFill.svelte"
 
+    let handler, rows, pageCount, pageNumber
     let option = [
-        {value: "newest", text:"Terbaru"},
-        {value: "asc", text: 'A-Z'},
-        {value: "desc", text:'Z-A'}
+        {val: "newest", label:"Terbaru"},
+        {val: "asc", label: 'A-Z'},
+        {val: "desc", label:'Z-A'}
     ]
 
-    let sortBy = option[0].value
-
     const handleSort = (evt) => {
-        sortBy = evt.target.value
+        let sortBy = evt.target.value
 
         if(sortBy == 'newest'){
             handler.sortDesc('created_at')
@@ -25,10 +26,12 @@
             handler.sortAsc('title')
         }else if(sortBy == 'desc'){
             handler.sortDesc('title')
+        }else{
+            handler.clearSort()
         }
     }
 
-
+    let testimonials
     let status = false
     let courses
     const getCourses = () => {
@@ -37,12 +40,43 @@
             endpoint: "course/get",
         }).then(response => {
             courses = response.data.courses
+            handler = new DataHandler(courses)
+            rows = handler.getRows()
+            pageCount = handler.getPageCount()
+            pageNumber = handler.getPageNumber()
+            handler.sortDesc('created_at')
             status = true
         })
     }
 
+    const getTestimonials = () => {
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: "feedback/get"
+		}).then(response => {
+			if(response.status){
+				testimonials = response.data.map(elm => {
+					return {
+						id: elm.id,
+						rating: elm.rating,
+						review: elm.review,
+						created_at: elm.created_at,
+						user_id: elm.user_id,
+						course_id: elm.course_id,
+						course_title: elm.course.title,
+						reviewer: elm.user.info.fullname,
+						reviewer_avatar: elm.user.avatar
+					}
+				})
+
+                testimonials = testimonials.slice(0, 3)
+			}
+		})
+	}
+
     onMount(() => {
         getCourses()
+        getTestimonials()
     })
 
 </script>
@@ -56,15 +90,13 @@
             <div class="flex-column gap-3">
                 <div class="flex justify-content-between align-items-center">
                     <h4>Materi</h4>
-                    <InputField type="select-option" id="select-default"
-                        containerClass="grow-item grow-auto-md"
-                        inputClass="input-bg-light pr-8"
-                        onInput={handleSort}
-                        value={sortBy} option={option}/>
+                    <SortMenu options={option} action={handleSort} />
                 </div>
 
                 <div class="row">
-                    {#each courses as course}
+                    {#if $rows}
+                    {#if $rows.length > 0}
+                    {#each $rows as course, index (course.id)}
                     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
                         <div class="card">
                             <div class="card-body gap-3">
@@ -81,11 +113,17 @@
                                         <p class="caption-small-reguler">{ course.items } Item</p>                         
                                     </div>                          
                                 </div>
+                                {#if course.isPublished}
                                 <Button type="link" href="/courses/{ course.id }" classList="btn btn-main">Lihat Detail</Button>
+                                {:else}
+                                <Button disabled={true} classList="btn btn-main">Akan Datang</Button>
+                                {/if}
                             </div>
                         </div>
                     </div>
                     {/each}
+                    {/if}
+                    {/if}
                 </div>
             </div>
         </div>
@@ -97,73 +135,45 @@
                 <div class="h4 tc-dark">Testimoni Karyawan</div>
                 <Button type="link" classList="link body-large-reguler tc-dark" href="/testimonials">Lihat Semua</Button>
             </div>
-            <div class="row justify-content-between">
-                <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/testimoni-karyawan-image.png" alt="">
-                    <div class="flex-column gap-2">
-                        <div class="flex justify-content-between align-items-center">
-                            <div class="flex-column gap-1">
-                                <div class="body-large-semi-bold tc-dark">
-                                    Michael Hernandez
-                                </div>
-                                <div class="body-small-reguler tc-dark">
-                                    Sales Marketing
-                                </div>
-                            </div>
-                            <div class="flex gap-1 align-items-baseline">
-                                <div class="body-small-semi-bold tc-dark">4.8</div>
-                                <StarFill fill="#FF9933" />
-                            </div>
+            <div class="row">
+                {#if testimonials}
+                {#if testimonials.length > 0}
+                {#each testimonials as feedback}
+                <div class="col-lg-4">
+                    <div class="flex gap-2 mb-3">
+                        <div class="flex align-items-center justify-content-center">
+                            <img src="{PUBLIC_SERVER_PATH}/storage/{feedback.reviewer_avatar}" alt="avatar" width="100" height="100" class="avatar">
                         </div>
-                        <div class="caption-light tc-dark">
-                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/testimoni-karyawan-image.png" alt="">
-                    <div class="flex-column gap-2">
-                        <div class="flex justify-content-between align-items-center">
-                            <div class="flex-column gap-1">
-                                <div class="body-large-semi-bold tc-dark">
-                                    Michael Hernandez
+                        <div class="flex-column gap-2" style="flex: 1 1 auto; min-width: 0; max-width: 100%;">
+                            <div class="flex justify-content-between">
+                                <div class="flex-column gap-1">
+                                    <div class="body-large-semi-bold tc-dark">{feedback.reviewer}</div>
+                                    <div class="body-small-reguler tc-dark">{feedback.course_title}</div>
                                 </div>
-                                <div class="body-small-reguler tc-dark">
-                                    Sales Marketing
+                                <div class="flex gap-1">
+                                    <p class="body-small-semi-bold tc-dark">{feedback.rating}</p>
+                                    <StarFill fill="#FF9933" />
                                 </div>
                             </div>
-                            <div class="flex gap-1 align-items-baseline">
-                                <div class="body-small-semi-bold tc-dark">4.8</div>
-                                <StarFill fill="#FF9933" />
-                            </div>
-                        </div>
-                        <div class="caption-light tc-dark">
-                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
+                            <p class="caption-light tc-dark ellipsis">{feedback.review}</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/testimoni-karyawan-image.png" alt="">
-                    <div class="flex-column gap-2">
-                        <div class="flex justify-content-between align-items-center">
-                            <div class="flex-column gap-1">
-                                <div class="body-large-semi-bold tc-dark">
-                                    Michael Hernandez
-                                </div>
-                                <div class="body-small-reguler tc-dark">
-                                    Sales Marketing
-                                </div>
-                            </div>
-                            <div class="flex gap-1 align-items-baseline">
-                                <div class="body-small-semi-bold tc-dark">4.8</div>
-                                <StarFill fill="#FF9933" />
-                            </div>
-                        </div>
-                        <div class="caption-light tc-dark">
-                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
-                        </div>
+                {/each}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Belum ada umpan balik!</p>
                     </div>
                 </div>
+                {/if}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Memuat data...</p>
+                    </div>
+                </div>
+                {/if}
             </div>
         </div>
     </section>
@@ -184,6 +194,22 @@
     .section { 
         padding-bottom: 0;
     }
+
+    .avatar {
+		aspect-ratio: 1/1;
+		border-radius: .25rem;
+		object-fit: cover;
+		object-position: center;
+	}
+
+	.ellipsis {
+		width: 100%;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 </style>
 
 <svelte:head>

@@ -23,6 +23,7 @@
 	import ApiController from '$lib/ApiController';
 	import formatTime from '$lib/Duration';
 
+	let testimonials
 	let active = 'description';
 	let detail, status = false
 
@@ -36,8 +37,32 @@
 		})
 	}
 
+	const getTestimonials = () => {
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: `course/${$page.params.id}/feedback`
+		}).then(response => {
+			if(response.status){
+				testimonials = response.data.feedbacks.map(elm => {
+					return {
+						id: elm.id,
+						rating: elm.rating,
+						review: elm.review,
+						created_at: elm.created_at,
+						user_id: elm.user_id,
+						course_id: elm.course_id,
+						course_title: response.data.title,
+						reviewer: elm.user.info.fullname,
+						reviewer_avatar: elm.user.avatar
+					}
+				})
+			}
+		})
+	}
+
 	onMount(() => {
 		getDetail()
+		getTestimonials()
 	})
 </script>
 
@@ -214,125 +239,45 @@
 	<section id="testimonials" class="section">
 		<div class="container">
 			<div class="course-step body-large-semi-bold">Testimoni</div>
-			<div class="row justify-content-center w-100" style="padding: 20px 0;">
-				<div class="row justify-content-start">
-					<div class="col-lg-4 flex gap-2 mb-3">
-						<img src="/images/testimoni-karyawan-image.png" alt="" />
-						<div class="flex-column gap-2">
-							<div class="flex justify-content-between align-items-center">
-								<div class="flex-column gap-1">
-									<div class="body-large-semi-bold tc-dark">Michael Hernandez</div>
-									<div class="body-small-reguler tc-dark">Sales Marketing</div>
-								</div>
-								<div class="flex gap-1 align-items-baseline">
-									<div class="body-small-semi-bold tc-dark">4.8</div>
-									<StarFill fill="#FF9933" />
-								</div>
-							</div>
-							<div class="caption-light tc-dark">
-								Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas
-								ilmunya yang bermanfaat.
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-4 flex gap-2 mb-3">
-						<img src="/images/testimoni-karyawan-image.png" alt="" />
-						<div class="flex-column gap-2">
-							<div class="flex justify-content-between align-items-center">
-								<div class="flex-column gap-1">
-									<div class="body-large-semi-bold tc-dark">Michael Hernandez</div>
-									<div class="body-small-reguler tc-dark">Sales Marketing</div>
-								</div>
-								<div class="flex gap-1 align-items-baseline">
-									<div class="body-small-semi-bold tc-dark">4.8</div>
-									<StarFill fill="#FF9933" />
-								</div>
-							</div>
-							<div class="caption-light tc-dark">
-								Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas
-								ilmunya yang bermanfaat.
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-4 flex gap-2 mb-3">
-						<img src="/images/testimoni-karyawan-image.png" alt="" />
-						<div class="flex-column gap-2">
-							<div class="flex justify-content-between align-items-center">
-								<div class="flex-column gap-1">
-									<div class="body-large-semi-bold tc-dark">Michael Hernandez</div>
-									<div class="body-small-reguler tc-dark">Sales Marketing</div>
-								</div>
-								<div class="flex gap-1 align-items-baseline">
-									<div class="body-small-semi-bold tc-dark">4.8</div>
-									<StarFill fill="#FF9933" />
-								</div>
-							</div>
-							<div class="caption-light tc-dark">
-								Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas
-								ilmunya yang bermanfaat.
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row justify-content-start">
-					<div class="col-lg-4 flex gap-2 mb-3">
-						<img src="/images/testimoni-karyawan-image.png" alt="" />
-						<div class="flex-column gap-2">
-							<div class="flex justify-content-between align-items-center">
-								<div class="flex-column gap-1">
-									<div class="body-large-semi-bold tc-dark">Michael Hernandez</div>
-									<div class="body-small-reguler tc-dark">Sales Marketing</div>
-								</div>
-								<div class="flex gap-1 align-items-baseline">
-									<div class="body-small-semi-bold tc-dark">4.8</div>
-									<StarFill fill="#FF9933" />
-								</div>
-							</div>
-							<div class="caption-light tc-dark">
-								Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas
-								ilmunya yang bermanfaat.
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-4 flex gap-2 mb-3">
-						<img src="/images/testimoni-karyawan-image.png" alt="" />
-						<div class="flex-column gap-2">
-							<div class="flex justify-content-between align-items-center">
-								<div class="flex-column gap-1">
-									<div class="body-large-semi-bold tc-dark">Michael Hernandez</div>
-									<div class="body-small-reguler tc-dark">Sales Marketing</div>
-								</div>
-								<div class="flex gap-1 align-items-baseline">
-									<div class="body-small-semi-bold tc-dark">4.8</div>
-									<StarFill fill="#FF9933" />
-								</div>
-							</div>
-							<div class="caption-light tc-dark">
-								Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas
-								ilmunya yang bermanfaat.
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-4 flex gap-2 mb-3">
-						<img src="/images/testimoni-karyawan-image.png" alt="" />
-						<div class="flex-column gap-2">
-							<div class="flex justify-content-between align-items-center">
-								<div class="flex-column gap-1">
-									<div class="body-large-semi-bold tc-dark">Michael Hernandez</div>
-									<div class="body-small-reguler tc-dark">Sales Marketing</div>
-								</div>
-								<div class="flex gap-1 align-items-baseline">
-									<div class="body-small-semi-bold tc-dark">4.8</div>
-									<StarFill fill="#FF9933" />
-								</div>
-							</div>
-							<div class="caption-light tc-dark">
-								Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas
-								ilmunya yang bermanfaat.
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="row" style="padding: 20px 0;">
+				{#if testimonials}
+                {#if testimonials.length > 0}
+                {#each testimonials as feedback}
+                <div class="col-lg-4">
+                    <div class="flex gap-2 mb-3">
+                        <div class="flex align-items-center justify-content-center">
+                            <img src="{PUBLIC_SERVER_PATH}/storage/{feedback.reviewer_avatar}" alt="avatar" width="100" height="100" class="avatar">
+                        </div>
+                        <div class="flex-column gap-2" style="flex: 1 1 auto; min-width: 0; max-width: 100%;">
+                            <div class="flex justify-content-between">
+                                <div class="flex-column gap-1">
+                                    <div class="body-large-semi-bold tc-dark">{feedback.reviewer}</div>
+                                    <div class="body-small-reguler tc-dark">{feedback.course_title}</div>
+                                </div>
+                                <div class="flex gap-1">
+                                    <p class="body-small-semi-bold tc-dark">{feedback.rating}</p>
+                                    <StarFill fill="#FF9933" />
+                                </div>
+                            </div>
+                            <p class="caption-light tc-dark ellipsis">{feedback.review}</p>
+                        </div>
+                    </div>
+                </div>
+                {/each}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Belum ada umpan balik!</p>
+                    </div>
+                </div>
+                {/if}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Memuat data...</p>
+                    </div>
+                </div>
+                {/if}
 			</div>
 			<div class="flex-row-reverse">
 				<Button type="link" classList="link body-large-reguler tc-dark" href="/testimonials"

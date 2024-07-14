@@ -52,10 +52,12 @@
                     endpoint: `checkout/success/${transaction.id}`,
                     authToken: user.token
                 }).then(response => {
-                    showSpinner = false
-                    toastData = { title: "Berhasil", message: response.message, color: 'toast-success', redirectTo: `/courses/${id}` }
-                    toastVisible = true
-                    showSpinner = false
+                    console.log("Payment Success")
+                    return setFlash({ 
+                        title: 'Berhasil',
+                        message: response.message, 
+                        type: 'success', redirect: "/student/transactions"
+                    })
                 })
             },
             onPending: function(result){
@@ -67,10 +69,12 @@
                     endpoint: `checkout/pending/${transaction.id}`,
                     authToken: user.token
                 }).then(response => {
-                    showSpinner = false
-                    toastData = { title: "Berhasil", message: response.message, color: 'toast-success', redirectTo: `/courses/${id}` }
-                    toastVisible = true
-                    showSpinner = false
+                    console.log("Payment Pending")
+                    return setFlash({ 
+                        title: 'Berhasil',
+                        message: response.message, 
+                        type: 'success', redirect: "/student/transactions"
+                    })
                 })
             },
             onError: function(result){
