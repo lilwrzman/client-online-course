@@ -93,7 +93,7 @@
     <div class="card" style="width: 42.625rem;">
         <div class="card-body gap-5">
             <div class="flex-column gap-3 align-items-center">
-                <div class="h5">LOGO DISINI</div>
+                <div class="h5">CITRATAMA</div>
                 {#if role == 'Superadmin'}
                 <div class="h4">Login Admin LPK</div>
                 {:else if role == 'Teacher'}

@@ -83,7 +83,7 @@
         {#if notifications}
         {#if notifications.length > 0}
         {#each notifications as notif, index (notif.id)}
-        <Button classList="btn btn-no-padding" onClick={() => {
+        <Button classList="btn btn-no-padding border-0" onClick={() => {
             let redirect = ""
             if(notif.notification.info.menu == 'articles'){
                 redirect = `/articles/${notif.notification.info.article_id}`
@@ -167,10 +167,12 @@
 
     .old {
         background-color: var(--neutral-white);
+        border: 1px solid var(--neutral-white);
     }
 
     .new {
         background-color: var(--primary-surface);
+        border: 1px solid var(--primary-surface);
     }
 
     p {

@@ -42,7 +42,7 @@
 						<List />
 					</div>
 				</Button>
-				<a href="/" class="h5 mb-0">LOGO DISINI</a>
+				<a href="/" class="h5 mb-0">CITRATAMA</a>
 			</div>
 			<ul class="sidebar-menu">
 				{#if role == 'Superadmin'}

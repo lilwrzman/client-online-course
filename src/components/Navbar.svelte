@@ -132,7 +132,7 @@
 		<div class="container flex justify-content-between align-items-center h-100">
 			{#if variant == 'outside' || variant == 'combined'}
 			<a href="/" class="btn btn-no-padding">
-				<div class="h5">Logo Disini</div>
+				<div class="h5">CITRATAMA</div>
 			</a>
 			{:else}
 			<div class="flex gap-3 align-items-center">
