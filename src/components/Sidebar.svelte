@@ -427,8 +427,14 @@
 			</ul>
 		</div>
 		<div class="flex-column gap-2 px-4 py-3">
-			<div class="h5">Lorem Ipsum</div>
-			<div class="body-small-reguler">© All rights reserved.</div>
+			{#if role == 'Superadmin'}
+			<div class="h5 mb-0">Admin LPK</div>
+			{:else if role == 'Teacher'}
+			<div class="h5 mb-0">Pemateri LPK</div>
+			{:else if role == 'Corporate Admin'}
+			<div class="h5 mb-0">Admin Mitra</div>
+			{/if}
+			<div class="body-small-reguler">© 2024 CITRATAMA.</div>
 		</div>
 	</div>
 </aside>

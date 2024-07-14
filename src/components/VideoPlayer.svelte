@@ -10,12 +10,20 @@
     export let token
     export let finish = false
 
+    let controlBar = {
+        skipButtons: {
+            backward: 10
+        }
+    }
+
     const handleKeyPress = (event) => {
         const key = event.key;
 
-        if (key === 'ArrowRight') {
-            event.preventDefault();
-            return false;
+        if(!finish){
+            if (key === 'ArrowRight') {
+                event.preventDefault();
+                return false;
+            }
         }
     }
 
@@ -29,11 +37,7 @@
             controls: true,
             autoplay: false,
             preload: 'auto',
-            controlBar: {
-                skipButtons: {
-                    backward: 10
-                }
-            },
+            controlBar: controlBar,
             userActions: {
                 hotkeys: function(event){
                     if(event.which === 32){
@@ -46,6 +50,10 @@
 
                     if(event.which === 37){
                         this.currentTime(this.currentTime() - 10)
+                    }
+
+                    if(finish && event.which == 39){
+                        this.currentTime(this.currentTime() + 10)
                     }
                 }
             },
@@ -73,14 +81,18 @@
         })
 
         player.on('seeking', function(event){
-            if(curTime < player.currentTime()){
-                player.currentTime(curTime)
+            if(!finish){
+                if(curTime < player.currentTime()){
+                    player.currentTime(curTime)
+                }
             }
         })
 
         player.on('seeked', function(event){
-            if(curTime < player.currentTime()){
-                player.currentTime(curTime)
+            if(!finish){
+                if(curTime < player.currentTime()){
+                    player.currentTime(curTime)
+                }
             }
         })
 
@@ -90,6 +102,17 @@
             }
         })
     })
+
+    $: {
+        if(finish){
+            controlBar = {
+                skipButtons: {
+                    forward: 10,
+                    backward: 10,
+                }
+            }
+        }
+    }
 
     onDestroy(() => {
         if(player){
