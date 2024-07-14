@@ -11,6 +11,7 @@
     import StudentSidebar from "@components/StudentSidebar.svelte";
     import Button from "@components/Button.svelte"
 	import { PlayCircle, FileEarmarkText, Pass } from "svelte-bootstrap-icons";
+	import { PUBLIC_SERVER_PATH } from "$env/static/public";
 
     let user
     let toastData
@@ -77,14 +78,14 @@
                                         <p class="body-small-reguler">{getDay(history.created_at)} | {getCurrentTime(history.created_at)}</p>
                                         <p class="body-small-reguler">ID Transaksi: #{history.id}</p>
                                     </div>
-                                    <div class="flex align-items-center justify-content-between flex-wrap">
-                                        <div class="row">
-                                            <div class="col-12 col-md-4">
+                                    <div class="flex align-items-center justify-content-between">
+                                        <div class="flex gap-3">
+                                            <div class="col-12 col-md-3">
                                                 <div class="flex align-items-center justify-content-center">
-                                                    <img src="/images/building-trust-courses-image.png" alt="thumbnail" class="thumbnail">
+                                                    <img src="{PUBLIC_SERVER_PATH}/storage/{history.course.thumbnail}" alt="thumbnail" class="thumbnail">
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-md-8">
+                                            <div class="col-12 col-md-4">
                                                 <div class="h-100 flex-column align-items-start justify-content-center gap-3">
                                                     <p class="body-large-semi-bold mb-0">{history.course.title}</p>
                                                     <div class="flex gap-3">
@@ -111,7 +112,7 @@
                                             </div>
                                         </div>
                                         <div class="flex-column gap-2 align-items-end">
-                                            <p class="body-small-reguler tc-neutral-disabled">Harga Materi</p>
+                                            <p class="body-small-reguler tc-neutral-disabled" style="white-space: nowrap;">Harga Materi</p>
                                             <p class="body-medium-semi-bold">{history.course.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</p>
                                         </div>
                                     </div>
@@ -158,9 +159,10 @@
     }
 
     .thumbnail {
+        min-width: 0;
+        max-width: 100%;
         border-radius: .25rem;
         aspect-ratio: 4 / 3;
-        width: 100%;
         object-fit: cover;
         object-position: center;
     }
