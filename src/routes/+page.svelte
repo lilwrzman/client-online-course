@@ -11,11 +11,75 @@
     import StarFill from "svelte-bootstrap-icons/lib/StarFill.svelte"
 	import { onMount } from 'svelte';
 	import { extract } from '$lib/Cookie';
+	import { PUBLIC_SERVER_PATH } from '$env/static/public';
+	import ApiController from '$lib/ApiController';
+	import { DataHandler } from '@vincjo/datatables';
+	import { getDay } from '$lib/Date';
 
     let toastData
     let toastVisible = false
 
+    let handler, rows, pageCount, pageNumber
+
     let flashes
+
+    let courses
+    let events
+    let testimonials
+
+    const getCourses = () => {
+        ApiController.sendRequest({
+            method: "GET",
+            endpoint: "course/get",
+        }).then(response => {
+            courses = response.data.courses
+            courses = courses.slice(0, 4)
+            handler = new DataHandler(courses)
+            rows = handler.getRows()
+            pageCount = handler.getPageCount()
+            pageNumber = handler.getPageNumber()
+            handler.sortDesc('rating')
+        })
+    }
+
+	const getEvents = () => {
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: "events/get"
+		}).then(response => {
+			if(response.status){
+				events = response.data
+			}
+		}).catch(e => {
+			let error = e.response.data
+			console.error(error)
+		})
+	}
+
+    const getTestimonials = () => {
+		ApiController.sendRequest({
+			method: "GET",
+			endpoint: "feedback/get"
+		}).then(response => {
+			if(response.status){
+				testimonials = response.data.map(elm => {
+					return {
+						id: elm.id,
+						rating: elm.rating,
+						review: elm.review,
+						created_at: elm.created_at,
+						user_id: elm.user_id,
+						course_id: elm.course_id,
+						course_title: elm.course.title,
+						reviewer: elm.user.info.fullname,
+						reviewer_avatar: elm.user.avatar
+					}
+				})
+
+                testimonials = testimonials.slice(0, 3)
+			}
+		})
+	}
 
     onMount(() => {
         flashes = getFlash()
@@ -27,6 +91,10 @@
             }
             toastVisible = true
         }
+
+        getCourses()
+        getEvents()
+        getTestimonials()
     })
 </script>
 
@@ -41,14 +109,8 @@
             <div class="row">
                 <div class="col align-self-center">
                     <div class="flex-column gap-2">
-                        <div class="h3 tc-dark">
-                            Lorem Ipsum dolor sit amet 
-                            consectetur adipiscing elita 
-                            venetatis.
-                        </div>
-                        <div class="body-large-semi-bold tc-dark">
-                            Lorem ipsum dolor sit amet, consectetur
-                        </div>
+                        <div class="h3 tc-dark">Belajar dengan Citratama, Mudah dan Menyenangkan</div>
+                        <div class="body-large-semi-bold tc-dark">Belajar kapan saja, di mana saja dengan materi berkualitas!</div>
                     </div>
                     <Button type="link" href="/learning-paths" classList="btn btn-main mt-6" id="btn-header">Ayo Belajar</Button>
                 </div>
@@ -63,71 +125,50 @@
         <div class="container flex-column gap-4">
             <div class="flex justify-content-between">
                 <div class="h4 tc-dark">Materi Favorit</div>
-                <Button type="link" classList="link body-large-reguler tc-dark" href="/materi">Lihat Semua</Button>
+                <Button type="link" classList="link body-large-reguler tc-dark" href="/courses">Lihat Semua</Button>
             </div>
             <div class="row justify-content-between">
-                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
-                    <img src="/images/sales-marketing-courses-image.png" alt="">
-                    <div class="flex-column gap-1">
-                        <div class="body-small-medium" style="color:#29939D;">Sales Marketing</div>
-                        <p class="body-small-reguler">
-                            Hubungan antar masyarakat
-                        </p>
-                        <div class="flex justify-content-between align-items-center">
-                            <p class="caption-small-reguler">Rp 142.000</p>
-                            <p class="caption-small-reguler">9 Item</p>
+                {#if $rows}
+                {#if $rows.length > 0}
+                {#each $rows as course, index (course.id)}
+                <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
+                    <div class="card">
+                        <div class="card-body gap-3">
+                            <img src="{PUBLIC_SERVER_PATH}/storage/{ course.thumbnail }" class="course-thumbnail" alt="gambar courses" />
+                            <div class="flex-column gap-1">
+                                {#if course.learning_path}
+                                <p class="body-small-medium label-bullet" style="color: { course.learning_path.color } ;">{ course.learning_path.title }</p>
+                                {:else}
+                                <p class="body-small-medium label-bullet">Belum ada alur belajar</p>
+                                {/if}
+                                <p class="body-small-medium">{ course.title }</p>
+                                <div class="flex justify-content-between align-items-center"> 
+                                    <p class="caption-small-reguler mt-1">{ course.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0}) }</p>
+                                    <div class="flex gap-2 align-items-center justify-content-center">
+                                        <p class="caption-small-reguler mt-1">{ course.rating }</p>        
+                                        <StarFill fill="#FF9933" />           
+                                    </div>
+                                </div>                          
+                            </div>
+                            {#if course.isPublished}
+                            <Button type="link" href="/courses/{ course.id }" classList="btn btn-main">Lihat Detail</Button>
+                            {:else}
+                            <Button disabled={true} classList="btn btn-main">Akan Datang</Button>
+                            {/if}
                         </div>
                     </div>
-                    <Button type="link" href="/courses/detail" classList="btn btn-main" >Lihat Detail</Button>
                 </div>
-                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
-                    <img src="/images/building-trust-courses-image.png" alt="">
-                    <div class="flex-column gap-1">
-                        <div class="body-small-medium" style="color:#9B51E0;">Building Trust</div>
-                        <p class="body-small-reguler">
-                            Membangun percaya diri
-                        </p>
-                        <div class="flex justify-content-between align-items-center">
-                            <p class="caption-small-reguler">Rp 240.000</p>
-                            <p class="caption-small-reguler">7 Item</p>
-                        </div>
-                    </div>
-                    <Button type="link" href="/courses/detail" classList="btn btn-main">Lihat Detail</Button>
-                </div>
-                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
-                    <img src="/images/sales-marketing2-courses-image.png" alt="materi">
-                    <div class="flex-column gap-1">
-                        <div class="body-small-medium" style="color:#29939D;">Sales Marketing</div>
-                        <p class="body-small-reguler">
-                            Pemasaran media sosial
-                        </p>
-                        <div class="flex justify-content-between align-items-center">
-                            <p class="caption-small-reguler">Rp 179.000</p>
-                            <p class="caption-small-reguler">12 Item</p>
-                        </div>
-                    </div>
-                    <Button type="link" href="/courses/detail" classList="btn btn-main">Lihat Detail</Button>
-                </div>
-                <div class="col-lg-3 col-md-6 col-xs-12 flex-column gap-3 mb-6">
-                    <img src="/images/sales-marketing3-courses-image.png" alt="materi">
-                    <div class="flex-column gap-1">
-                        <div class="body-small-medium" style="color:#29939D;">Sales Marketing</div>
-                        <p class="body-small-reguler">
-                            Pemasaran interaktif
-                        </p>
-                        <div class="flex justify-content-between align-items-center">
-                            <p class="caption-small-reguler">Rp 220.000</p>
-                            <p class="caption-small-reguler">14 Item</p>
-                        </div>
-                    </div>
-                    <Button type="link" href="/courses/detail" classList="btn btn-main">Lihat Detail</Button>
-                </div>
+                {/each}
+                {/if}
+                {/if}
             </div>
         </div>
     </section>
 
     <section id="event" class="section">
         <div class="container">
+            {#if events}
+            {#if events.length}
             <Splide aria-label="My Favorite Images" options={{
                 type: 'loop',
                 perPage: 1,
@@ -135,22 +176,26 @@
                 lazyLoad: true,
                 padding: '8rem'
             }}>
+                {#each events as event}
                 <SplideSlide>
                     <div class="container flex justify-content-center">
-                        <img src="/images/EventSampleImage.svg" alt="event"/>
+                        <div class="flex-column align-items-center gap-3 neutral-border radius-sm">
+                            <img src="{PUBLIC_SERVER_PATH}/storage/{event.thumbnail}" alt="gambar courses" class="event-thumbnail" />
+                            <div class="flex-column align-items-center pb-3">
+                                <h4 class="mb-0">{event.title}</h4>
+                                <p class="body-medium-reguler mb-0">{getDay(event.date)} | {event.start.substring(0, 5)} - {event.end.substring(0, 5)}</p>
+                                <p class="body-medium-reguler mb-0">{event.place}</p>
+                                {#if event.link}
+                                <a href="{event.link}" target="_blank" class="link tc-primary-main">Daftar Disini</a>
+                                {/if}
+                            </div>
+                        </div>
                     </div>
                 </SplideSlide>
-                <SplideSlide>
-                    <div class="container flex justify-content-center">
-                        <img src="/images/EventSampleImage.svg" alt="event"/>
-                    </div>
-                </SplideSlide>
-                <SplideSlide>
-                    <div class="container flex justify-content-center">
-                        <img src="/images/EventSampleImage.svg" alt="event"/>
-                    </div>
-                </SplideSlide>
+                {/each}
             </Splide>
+            {/if}
+            {/if}
         </div>
     </section>
 
@@ -160,73 +205,45 @@
                 <div class="h4 tc-dark">Testimoni Karyawan</div>
                 <Button type="link" classList="link body-large-reguler tc-dark" href="/testimonials">Lihat Semua</Button>
             </div>
-            <div class="row justify-content-between">
-                <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/testimoni-karyawan-image.png" alt="">
-                    <div class="flex-column gap-2">
-                        <div class="flex justify-content-between align-items-center">
-                            <div class="flex-column gap-1">
-                                <div class="body-large-semi-bold tc-dark">
-                                    Michael Hernandez
-                                </div>
-                                <div class="body-small-reguler tc-dark">
-                                    Sales Marketing
-                                </div>
-                            </div>
-                            <div class="flex gap-1 align-items-baseline">
-                                <div class="body-small-semi-bold tc-dark">4.9</div>
-                                <StarFill fill="#FF9933" />
-                            </div>
+            <div class="row">
+                {#if testimonials}
+                {#if testimonials.length > 0}
+                {#each testimonials as feedback}
+                <div class="col-lg-4">
+                    <div class="flex gap-2 mb-3">
+                        <div class="flex align-items-center justify-content-center">
+                            <img src="{PUBLIC_SERVER_PATH}/storage/{feedback.reviewer_avatar}" alt="avatar" width="100" height="100" class="avatar">
                         </div>
-                        <div class="caption-light tc-dark">
-                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/testimoni-karyawan-image.png" alt="">
-                    <div class="flex-column gap-2">
-                        <div class="flex justify-content-between align-items-center">
-                            <div class="flex-column gap-1">
-                                <div class="body-large-semi-bold tc-dark">
-                                    Michael Hernandez
+                        <div class="flex-column gap-2" style="flex: 1 1 auto; min-width: 0; max-width: 100%;">
+                            <div class="flex justify-content-between">
+                                <div class="flex-column gap-1">
+                                    <div class="body-large-semi-bold tc-dark">{feedback.reviewer}</div>
+                                    <div class="body-small-reguler tc-dark">{feedback.course_title}</div>
                                 </div>
-                                <div class="body-small-reguler tc-dark">
-                                    Sales Marketing
+                                <div class="flex gap-1">
+                                    <p class="body-small-semi-bold tc-dark">{feedback.rating}</p>
+                                    <StarFill fill="#FF9933" />
                                 </div>
                             </div>
-                            <div class="flex gap-1 align-items-baseline">
-                                <div class="body-small-semi-bold tc-dark">4.9</div>
-                                <StarFill fill="#FF9933" />
-                            </div>
-                        </div>
-                        <div class="caption-light tc-dark">
-                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
+                            <p class="caption-light tc-dark ellipsis">{feedback.review}</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 flex gap-2 mb-3">
-                    <img src="/images/testimoni-karyawan-image.png" alt="">
-                    <div class="flex-column gap-2">
-                        <div class="flex justify-content-between align-items-center">
-                            <div class="flex-column gap-1">
-                                <div class="body-large-semi-bold tc-dark">
-                                    Michael Hernandez
-                                </div>
-                                <div class="body-small-reguler tc-dark">
-                                    Sales Marketing
-                                </div>
-                            </div>
-                            <div class="flex gap-1 align-items-baseline">
-                                <div class="body-small-semi-bold tc-dark">4.9</div>
-                                <StarFill fill="#FF9933" />
-                            </div>
-                        </div>
-                        <div class="caption-light tc-dark">
-                            Materi yang diberikan oleh pemateri asik dan mudah dipahami, terimakasih atas ilmunya yang bermanfaat.
-                        </div>
+                {/each}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Belum ada umpan balik!</p>
                     </div>
                 </div>
+                {/if}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Memuat data...</p>
+                    </div>
+                </div>
+                {/if}
             </div>
         </div>
     </section>
@@ -242,4 +259,19 @@
     .section { 
         padding-bottom: 0;
     }
+
+    .course-thumbnail {
+        border-radius: .25rem;
+        aspect-ratio: 4/3; 
+        object-fit: cover; 
+        object-position: center;
+    }
+
+    .event-thumbnail {
+		aspect-ratio: 16 / 9;
+		border-radius: .25rem .25rem 0 0;
+		width: 100%;
+		object-fit: cover;
+		object-position: center;
+	}
 </style>
