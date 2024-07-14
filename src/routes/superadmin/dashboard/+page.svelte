@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
 
-	import { getCurrentDay, getCurrentTime } from "$lib/Date";
+	import { getCurrentDay, getCurrentTime, getDay } from "$lib/Date";
 	import ApiController from "$lib/ApiController";
 	import checkLogin from "$lib/CheckLogin";
 	import { getFlash } from "$lib/Flash";
@@ -9,7 +9,9 @@
     import Navbar from "@components/Navbar.svelte";
     import Sidebar from "@components/Sidebar.svelte";
     import Toast from "@components/Toast.svelte";
-    import { Hourglass } from "svelte-bootstrap-icons";
+    import { FileEarmarkText, Hourglass, Pass, PlayCircle } from "svelte-bootstrap-icons";
+	import { PUBLIC_SERVER_PATH } from "$env/static/public";
+	import Button from "@components/Button.svelte";
 
     let user = null
     let dashboard = null
@@ -58,7 +60,7 @@
                 {#if toastVisible}
                     <Toast bind:toastVisible title={toastData.title} message={toastData.message} color={toastData.color}/>
                 {/if}
-                <div class="card px-4 pt-4 pb-0 drop-shadow">
+                <div class="card px-4 pt-4 pb-0 drop-shadow radius-sm">
                     <div class="card-body gap-5">
                         <div class="flex justify-content-between">
                             <div class="flex-column">
@@ -103,29 +105,69 @@
                     </div>
                 </div>
 
-                <div class="card p-4 drop-shadow">
+                <div class="card p-4 neutral-border radius-sm">
                     <div class="card-body gap-5">
                         <div class="flex justify-content-between">
                             <div class="body-small-semi-bold">Transaksi Terbaru</div>
-                            <a href="/" class="link caption-reguler-thin">Lihat Semua</a>
+                            <Button href="/superadmin/transaction" type="link" classList="btn btn-no-padding link caption-reguler-thin tc-dark">Lihat Semua</Button>
                         </div>
                         {#if status}
                             {#if dashboard.transaction_list.length > 0}
-                                {#each dashboard.transaction_list as transaction }
-                                <div class="flex-column gap-3">
-                                    <div class="row px-4 rating-review-item">
-                                        <div class="col-2 flex-column justify-content-center">
-                                            <img src="/images/TestimoniSampleImage.svg" alt="">
+                            <div class="flex-column gap-3">
+                                {#each dashboard.transaction_list as transaction, index (transaction.id) }
+                                <div class="card p-standard neutral-border radius-sm">
+                                    <div class="card-body gap-standard">
+                                        <div class="flex align-items-center gap-3">
+                                            {#if transaction.status == 'success'}
+                                            <div class="badge badge-success">SUKSES</div>
+                                            {:else}
+                                            <div class="badge badge-danger">GAGAL</div>
+                                            {/if}
+                                            <p class="body-small-reguler">{getDay(transaction.created_at)} | {getCurrentTime(transaction.created_at)}</p>
+                                            <p class="body-small-reguler">ID Transaksi: #{transaction.id}</p>
                                         </div>
-                                        <div class="col-10">
-                                            <div class="flex-column justify-content-center h-100">
-                                                <div class="body-small-semi-bold">Lorem Ipsum</div>
-                                                <div class="caption-semi-light">Body standard phasellus justo purus, vene natis a sapien eu faucibus porttitor libero. Sapieds tortor, nec vulputate sem efficitur. standard phasellus justo purus, vene natis a sapien eu faucibus porttitor libero</div>
+                                        <div class="flex align-items-center justify-content-between">
+                                            <div class="flex gap-3">
+                                                <div class="col-12 col-md-3">
+                                                    <div class="flex align-items-center justify-content-center">
+                                                        <img src="{PUBLIC_SERVER_PATH}/storage/{transaction.course.thumbnail}" alt="thumbnail" class="thumbnail">
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-4">
+                                                    <div class="h-100 flex-column align-items-start justify-content-center gap-3">
+                                                        <p class="body-large-semi-bold mb-0">{transaction.course.title}</p>
+                                                        <div class="flex gap-3">
+                                                            {#if transaction.course.items.filter(elm => elm.type == 'Video').length > 0}
+                                                            <div class="flex align-items-center gap-2 p-2 neutral-border radius-sm">
+                                                                <PlayCircle/>
+                                                                <p class="caption-small-reguler my-0">{transaction.course.items.filter(elm => elm.type == 'Video').length} Video</p>
+                                                            </div>
+                                                            {/if}
+                                                            {#if transaction.course.items.filter(elm => elm.type == 'Quiz').length > 0}
+                                                            <div class="flex align-items-center gap-2 p-2 neutral-border radius-sm">
+                                                                <FileEarmarkText/>
+                                                                <p class="caption-small-reguler my-0">{transaction.course.items.filter(elm => elm.type == 'Quiz').length} Kuis</p>
+                                                            </div>
+                                                            {/if}
+                                                            {#if transaction.course.items.filter(elm => elm.type == 'Exam').length > 0}
+                                                            <div class="flex align-items-center gap-2 p-2 neutral-border radius-sm">
+                                                                <Pass/>
+                                                                <p class="caption-small-reguler my-0">{transaction.course.items.filter(elm => elm.type == 'Exam').length} Ujian</p>
+                                                            </div>
+                                                            {/if}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-column gap-2 align-items-end">
+                                                <p class="body-small-reguler tc-neutral-disabled" style="white-space: nowrap;">Harga Materi</p>
+                                                <p class="body-medium-semi-bold">{transaction.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 {/each}
+                            </div>
                             {:else}
                             <div class="flex justify-content-center align-items-center w-100 py-8">
                                 <div class="flex-column align-items-center gap-3 py-8">
@@ -154,8 +196,9 @@
 </svelte:head>
 
 <style>
-    .rating-review-item img{
-        border-radius: 4px;
+    .thumbnail{
+        aspect-ratio: 4/3;
+        border-radius: .25rem;
         width: 100%;
         object-fit: cover;
         object-position: center;

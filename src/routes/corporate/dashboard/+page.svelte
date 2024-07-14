@@ -9,6 +9,7 @@
     import Sidebar from "@components/Sidebar.svelte";
     import Button from "@components/Button.svelte";
     import ProgressBar from "@components/ProgressBar.svelte";
+	import { Copy, Hourglass } from "svelte-bootstrap-icons";
 
     let user = null
     let dashboard = null
@@ -22,6 +23,9 @@
         }).then(response => {
             if(response.status){
                 dashboard = response.data
+
+                console.log(dashboard)
+
                 status = true
             }
         })
@@ -57,29 +61,39 @@
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
                                 <img src="/icons/dashboard-total-student.svg" alt="sum-student-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
-                                    <div class="caption-reguler">0</div>
+                                    <div class="caption-reguler">{ dashboard ? dashboard.count_student : '' }</div>
                                     <div class="caption-light">Total Karyawan</div>
                                 </div>
                             </div>
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
                                 <img src="/icons/dashboard-total-content.svg" alt="sum-content-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
-                                    <div class="caption-reguler">0</div>
-                                    <div class="caption-light">Total Materi</div>
+                                    <div class="caption-reguler">{ dashboard ? dashboard.count_bundle : '' }</div>
+                                    <div class="caption-light">Total paket Kursus</div>
                                 </div>
                             </div>
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
                                 <img src="/icons/dashboard-total-corporate.svg" alt="sum-corporate-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
-                                    <div class="caption-reguler">0</div>
-                                    <div class="caption-light">Total Mitra</div>
+                                    <div class="caption-reguler">{ dashboard ? dashboard.count_student_done : '' }</div>
+                                    <div class="caption-light">Total Karyawan Selesai</div>
                                 </div>
                             </div>
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
                                 <img src="/icons/dashboard-total-transaction.svg" alt="sum-transaction-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
-                                    <div class="caption-reguler">0</div>
-                                    <div class="caption-light">Total Transaksi</div>
+                                    <div class="flex gap-2 align-items-center">
+                                        <div class="caption-reguler">{ dashboard ? dashboard.referall_code.code : '' }</div>
+                                        <Button classList="btn btn-no-padding" onClick={() => {
+                                            navigator.clipboard.writeText(dashboard.referall_code.code)
+                                            return alert("Berhasil menyalin " + dashboard.referall_code.code + " ke papan klip!")
+                                        }}>
+                                            <div class="flex align-items-center justify-content-center">
+                                                <Copy/>
+                                            </div>
+                                        </Button>
+                                    </div>
+                                    <div class="caption-light">Kode Referal</div>
                                 </div>
                             </div>
                         </div>
@@ -90,100 +104,49 @@
                     <div class="card-body gap-5">
                         <div class="flex justify-content-between">
                             <div class="body-small-semi-bold">Progress Karyawan Terbaru</div>
-                            <Button type="link" href="#" classList="btn btn-no-padding link">Lihat Semua</Button>
+                            <Button href="/corporate/progress" type="link" classList="btn btn-no-padding link caption-reguler-thin tc-dark">Lihat Semua</Button>
                         </div>
                         <div class="flex-column gap-3">
+                            {#if dashboard && dashboard.latest_progresses}
+                            {#if dashboard.latest_progresses.length > 0}
+                            {#each dashboard.latest_progresses as progress, index (progress.latest_progress.id)}
                             <div class="card">
                                 <div class="row justify-content-between">
                                     <div class="col-12 col-md-5">
                                         <div class="flex-column">
                                             <div class="flex flex-wrap gap-2">
-                                                <p class="mb-0 body-small-medium">Michael Hernandez</p>
+                                                <p class="mb-0 body-small-medium">{progress.student.info.fullname}</p>
                                                 <p class="mb-0 body-small-reguler">|</p>
-                                                <p class="mb-0 body-small-medium">Pengenalan Sales Marketing</p>
+                                                <p class="mb-0 body-small-medium">{progress.course.title}</p>
                                             </div>
-                                            <p class="mb-0 caption-light">Telah menyelesaikan 7 dari 10 item</p>
+                                            <p class="mb-0 caption-light">Telah menyelesaikan {progress.progress_count} dari {progress.total_items_count} item</p>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-5">
                                         <div class="flex-column h-100 justify-content-center">
-                                            <ProgressBar percentage=70/>
+                                            <ProgressBar percentage={progress.progress_count == 0 ? 0 : (progress.progress_count / progress.total_items_count) * 100}/>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="row justify-content-between">
-                                    <div class="col-12 col-md-5">
-                                        <div class="flex-column">
-                                            <div class="flex flex-wrap gap-2">
-                                                <p class="mb-0 body-small-medium">Michael Hernandez</p>
-                                                <p class="mb-0 body-small-reguler">|</p>
-                                                <p class="mb-0 body-small-medium">Pengenalan Sales Marketing</p>
-                                            </div>
-                                            <p class="mb-0 caption-light">Telah menyelesaikan 5 dari 10 item</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-5">
-                                        <div class="flex-column h-100 justify-content-center">
-                                            <ProgressBar percentage=50/>
-                                        </div>
-                                    </div>
+                            {/each}
+                            {:else}
+                            <div class="flex justify-content-center align-items-center w-100 py-8">
+                                <div class="flex-column align-items-center gap-3 py-8">
+                                    <Hourglass width=60 height=60 color="#3951A8"/>
+                                    <div class="caption-reguler tc-neutral-disabled">Ups, belum ada data progres belajar!</div>
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="row justify-content-between">
-                                    <div class="col-12 col-md-5">
-                                        <div class="flex-column">
-                                            <div class="flex flex-wrap gap-2">
-                                                <p class="mb-0 body-small-medium">Michael Hernandez</p>
-                                                <p class="mb-0 body-small-reguler">|</p>
-                                                <p class="mb-0 body-small-medium">Pengenalan Sales Marketing</p>
-                                            </div>
-                                            <p class="mb-0 caption-light">Telah menyelesaikan 2 dari 10 item</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-5">
-                                        <div class="flex-column h-100 justify-content-center">
-                                            <ProgressBar percentage=20/>
-                                        </div>
-                                    </div>
+                            {/if}
+                            {:else}
+                            <div class="flex justify-content-center align-items-center w-100 py-8">
+                                <div class="flex-column align-items-center gap-3 py-8">
+                                    <Hourglass width=60 height=60 color="#3951A8"/>
+                                    <div class="caption-reguler tc-neutral-disabled">memuat data...</div>
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="row justify-content-between">
-                                    <div class="col-12 col-md-5">
-                                        <div class="flex-column">
-                                            <div class="flex flex-wrap gap-2">
-                                                <p class="mb-0 body-small-medium">Michael Hernandez</p>
-                                                <p class="mb-0 body-small-reguler">|</p>
-                                                <p class="mb-0 body-small-medium">Pengenalan Sales Marketing</p>
-                                            </div>
-                                            <p class="mb-0 caption-light">Telah menyelesaikan 10 dari 10 item</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-5">
-                                        <div class="flex-column h-100 justify-content-center">
-                                            <ProgressBar percentage=100/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {/if}
                         </div>
-
-                        <!-- <div class="flex justify-content-center align-items-center w-100 py-8">
-                            <div class="flex-column align-items-center gap-3 py-8">
-                                <Hourglass width=60 height=60 color="#3951A8"/>
-                                <div class="caption-reguler tc-neutral-disabled">Ups, belum ada data umpan balik!</div>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-content-center align-items-center w-100 py-8">
-                            <div class="flex-column align-items-center gap-3 py-8">
-                                <Hourglass width=60 height=60 color="#3951A8"/>
-                                <div class="caption-reguler tc-neutral-disabled">Ups, belum ada data umpan balik!</div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>

@@ -9,25 +9,48 @@
     import StudentSidebar from "@components/StudentSidebar.svelte";
     import { Bar } from "svelte-chartjs";
     import { Chart, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Colors } from "chart.js"
+	import ApiController from "$lib/ApiController";
 
     let user
-    const data = {
-        labels: ['Building Trust', 'Building Need', 'Handling Objection', 'Trying to Clos', 'Closing'],
-        datasets: [
-            {
-                label: 'Progress Pembelajaran',
-                data: [9, 10, 8, 5, 2],
-                borderWidth: 2,
-            },
-        ],
-    }
+    let data
 
-    Chart.register(
-        Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Colors
-    )
+    let latestProgress
+    let labels = []
+    let datas
+
+    const getDashboard = () => {
+        ApiController.sendRequest({
+            method: "GET",
+            endpoint: 'dashboard',
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                latestProgress = response.data
+                labels = latestProgress.map(elm => elm.title)
+                datas = latestProgress.map(elm => elm.progress_count)
+
+                data = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Progress Pembelajaran',
+                            data: datas,
+                            borderWidth: 2,
+                        },
+                    ],
+                }
+
+                Chart.register(
+                    Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, Colors
+                )
+            }
+        })
+    }
 
     onMount(() => {
         user = checkLogin('Student', true)
+
+        getDashboard()
     })
 </script>
 
@@ -63,27 +86,31 @@
                             <p class="body-medium-semi-bold">Materi Saya</p>
                         </div>
                         <div class="card-body flex-column gap-3 p-standard">
+                            {#if latestProgress}
+                            {#if latestProgress.length > 0}
+                            {#each latestProgress as progress, index (progress.id)}
                             <div class="flex justify-content-between align-items-center p-standard course-bg radius-sm">
                                 <div class="flex-column">
-                                    <p class="body-small-semi-bold">Materi 01</p>
-                                    <p class="body-medium-reguler">Progress terakhir di submateri berapa</p>
+                                    <p class="body-small-semi-bold">{progress.title}</p>
+                                    {#if progress.items_count != progress.progress_count}
+                                    <p class="body-medium-reguler">Progress terakhir: {progress.latest_progress.item.title}</p>
+                                    {:else}
+                                    <p class="body-medium-reguler">Pembelajaran Selesai!</p>
+                                    {/if}
                                 </div>
-                                <Button classList="btn btn-main">Lanjut Belajar</Button>
-                            </div>
-                            <div class="flex justify-content-between align-items-center p-standard course-bg radius-sm">
-                                <div class="flex-column">
-                                    <p class="body-small-semi-bold">Materi 01</p>
-                                    <p class="body-medium-reguler">Progress terakhir di submateri berapa</p>
-                                </div>
-                                <Button classList="btn btn-main">Lanjut Belajar</Button>
-                            </div>
-                            <div class="flex justify-content-between align-items-center p-standard course-bg radius-sm">
-                                <div class="flex-column">
-                                    <p class="body-small-semi-bold">Materi 01</p>
-                                    <p class="body-medium-reguler">Progress terakhir di submateri berapa</p>
-                                </div>
-                                <Button classList="btn btn-main-outline">Lihat Sertifikat</Button>
-                            </div>
+                                {#if progress.items_count != progress.progress_count}
+                                <Button type="link" href="/student/my-courses/{progress.latest_progress.item.course_id}" classList="btn btn-main">Lanjut Belajar</Button>
+                                {:else}
+                                {#if progress.feedback}
+                                <Button type="link" href="/student/my-courses/{progress.latest_progress.item.course_id}" classList="btn btn-main-outline">Lihat Sertifikat</Button>
+                                {:else}
+                                <Button type="link" href="/student/my-courses/{progress.latest_progress.item.course_id}" classList="btn btn-main-outline">Beri Umpan Balik</Button>
+                                {/if}
+                                {/if}
+                            </div>    
+                            {/each}
+                            {/if}
+                            {/if}
                             <div class="flex-row-reverse">
                                 <Button type="link" href="/student/my-courses" classList="link">Lihat Selengkapnya</Button>
                             </div>
