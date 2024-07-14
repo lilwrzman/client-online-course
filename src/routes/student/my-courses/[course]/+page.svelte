@@ -70,6 +70,12 @@
                 selected_item = response.item
                 completed_items = response.completed_items
 
+                if(selected_item.type == "Video"){
+                    if(completed_items.map(elm => elm.item_id).includes(selected_item.id)){
+                        doneWatching = true
+                    }
+                }
+
                 if(callback != null && typeof callback === 'function'){
                     callback(course.id)
                 }
@@ -520,7 +526,7 @@
                     {#if selected_item.type === 'Video'}
                     <div class="flex-column gap-3">
                         <VideoPlayer bind:finish={doneWatching}
-                            token={user.token} url="{PUBLIC_SERVER_PATH}/api/video/playlist/{selected_item.info.playlist.split('.')[0]}/{selected_item.info.playlist}" />
+                            token={user.token} url="{PUBLIC_SERVER_PATH}/api/video/playlist/{$page.params.course}/{selected_item.info.playlist.split('.')[0]}/{selected_item.info.playlist}" />
                         <div class="flex align-items-center justify-content-between">
                             <div class="flex-column align-items-start gap-2">
                                 <h4 class="mb-0">{selected_item.title}</h4>
