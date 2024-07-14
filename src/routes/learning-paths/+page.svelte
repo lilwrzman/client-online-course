@@ -76,7 +76,7 @@
 									<p class="body-small-medium">{ lp.title }</p>
 									<p class="caption-small-reguler">{ lp.courses } Materi</p>
 								</div>
-								<Button type="link" href="/learning-paths/{ lp.slug }" classList="btn btn-main">Lihat Detail</Button>
+								<Button type="link" href="/learning-paths/{ lp.id }" classList="btn btn-main">Lihat Detail</Button>
 							</div>
 						</div>
 					</div>

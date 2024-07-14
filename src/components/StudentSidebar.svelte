@@ -9,7 +9,7 @@
 <aside>
     <div class="sidebar neutral-border radius-sm">
         <div class="flex-column p-3" style="gap: 14px;">
-            <img src="{user ? `${PUBLIC_SERVER_PATH}/storage/${user.avatar}` : '/images/default.png'}" alt="user-avatar" width="90" height="90">
+            <img src="{user ? `${PUBLIC_SERVER_PATH}/storage/${user.avatar}` : '/images/default.png'}" alt="user-avatar" width="90" height="90" style="border-radius: 100%;">
             <div class="flex-column">
                 <p class="body-large-semi-bold">{ user ? user.fullname : ''}</p>
                 <p class="body-medium-reguler">{ user ? 'Karyawan' : ''}</p>

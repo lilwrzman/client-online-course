@@ -260,6 +260,13 @@
         padding-bottom: 0;
     }
 
+    .avatar {
+		aspect-ratio: 1/1;
+		border-radius: .25rem;
+		object-fit: cover;
+		object-position: center;
+	}
+
     .course-thumbnail {
         border-radius: .25rem;
         aspect-ratio: 4/3; 
