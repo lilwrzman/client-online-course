@@ -50,17 +50,12 @@
         showSpinner = true
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "account/add",
             data: fd,
             authToken: user.token
         }).then(response => {
-            if(response.error){
-                showSpinner = false
-                errors = response.error
-                return
-            }
-
             if(response.status){
                 setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/student' })
                 return
@@ -74,6 +69,14 @@
             }
 
             showSpinner = false
+        }).catch(e => {
+            let error = e.response.data
+            console.error(error)
+            showSpinner = false
+
+            if(error.error){
+                errors = error.error
+            }
         })
     }
 

@@ -71,17 +71,12 @@
         }
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "account/update",
             data: fd,
             authToken: user.token
         }).then(response => {
-            if(response.error){
-                showSpinner = false
-                errors = response.error
-                return
-            }
-
             if(response.status){
                 getDetail(() => {
                     toastData = { title: "Berhasil", message: response.message, color: 'toast-success'}
@@ -92,6 +87,14 @@
                 toastData = { title: "Gagal", message: response.message, color: 'toast-danger'}
                 toastVisible = true
                 showSpinner = false
+            }
+        }).catch(e => {
+            let error = e.response.data
+            console.error(error)
+            showSpinner = false
+
+            if(error.error){
+                errors = error.error
             }
         })
     }
@@ -108,17 +111,12 @@
         fd.append("avatar_file", avatar_file)
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: 'account/update/avatar',
             data: fd,
             authToken: user.token
         }).then(response => {
-            if(response.error){
-                showSpinner = false
-                errors = response.error
-                return
-            }
-
             if(response.status){
                 getDetail(() => {
                     toastData = { title: "Berhasil", message: response.message, color: 'toast-success'}
@@ -129,6 +127,14 @@
                 toastData = { title: "Gagal", message: response.message, color: 'toast-danger'}
                 toastVisible = true
                 showSpinner = false
+            }
+        }).catch(e => {
+            let error = e.response.data
+            console.error(error)
+            showSpinner = false
+
+            if(error.error){
+                errors = error.error
             }
         })
     }

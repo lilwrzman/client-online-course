@@ -86,6 +86,7 @@
         fd.append("thumbnail_file", thumbnail_file)
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: 'article/change-thumbnail',
             data: fd,

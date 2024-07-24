@@ -208,7 +208,19 @@
                                         </td>
                                     </tr>
                                     {/each}
+                                    {:else}
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            Belum ada data transaksi!
+                                        </td>
+                                    </tr>
                                     {/if}
+                                    {:else}
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            Memuat data transaksi...
+                                        </td>
+                                    </tr>
                                     {/if}
                                     </tbody>
                                 </table>

@@ -63,6 +63,7 @@
         }
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "learning-path/add",
             data: fd,

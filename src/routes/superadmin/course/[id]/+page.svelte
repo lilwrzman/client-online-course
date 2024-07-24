@@ -89,6 +89,7 @@
         }
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "course/update",
             data: formData,

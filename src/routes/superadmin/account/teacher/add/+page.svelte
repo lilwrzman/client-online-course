@@ -1,12 +1,10 @@
 <script>
 	import { onMount } from "svelte"
-    import { goto } from "$app/navigation"
 
     import { fly } from "svelte/transition"
     import { quintOut } from "svelte/easing"
 
     import ApiController from "$lib/ApiController.js"
-    import { extract } from "$lib/Cookie.js"
     import { setFlash } from "$lib/Flash"
 
     import InputField from "@components/InputField.svelte"
@@ -61,17 +59,12 @@
 
         showSpinner = true  
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "account/add",
             data: fd,
             authToken: user.token
         }).then(response => {
-            if(response.error){
-                showSpinner = false
-                errors = response.error
-                return
-            }
-
             if(response.status){
                 setFlash({ title: 'Berhasil', message: response.message, type: 'success', redirect: '/superadmin/account/teacher' })
                 return
@@ -84,6 +77,14 @@
                 toastVisible = true
                 showSpinner = false
             }
+        }).catch(e => {
+            let error = e.response.data
+            console.error(error)
+            showSpinner = false
+
+            if(error.error){
+                errors = error.error
+            }
         })
     }
 
@@ -92,6 +93,8 @@
     })
 
     let isSidebarOpen = true
+
+    $: console.log(avatar_file)
 </script>
 
 <div class="flex">

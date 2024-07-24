@@ -35,6 +35,7 @@
 
         showSpinner = true
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "account/update/avatar",
             data: formData,

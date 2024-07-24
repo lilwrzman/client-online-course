@@ -22,6 +22,7 @@
     import SearchMenu from "@components/SearchMenu.svelte";
     import Pagination from '@components/Pagination.svelte';
 	import { getDay } from "$lib/Date";
+	import { Hourglass } from "svelte-bootstrap-icons";
 
     let user
     let handler, rows, pageNumber, rowsPerPage = 10, pageCount
@@ -133,7 +134,21 @@
                     </div>
                     {/each}
                     </div>
+                    {:else}
+                    <div class="flex justify-content-center align-items-center h-100">
+                        <div class="flex-column align-items-center justify-content-center gap-3">
+                            <Hourglass width=60 height=60 color="#3951A8"/>
+                            <div class="caption-reguler tc-neutral-disabled">Data tidak ditemukan...</div>
+                        </div>
+                    </div>
                     {/if}
+                    {:else}
+                    <div class="flex justify-content-center align-items-center h-100">
+                        <div class="flex-column align-items-center justify-content-center gap-3">
+                            <Hourglass width=60 height=60 color="#3951A8"/>
+                            <div class="caption-reguler tc-neutral-disabled">Memuat data artikel...</div>
+                        </div>
+                    </div>
                     {/if}
                     
                     {#if handler && $pageCount > 1}
@@ -146,7 +161,7 @@
 </div>
 
 <svelte:head>
-    <title>Manajemen Acara</title>
+    <title>Manajemen Artikel</title>
 </svelte:head>
 
 <style>

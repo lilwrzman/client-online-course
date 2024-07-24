@@ -99,7 +99,19 @@
                                         </td>
                                     </tr>
                                     {/each}
+                                    {:else}
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            Belum ada data progres!
+                                        </td>
+                                    </tr>
                                     {/if}
+                                    {:else}
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            Memuat data progres...
+                                        </td>
+                                    </tr>
                                     {/if}
                                 </tbody>
                             </table>

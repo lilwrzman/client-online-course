@@ -104,6 +104,7 @@
         }
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: 'learning-path/update',
             data: sendData,
@@ -287,19 +288,6 @@
                                         {:else}
                                         <ExclamationLg width=20 height=20 color="#E74C3C"/>
                                         {/if}
-                                    </div>
-                                </div>
-                                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                <div class="row-menu-container" on:click={() => active = 'Publikasi'}>
-                                    <div class="flex align-items-center py-1 row-menu {active == "Publikasi" ? 'row-menu-active' : '' }">
-                                        <div class="flex flex-wrap align-items-center gap-4 p-2">
-                                            <LightbulbFill width=20 height=20 color="{active == "Publikasi" ? '#3951A8' : '#8191AC' }"/>
-                                            <div class="body-small-semi-bold {active == "Publikasi" ? 'tc-primary-main' : 'tc-dark' }">Publikasi</div>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-content-center align-items-center">
-                                        <ExclamationLg width=20 height=20 color="#E74C3C"/>
                                     </div>
                                 </div>
                             </div>

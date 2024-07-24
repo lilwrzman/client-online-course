@@ -46,6 +46,7 @@
 
         showSpinner = true
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "event/add",
             data: formData,

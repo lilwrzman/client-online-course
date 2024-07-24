@@ -17,6 +17,7 @@
 
     import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill, X, PlusLg } from "svelte-bootstrap-icons"
 	import checkLogin from "$lib/CheckLogin";
+	import { text } from "@sveltejs/kit";
 
     let user, errors, teachers
     let title, description, price, thumbnail_file, teacher_id, facilities = [{order: 1, text: ''}]
@@ -45,6 +46,7 @@
         }
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: "course/add",
             data: formData,
@@ -65,6 +67,30 @@
             }
             
             showSpinner = false
+        }).catch(e => {
+            let error = e.response.data
+            console.error(error)
+            showSpinner = false
+
+            if(error.error){
+                errors = error.error
+
+                if(error.error['title'] || error.error['description'] || error.error['facilities.0']){
+                    return active = "Umum"
+                }
+
+                if(error.error['thumbnail_file']){
+                    return active = "Thumbnail"
+                }
+
+                if(error.error['price']){
+                    return active = "Harga"
+                }
+
+                if(error.error['teacher_id']){
+                    return active = "Pemateri"
+                }
+            }
         })
     }
 
@@ -122,7 +148,7 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-content-center align-items-center">
-                                        {#if title && description}
+                                        {#if title && description && facilities[0].text != ""}
                                         <CheckLg width=20 height=20 color="#2ECC71"/>
                                         {:else}
                                         <ExclamationLg width=20 height=20 color="#E74C3C"/>
@@ -207,7 +233,7 @@
                                             <InputField id="facility-{index+1}" containerClass="w-100"
                                                 placeholder="Masukkan fasilitas pembelajaran"
                                                 bind:value={facilities[index].text} rules={[{ required: true }]} 
-                                                error={errors ? errors[`description.${index}`] ? errors[`description.${index}`] : '' : '' }/>
+                                                error={errors ? errors[`facilities.${index}`] ? errors[`facilities.${index}`] : '' : '' }/>
                                             {#if facilities.length > 1}
                                             <Button classList="btn btn-no-padding" onClick={() => {
                                                 facilities = facilities.filter(elm => elm.order != facility.order)
@@ -233,7 +259,7 @@
                                 </div>
 
                                 <div class="flex-row-reverse gap-2">
-                                    <Button disabled={title && description ? false : true} classList="btn btn-main" onClick={() => active = 'Thumbnail'}>Berikutnya</Button>
+                                    <Button disabled={title && description && facilities[0].text != "" ? false : true} classList="btn btn-main" onClick={() => active = 'Thumbnail'}>Berikutnya</Button>
                                     <Button type='link' href='/superadmin/course' classList="btn btn-main-outline">Batal</Button>
                                 </div>
                             </div>

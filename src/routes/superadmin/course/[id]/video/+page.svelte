@@ -53,6 +53,7 @@
         formData.append('video_file', video_file)
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: `course/${id}/video/add`,
             data: formData,
