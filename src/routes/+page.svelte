@@ -159,7 +159,19 @@
                     </div>
                 </div>
                 {/each}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Belum ada materi!</p>
+                    </div>
+                </div>
                 {/if}
+                {:else}
+                <div class="col-12">
+                    <div class="flex align-items-center justify-content-center">
+                        <p class="body-small-reguler">Memuat data materi...</p>
+                    </div>
+                </div>
                 {/if}
             </div>
         </div>
@@ -194,7 +206,19 @@
                 </SplideSlide>
                 {/each}
             </Splide>
+            {:else}
+            <div class="col-12">
+                <div class="flex align-items-center justify-content-center">
+                    <p class="body-small-reguler">Belum ada acara!</p>
+                </div>
+            </div>
             {/if}
+            {:else}
+            <div class="col-12">
+                <div class="flex align-items-center justify-content-center">
+                    <p class="body-small-reguler">Memuat acara...</p>
+                </div>
+            </div>
             {/if}
         </div>
     </section>
@@ -240,7 +264,7 @@
                 {:else}
                 <div class="col-12">
                     <div class="flex align-items-center justify-content-center">
-                        <p class="body-small-reguler">Memuat data...</p>
+                        <p class="body-small-reguler">Memuat data umpan balik...</p>
                     </div>
                 </div>
                 {/if}
