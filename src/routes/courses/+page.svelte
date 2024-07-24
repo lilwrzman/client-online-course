@@ -122,7 +122,19 @@
                         </div>
                     </div>
                     {/each}
+                    {:else}
+                    <div class="col-12">
+                        <div class="flex align-items-center justify-content-center">
+                            <p class="body-small-reguler">Belum ada materi!</p>
+                        </div>
+                    </div>
                     {/if}
+                    {:else}
+                    <div class="col-12">
+                        <div class="flex align-items-center justify-content-center">
+                            <p class="body-small-reguler">Memuat data materi...</p>
+                        </div>
+                    </div>
                     {/if}
                 </div>
             </div>

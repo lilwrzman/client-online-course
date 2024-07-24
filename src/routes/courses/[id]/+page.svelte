@@ -209,7 +209,7 @@
 							<div class="flex-column gap-5">
 								<div class="flex-column gap-5">
 									<p class="body-super-large-semi-bold">{detail.teacher.info.fullname}</p>
-									<p class="body-small-reguler">{detail.teacher.info.bio}</p>
+									<p class="body-small-reguler">{detail.teacher.info.bio ? detail.teacher.info.bio : ''}</p>
 									<div class="flex body-medium-reguler justify-content-between">
 										<div class="flex align-items-center gap-8">
 											{#each detail.teacher.info.social_media as sosmed}
