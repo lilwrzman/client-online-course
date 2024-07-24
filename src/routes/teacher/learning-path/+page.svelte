@@ -115,7 +115,7 @@
                                     <div class="body-small-medium">{path.title}</div>
                                     <div class="caption-light">{path.courses} Materi</div>
                                 </div>
-                                <Button type="link" href="/teacher/learning-path/{path.slug}" classList="btn btn-main radius-sm">Lihat Detail</Button>
+                                <Button type="link" href="/teacher/learning-path/{path.id}" classList="btn btn-main radius-sm">Lihat Detail</Button>
                             </div>
                         </div>
                     </div>

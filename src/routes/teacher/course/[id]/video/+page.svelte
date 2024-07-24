@@ -53,6 +53,7 @@
         formData.append('video_file', video_file)
 
         ApiController.sendRequest({
+            contentType: 'multipart/form-data',
             method: "POST",
             endpoint: `course/${id}/video/add`,
             data: formData,
@@ -63,6 +64,13 @@
             }
         }).catch(e => {
             console.log(e)
+
+            if(e.code == "ERR_NETWORK"){
+                toastData = { title: "Gagal", message: "Kesalahan Jaringan", color: 'toast-danger' }
+                showSpinner = false
+                return
+            }
+
             let response = e.response.data
             console.error(response)
 

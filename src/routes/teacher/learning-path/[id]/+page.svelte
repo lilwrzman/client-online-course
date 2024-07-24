@@ -42,8 +42,7 @@
     let modalShow = false
     let status = false
 
-    const getLearningPath = (newSlug = null, callback = null) => {
-        slug = newSlug ?  newSlug : slug
+    const getLearningPath = (callback = null) => {
         ApiController.sendRequest({
             method: "GET",
             endpoint: `learning-path/get/${id}?with_courses=yes`
@@ -148,19 +147,6 @@
                                         {/if}
                                     </div>
                                 </div>
-                                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                <div class="row-menu-container" on:click={() => active = 'Publikasi'}>
-                                    <div class="flex align-items-center py-1 row-menu {active == "Publikasi" ? 'row-menu-active' : '' }">
-                                        <div class="flex flex-wrap align-items-center gap-4 p-2">
-                                            <LightbulbFill width=20 height=20 color="{active == "Publikasi" ? '#3951A8' : '#8191AC' }"/>
-                                            <div class="body-small-semi-bold {active == "Publikasi" ? 'tc-primary-main' : 'tc-dark' }">Publikasi</div>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-content-center align-items-center">
-                                        <ExclamationLg width=20 height=20 color="#E74C3C"/>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -239,15 +225,6 @@
                                     </div>
                                     {/if}
                                     {/if}
-                                </div>
-                            </div>
-                        </div>
-                        {:else if active == 'Publikasi'}
-                        <div class="card radius-sm" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
-                            <div class="card-body gap-4">
-                                <div class="flex-column gap-1">
-                                    <div class="body-large-semi-bold">Publikasi</div>
-                                    <div class="body-small-reguler">Pastikan poin-poin dibawah ini telah terpenuhi sebelum mempublikasi Learning Path {title}!</div>
                                 </div>
                             </div>
                         </div>
