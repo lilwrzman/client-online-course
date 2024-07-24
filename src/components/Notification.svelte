@@ -121,6 +121,8 @@
                 }else if(notif.notification.info.target.includes("student")){
                     redirect = `/student/my-courses/${notif.notification.info.target.course_id}`
                 }
+            }else if(notif.notification.info.menu == 'courses'){
+                redirect = `/courses/${notif.notification.info.course_id}#description`
             }
 
             updateIsSeen(notif.id, redirect)

@@ -395,21 +395,6 @@
 					</li>
 					<li>
 						<a
-							href="/corporate/student"
-							class="menu body-small-semi-bold {active == 'Transaksi'
-								? 'tc-primary-main menu-active'
-								: 'tc-neutral-primary'}"
-						>
-							<WalletFill
-								width="20"
-								height="20"
-								color={active == 'Transaksi' ? '#3951A8' : '#8191AC'}
-							/>
-							<p>Transaksi</p>
-						</a>
-					</li>
-					<li>
-						<a
 							href="/corporate/bundle"
 							class="menu body-small-semi-bold {active == 'Paket Kursus'
 								? 'tc-primary-main menu-active'
