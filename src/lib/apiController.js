@@ -6,7 +6,8 @@ const ApiController = {
         method = 'GET',
         endpoint,
         data = null,
-        headers = { 'Content-Type': 'application/json' },
+        contentType = 'application/json',
+        headers = { 'Content-Type': contentType },
         authToken = null,
         onUploadProgress = null,
         responseType = 'json'
