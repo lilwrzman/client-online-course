@@ -17,8 +17,26 @@
             endpoint: `learning-path/get/${id}`,
             method: "GET",
         }).then(response => {
-            console.log(response)
             detail = response.data
+
+            detail.courses.forEach((course, index) => {
+                let totalRating = 0
+                let countFeedback = course.feedbacks.length
+                let rating
+
+                if(countFeedback > 0){
+                    course.feedbacks.forEach(feedback => {
+                        totalRating += feedback.rating
+                    })
+
+                    rating = totalRating / countFeedback
+                }else{
+                    rating = 0
+                }
+
+                course.rating = rating
+            })
+
             status = true
         })
     })
@@ -84,7 +102,11 @@
                                             <p>{course.items} Item</p>
                                         </div>
                                     </div>
+                                    {#if course.isPublished}
                                     <Button type="link" href="/courses/{course.id}" classList="btn btn-main">Lihat Detail</Button>
+                                    {:else}
+                                    <Button disabled={true} classList="btn btn-main">Akan Datang</Button>
+                                    {/if}
                                 </div>
                             </div>
                         </div>
