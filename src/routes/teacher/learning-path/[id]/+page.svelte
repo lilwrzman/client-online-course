@@ -23,7 +23,7 @@
     import { dragHandleZone, dragHandle } from "svelte-dnd-action";
 
     export let data
-    let slug = data.slug
+    let id = data.id
     
     let user
     let active = 'Umum'
@@ -46,7 +46,7 @@
         slug = newSlug ?  newSlug : slug
         ApiController.sendRequest({
             method: "GET",
-            endpoint: `learning-path/get/${slug}?with_courses=yes`
+            endpoint: `learning-path/get/${id}?with_courses=yes`
         }).then(response => {
             learningPath = response.data
             learningPath.courses = learningPath.courses.sort((a, b) => a.order - b.order)
@@ -91,7 +91,7 @@
                 <div class="flex gap-2">
                     <a href="/teacher/learning-path" class="body-medium-semi-bold tc-neutral-disabled">Alur Pembelajaran</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/teacher/learning-path/{slug}" class="body-medium-semi-bold tc-primary-main">{ learningPath ? learningPath.title : '' }</a>
+                    <a href="/teacher/learning-path/{id}" class="body-medium-semi-bold tc-primary-main">{ learningPath ? learningPath.title : '' }</a>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-4 col-xl-3">

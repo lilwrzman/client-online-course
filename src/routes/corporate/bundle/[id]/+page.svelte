@@ -213,7 +213,7 @@
                                                     <div class="flex-column gap-1">
                                                         <div class="body-small-medium">{item.course.title}</div>
                                                         <div class="flex justify-content-between">
-                                                            <div class="caption-small-reguler">{item.course.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR'})}</div>
+                                                            <div class="caption-small-reguler">{item.course.price.toLocaleString('id-ID', {style: 'currency', currency: 'IDR', maximumFractionDigits: 0})}</div>
                                                             <div class="caption-small-reguler">{item.course.items} Item</div>
                                                         </div>
                                                     </div>
