@@ -55,14 +55,16 @@
     let showReplies = false
     let replyTypeShow = false
 
-    const getItem = (item_id = null, next_item = false, callback = null) => {
+    const getItem = (item_id = null, next_item = true, callback = null) => {
         showSpinner = true
         doneWatching = false
         item_status = false
+        let course_id = parseInt($page.params.course)
+
         ApiController.sendRequest({
             method: "POST",
             endpoint: "student/learn",
-            data: JSON.stringify({ course: $page.params.course, item_id, next_item }),
+            data: { course_id, item_id, next_item },
             authToken: user.token
         }).then(response => {
             if(response.status){
@@ -332,7 +334,7 @@
 
         user = checkLogin('Student', true)
 
-        getItem(null, false, getSilabus)
+        getItem(null, true, getSilabus)
         getFeedback()
         getDiscussion()
     })
