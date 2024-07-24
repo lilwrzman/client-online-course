@@ -62,7 +62,7 @@
         ApiController.sendRequest({
             method: "POST",
             endpoint: "student/learn",
-            data: { course: $page.params.course, item_id, next_item },
+            data: JSON.stringify({ course: $page.params.course, item_id, next_item }),
             authToken: user.token
         }).then(response => {
             if(response.status){
@@ -103,7 +103,7 @@
     const nextProgress = () => {
         ApiController.sendRequest({
             method: "POST",
-            endpoint: "sudent/progress/update",
+            endpoint: "student/progress/update",
             data: { item_id: selected_item.id },
             authToken: user.token
         }).then(response => {
@@ -120,9 +120,8 @@
         if(selected_item && (selected_item.type == 'Exam' || selected_item.type == 'Quiz')){
             histories = null
             ApiController.sendRequest({
-                method: "POST",
-                endpoint: "student/assessment/history",
-                data: { item_id: selected_item.id },
+                method: "GET",
+                endpoint: `student/assessment/${selected_item.id}/history`,
                 authToken: user.token
             }).then(response => {
                 if(response.status){

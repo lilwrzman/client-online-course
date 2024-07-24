@@ -85,6 +85,14 @@
 
         if (shouldStop) return;
 
+        items.forEach(item => {
+            item.options.map(opt => {
+                return {
+                    
+                }
+            })
+        });
+
         let datas = {
             type: "Quiz", title: title, description: description, 
             passing_score: passing_score, question_list: items

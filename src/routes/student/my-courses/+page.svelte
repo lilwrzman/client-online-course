@@ -94,7 +94,7 @@
                                         <Button type="link" href="/student/my-courses/{access.course.id}" classList="btn btn-main-outline">Beri Umpan Balik</Button>
                                         {/if}
                                         {:else}
-                                        <Button type="link" href="/student/my-courses/{access.course.id}" classList="btn btn-main">
+                                        <Button type="link" href="/student/my-courses/{access.course.id}#deskripsi" classList="btn btn-main">
                                             { access.completed_items ? access.completed_items > 0 ? 'Lanjut Belajar' : 'Mulai Belajar' : 'Mulai Belajar' }
                                         </Button>
                                         {/if}

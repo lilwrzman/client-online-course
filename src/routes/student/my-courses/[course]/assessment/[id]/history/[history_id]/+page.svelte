@@ -38,7 +38,7 @@
 
     const getHistory = () => {
         ApiController.sendRequest({
-            method: "POST",
+            method: "GET",
             endpoint: `student/assessment/history/${history_id}`,
             authToken: user.token
         }).then(response => {

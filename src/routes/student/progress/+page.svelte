@@ -17,7 +17,7 @@
     const getProgress = () => {
         ApiController.sendRequest({
             method: "GET",
-            endpoint: "sudent/progress",
+            endpoint: "student/progress",
             authToken: user.token
         }).then(response => {
             if(response.status){

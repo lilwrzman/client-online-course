@@ -109,11 +109,16 @@
                                 {/if}
                             </div>    
                             {/each}
-                            {/if}
-                            {/if}
                             <div class="flex-row-reverse">
                                 <Button type="link" href="/student/my-courses" classList="link">Lihat Selengkapnya</Button>
                             </div>
+                            {/if}
+                            {:else}
+                            <div class="flex-column gap-2 grow-item align-items-center justify-content-center">
+                                <p class="body-small-reguler">Anda belum memiliki progres pembelajaran terbaru!</p>
+                                <Button type="link" href="/student/my-courses" classList="btn btn-main">Mari Belajar</Button>
+                            </div>
+                            {/if}
                         </div>
                     </div>
                     <div class="card neutral-border radius-sm p-0 h-100">
