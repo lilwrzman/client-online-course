@@ -74,28 +74,28 @@
                         </div>
                         <div class="flex justify-content-between flex-wrap">
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
-                                <img src="/icons/dashboard-total-student.svg" alt="sum-student-icon" width="30">
+                                <img src="/static/icons/dashboard-total-student.svg" alt="sum-student-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
                                     <div class="caption-reguler">{status ? dashboard.count_student : 0}</div>
                                     <div class="caption-light">Total Karyawan</div>
                                 </div>
                             </div>
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
-                                <img src="/icons/dashboard-total-content.svg" alt="sum-content-icon" width="30">
+                                <img src="/static/icons/dashboard-total-content.svg" alt="sum-content-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
                                     <div class="caption-reguler">{status ? dashboard.count_course : 0}</div>
                                     <div class="caption-light">Total Materi</div>
                                 </div>
                             </div>
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
-                                <img src="/icons/dashboard-total-corporate.svg" alt="sum-corporate-icon" width="30">
+                                <img src="/static/icons/dashboard-total-corporate.svg" alt="sum-corporate-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
                                     <div class="caption-reguler">{status ? dashboard.count_corporate : 0}</div>
                                     <div class="caption-light">Total Mitra</div>
                                 </div>
                             </div>
                             <div class="flex-column align-items-center px-2 flex-item-md-3 flex-item-sm-6 flex-item-xs-12 mb-4">
-                                <img src="/icons/dashboard-total-transaction.svg" alt="sum-transaction-icon" width="30">
+                                <img src="/static/icons/dashboard-total-transaction.svg" alt="sum-transaction-icon" width="30">
                                 <div class="flex-column align-items-center py-2">
                                     <div class="caption-reguler">{status ? dashboard.count_transaction : 0}</div>
                                     <div class="caption-light">Total Transaksi</div>
@@ -202,5 +202,24 @@
         width: 100%;
         object-fit: cover;
         object-position: center;
+    }
+
+    .badge {
+        padding: .5rem;
+        border-radius: .25rem;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        text-align: center;
+    }
+
+    .badge-success {
+        background-color: var(--success-focus);
+        color: var(--success-main);
+    }
+
+    .badge-danger {
+        background-color: var(--danger-focus);
+        color: var(--danger-main);
     }
 </style>

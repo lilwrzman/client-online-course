@@ -19,7 +19,7 @@
     import Spinner from "@components/Spinner.svelte";
     import Modal from "@components/Modal.svelte";
 
-    import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill, PencilFill, PassFill, LightbulbFill, Trash, TrashFill, List, PlusLg, PlayCircle, FileEarmarkText, Pass, X, PencilSquare } from "svelte-bootstrap-icons"
+    import { ImageFill, ExclamationLg, NutFill, CheckLg, Hourglass, PersonWorkspace, Coin, PersonFill, PencilFill, PassFill, LightbulbFill, Trash, TrashFill, List, PlusLg, PlayCircle, FileEarmarkText, Pass, X, PencilSquare, CheckSquareFill, XSquareFill } from "svelte-bootstrap-icons"
 	import checkLogin from "$lib/CheckLogin.js";
     import { dragHandleZone, dragHandle } from "svelte-dnd-action";
 
@@ -310,6 +310,58 @@
         })
     }
 
+    const publish = () => {
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: `course/${id}/publish`,
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                detail.isPublished = true
+                showSpinner = false
+                toastData = { title: "Berhasil", message: response.message, color: 'toast-success' }
+                toastVisible = true
+                return
+            }
+        }).catch(e => {
+            let error = e.response.data
+            showSpinner = false
+
+            if(error.error){
+                toastData = { title: "Gagal", message: response.message, color: 'toast-danger' }
+                toastVisible = true
+                return
+            }
+        })
+    }
+
+    const unPublish = () => {
+        showSpinner = true
+        ApiController.sendRequest({
+            method: "POST",
+            endpoint: `course/${id}/unpublish`,
+            authToken: user.token
+        }).then(response => {
+            if(response.status){
+                detail.isPublished = false
+                showSpinner = false
+                toastData = { title: "Berhasil", message: response.message, color: 'toast-success' }
+                toastVisible = true
+                return
+            }
+        }).catch(e => {
+            let error = e.response.data
+            showSpinner = false
+
+            if(error.error){
+                toastData = { title: "Gagal", message: response.message, color: 'toast-danger' }
+                toastVisible = true
+                return
+            }
+        })
+    }
+
     onMount(() => {
         let flashes = getFlash()
         if(flashes){
@@ -461,7 +513,7 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-content-center align-items-center">
-                                        {#if price}
+                                        {#if detail.isPublished}
                                         <CheckLg width=20 height=20 color="#2ECC71"/>
                                         {:else}
                                         <ExclamationLg width=20 height=20 color="#E74C3C"/>
@@ -827,6 +879,124 @@
                                 {/if}
                             </div>
                         </div>
+                        {:else if active == "Publikasi"}
+                        <div class="card radius-sm" transition:fly={{ delay: 250, duration: 300, y: 100, opacity: 0, easing: quintOut }}>
+                            <div class="card-body gap-4">
+                                <div class="flex align-items-center justify-content-between">
+                                    <div class="flex-column gap-1">
+                                        <div class="body-large-semi-bold">Publikasi</div>
+                                        <div class="body-small-reguler">Cek kelengkapan materi sebelum dipublikasikan!</div>
+                                    </div>
+                                    {#if detail.isPublished}
+                                    <div class="badge badge-success">Sudah Publikasi</div>
+                                    {:else}
+                                    <div class="badge badge-danger">Belum Publikasi</div>
+                                    {/if}
+                                </div>
+                                <div class="flex-column gap-3">
+                                    <div class="body-medium-semi-bold">Kriteria Publikasi</div>
+                                    <div class="flex-column gap-2">
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if title}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki judul!</div>
+                                            {:else}
+                                            <div class="body-small-reguler">Belum memiliki judul, silahkan atur terlebih dahulu!</div>
+                                            <XSquareFill color="#E74C3C"/>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if description}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki deskripsi!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Belum memiliki deskripsi, silahkan atur terlebih dahulu!</div>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if facilities[0].text != ""}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki {facilities.length} fasilitas pembelajaran!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Belum memiliki fasilitas pembelajaran, tambahkan fasilitas pembelajaran setidaknya 1!</div>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if !thumbnail_url.includes("thumbnail")}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah menggunakan Thumbnail selain default thumbnail!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Belum mengganti Thumbnail, silahkan ganti terlebih dahulu!</div>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if selected_teacher && selected_teacher.id}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki pemateri!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Belum memiliki pemateri, silahkan pilih pemateri terlebih dahulu!</div>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if price}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki harga!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Belum memiliki harga, silahkan atur harga terlebih dahulu!</div>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if items.filter(elm => elm.type == 'Video').length > 1}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki {items.filter(elm => elm.type == 'Video').length} Video Pembejalaran!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Materi setidaknya memiliki 2 Video Pembelajaran, silahkan tambahkan terlebih dahulu!</div>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if items.filter(elm => elm.type == 'Quiz').length > 0}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki {items.filter(elm => elm.type == 'Quiz').length} Kuis!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Materi setidaknya memiliki 1 Kuis, silahkan tambahkan terlebih dahulu!</div>
+                                            {/if}
+                                        </div>
+                                        <div class="flex gap-2 align-items-center">
+                                            {#if exam}
+                                            <CheckSquareFill color="#2ECC71"/>
+                                            <div class="body-small-reguler">Sudah memiliki Ujian!</div>
+                                            {:else}
+                                            <XSquareFill color="#E74C3C"/>
+                                            <div class="body-small-reguler">Materi harus memiliki Ujian, silahkan tambahkan terlebih dahulu!</div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    {#if !detail.isPublished}
+                                    <Button disabled={
+                                        title && description && facilities[0].text != "" &&
+                                        !thumbnail_url.includes('thumbnail') && price && selected_teacher && selected_teacher.id &&
+                                        items.filter(elm => elm.type == 'Video').length > 1 && items.filter(elm => elm.type == 'Quiz').length > 0 &&
+                                        exam ? false : true
+                                    } classList="btn btn-main" onClick={publish}>
+                                        Publikasikan
+                                    </Button>
+                                    {:else}
+                                    <Button classList="btn btn-main-outline" onClick={unPublish}>
+                                        Batalkan Publikasi
+                                    </Button>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
                         {/if}
                     </div>  
                 </div>
@@ -922,6 +1092,25 @@
     
         .teacher-data:hover{
             cursor: pointer;
+        }
+
+        .badge {
+            padding: .5rem;
+            border-radius: .25rem;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 20px;
+            text-align: center;
+        }
+
+        .badge-success {
+            background-color: var(--success-focus);
+            color: var(--success-main);
+        }
+
+        .badge-danger {
+            background-color: var(--danger-focus);
+            color: var(--danger-main);
         }
     </style>
 </svelte:head>
