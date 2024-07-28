@@ -464,10 +464,7 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-content-center align-items-center">
-                                        {#if title && description && facilities[0].text != "" &&
-                                        !thumbnail_url.includes('thumbnail') && price && selected_teacher && selected_teacher.id &&
-                                        items.filter(elm => elm.type == 'Video').length > 1 && items.filter(elm => elm.type == 'Quiz').length > 0 &&
-                                        exam}
+                                        {#if detail.isPublished}
                                         <CheckLg width=20 height=20 color="#2ECC71"/>
                                         {:else}
                                         <ExclamationLg width=20 height=20 color="#E74C3C"/>
