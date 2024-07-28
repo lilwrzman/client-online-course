@@ -173,7 +173,7 @@
 						isAdd = true
 					}}>
 						<div class="flex align-items-center justify-content-center gap-2">
-							<img src="/icons/plus-lg.svg" alt="plus-icon" />
+							<img src="/static/icons/plus-lg.svg" alt="plus-icon" />
 							<div>Tambah Karyawan</div>
 						</div>
 					</Button>
