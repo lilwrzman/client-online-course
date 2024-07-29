@@ -36,6 +36,11 @@
 			status = true
 		}).catch(e => {
             let response = e.response.data
+            
+            if(response.message == 'Midtrans API is returning API error. HTTP status code: 400 API response: {"error_messages":["transaction_details.order_id has already been taken"]}'){
+                console.log('Dah ada bang')
+            }
+
             if(response.error == "You have already purchased this course"){
                 return window.location.href = `/student/my-courses/${id}`
             }
@@ -71,9 +76,9 @@
                 }).then(response => {
                     console.log("Payment Pending")
                     return setFlash({ 
-                        title: 'Berhasil',
+                        title: 'Oops',
                         message: response.message, 
-                        type: 'success', redirect: "/student/transactions"
+                        type: 'warning', redirect: "/student/transactions"
                     })
                 })
             },
@@ -81,6 +86,18 @@
                 showSpinner = false
                 alert("Payment failed!")
                 console.log(result)
+                ApiController.sendRequest({
+                    method: "POST",
+                    endpoint: `checkout/failed/${transaction.id}`,
+                    authToken: user.token
+                }).then(response => {
+                    console.log("Payment Failed")
+                    return setFlash({ 
+                        title: 'Gagal',
+                        message: response.message, 
+                        type: 'danger', redirect: "/student/transactions"
+                    })
+                })
             },
             onClose: function(){
                 showSpinner = false

@@ -72,6 +72,8 @@
                                     <div class="flex align-items-center gap-3">
                                         {#if history.status == 'success'}
                                         <div class="badge badge-success">SUKSES</div>
+                                        {:else if history.status == 'pending'}
+                                        <div class="badge badge-pending">PENDING</div>
                                         {:else}
                                         <div class="badge badge-danger">GAGAL</div>
                                         {/if}
@@ -156,6 +158,11 @@
     .badge-danger {
         background-color: var(--danger-focus);
         color: var(--danger-main);
+    }
+
+    .badge-pending {
+        background-color: var(--primary-focus);
+        color: var(--primary-main);
     }
 
     .thumbnail {
