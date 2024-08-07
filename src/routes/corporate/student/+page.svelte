@@ -67,7 +67,7 @@
 			if(response.status){
 				target = response.data
 
-				if(students.filter(elm => elm.email == target.email)){
+				if(students.some(elm => elm.email == target.email)){
 					target = null
 					errors.email = `Akun dengan email ${email} sudah ditambahkan!`
 				}
