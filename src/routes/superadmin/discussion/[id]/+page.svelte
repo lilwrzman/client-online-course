@@ -78,14 +78,14 @@
     let isSidebarOpen = true
 
     onMount(() => {
-        user = checkLogin("Teacher", true)
+        user = checkLogin("Superadmin", true)
 
         getDiscussion()
     })
 </script>
 
 <div class="flex">
-    <Sidebar active="Forum Diskusi" role="Teacher" bind:isSidebarOpen={isSidebarOpen} />
+    <Sidebar active="Forum Diskusi" role="Superadmin" bind:isSidebarOpen={isSidebarOpen} />
     <div class="neutral-wrapper px-3">
         <Navbar active="" variant="inside" pageTitle="Forum Diskusi"  bind:isSidebarOpen={isSidebarOpen}/>
         <main style="flex-grow: 1;" class="flex-column">
@@ -98,9 +98,9 @@
                     <Spinner/>        
                 {/if}
                 <div class="flex gap-2">
-                    <a href="/teacher/discussion" class="body-medium-semi-bold tc-neutral-disabled">Umpan Balik</a>
+                    <a href="/superadmin/discussion" class="body-medium-semi-bold tc-neutral-disabled">Umpan Balik</a>
                     <div class="body-medium-semi-bold tc-neutral-disabled">/</div>
-                    <a href="/teacher/discussion/{$page.params.id}" class="body-medium-semi-bold tc-primary-main">{ datas ? datas.title : '' }</a>
+                    <a href="/superadmin/discussion/{$page.params.id}" class="body-medium-semi-bold tc-primary-main">{ datas ? datas.title : '' }</a>
                 </div>
 
                 <div class="row">

@@ -584,12 +584,14 @@
                                             <div class="flex gap-3">
                                                 <img src="{PUBLIC_SERVER_PATH}/storage/{discuss.user.avatar}" alt="avatar" width="60" height="60" style="border-radius: 100%;">
                                                 <div class="flex-column gap-2 align-items-start">
-                                                    <p class="body-large-semi-bold">{discuss.user.info.fullname}</p>
+                                                    <p class="body-large-semi-bold">{discuss.user.role == 'Superadmin' ? discuss.user.username : discuss.user.info.fullname}</p>
                                                     <div class="neutral-border px-2 py-1 radius-sm">
                                                         {#if discuss.user.role == 'Student'}
                                                         <p class="body-small-reguler">Karyawan</p>
                                                         {:else if discuss.user.role == 'Teacher'}
                                                         <p class="body-small-reguler">Pemateri</p>
+                                                        {:else if discuss.user.role == 'Superadmin'}
+                                                        <p class="caption-reguler-thin">Admin</p>
                                                         {/if}
                                                     </div>
                                                 </div>
@@ -639,12 +641,14 @@
                                                     <div class="flex gap-3">
                                                         <img src="{PUBLIC_SERVER_PATH}/storage/{reply.user.avatar}" alt="avatar" width="60" height="60" style="border-radius: 100%;">
                                                         <div class="flex-column gap-2 align-items-start">
-                                                            <p class="body-small-semi-bold">{reply.user.info.fullname}</p>
+                                                            <p class="body-small-semi-bold">{reply.user.role == 'Superadmin' ? reply.user.username : reply.user.info.fullname}</p>
                                                             <div class="neutral-border px-2 py-1 radius-sm">
                                                                 {#if reply.user.role == 'Student'}
                                                                 <p class="caption-reguler-thin">Karyawan</p>
                                                                 {:else if reply.user.role == 'Teacher'}
                                                                 <p class="caption-reguler-thin">Pemateri</p>
+                                                                {:else if reply.user.role == 'Superadmin'}
+                                                                <p class="caption-reguler-thin">Admin</p>
                                                                 {/if}
                                                             </div>
                                                         </div>

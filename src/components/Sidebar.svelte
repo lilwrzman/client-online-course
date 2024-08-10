@@ -170,6 +170,21 @@
 					</li>
 					<li>
 						<a
+							href="/superadmin/discussion"
+							class="menu body-small-semi-bold {active == 'Forum Diskusi'
+								? 'tc-primary-main menu-active'
+								: 'tc-neutral-primary'}"
+						>
+							<ChatLeftDotsFill
+								width="20"
+								height="20"
+								color={active == 'Forum Diskusi' ? '#3951A8' : '#8191AC'}
+							/>
+							<p>Forum Diskusi</p>
+						</a>
+					</li>
+					<li>
+						<a
 							href="/superadmin/article"
 							class="menu {active == 'Manajemen Artikel' ? 'menu-active' : ''}"
 						>
