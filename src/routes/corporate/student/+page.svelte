@@ -255,7 +255,6 @@
 									<th>Nama</th>
 									<th>Email</th>
 									<th class="text-center">Jumlah Materi</th>
-									<th class="text-center">Aksi</th>
 								</tr>
 							</thead>
 							<tbody class="table-border-bottom">
@@ -267,9 +266,6 @@
 									<td>{student.info.fullname}</td>
 									<td>{student.email}</td>
 									<td class="text-center">{student.corporate_course.length} materi</td>
-									<td class="text-center">
-										<Button classList="btn btn-info py-1 px-2">Detail</Button>
-									</td>
 								</tr>
 								{/each}
 								{/if}
