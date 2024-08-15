@@ -6,6 +6,7 @@
 	import Button from "@components/Button.svelte";
 	import { onMount } from "svelte";
 	import ApiController from "$lib/ApiController.js";
+	import { PUBLIC_SERVER_PATH } from "$env/static/public";
 
     export let data
     let id = data.id
@@ -51,7 +52,7 @@
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <img src="/images/learning-path-image.png" class="thumbnail" alt="thumbnail">
+                    <img src="{PUBLIC_SERVER_PATH}/storage/{ detail.thumbnail }" class="thumbnail" alt="thumbnail">
                 </div>
                 <div class="col-md-5">
                     <div class="flex-column justify-content-center h-100 gap-large">
@@ -88,7 +89,7 @@
                     <div class="col-12 col-md-6">
                         <div class="card radius-sm neutral-border">
                             <div class="flex align-items-center gap-8">
-                                <img src="/images/sales-marketing4-courses-image.png" 
+                                <img src="{PUBLIC_SERVER_PATH}/storage/{ course.thumbnail }" 
                                     alt="thumbnail course" class="w-50">
                                 <div class="flex-column gap-5 w-50">
                                     <div class="flex-column gap-standard">
