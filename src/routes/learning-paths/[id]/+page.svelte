@@ -52,7 +52,7 @@
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <img src="{PUBLIC_SERVER_PATH}/storage/{ detail.thumbnail }" class="thumbnail" alt="thumbnail">
+                    <img src="{PUBLIC_SERVER_PATH}/storage/{ detail.thumbnail }" class="thumbnail radius-sm" alt="thumbnail">
                 </div>
                 <div class="col-md-5">
                     <div class="flex-column justify-content-center h-100 gap-large">
@@ -89,8 +89,10 @@
                     <div class="col-12 col-md-6">
                         <div class="card radius-sm neutral-border">
                             <div class="flex align-items-center gap-8">
-                                <img src="{PUBLIC_SERVER_PATH}/storage/{ course.thumbnail }" 
-                                    alt="thumbnail course" class="w-50">
+                                <div class="w-50">
+                                    <img src="{PUBLIC_SERVER_PATH}/storage/{ course.thumbnail }" 
+                                    alt="thumbnail course" class="radius-sm" style="object-fit: cover; aspect-ratio: 4/3; width: 100%;">
+                                </div>
                                 <div class="flex-column gap-5 w-50">
                                     <div class="flex-column gap-standard">
                                         <p class="body-large-semi-bold">{course.title}</p>
@@ -125,7 +127,7 @@
 {/if}
 
 <svelte:head>
-    <title>Loading...</title>
+    <title>{status ? detail.title : 'Loading...'}</title>
 
     <style>
         #header {
@@ -135,6 +137,7 @@
         .thumbnail {
             width: 100%;
             aspect-ratio: 4 / 3;
+            object-fit: cover; 
         }
     
         p {
