@@ -1,16 +1,22 @@
 <script>
+	import { validateInput } from '$lib/Input';
 	import { onMount } from 'svelte';
 
-	let editor;
+	export let value = '';
+	export let placeholder = '';
+	export let disabled = false;
+	export let rules = null;
+	export let error = '';
 
+	let editor;
 	const toolbarOptions = [
-        [{ font: [] }],
+		[{ font: [] }],
 		[{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ align: [] }],
+		[{ align: [] }],
 		['bold', 'italic', 'underline', 'strike', 'blockquote'],
 		['link', 'image'],
 		[{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-		[{ indent: '-1' }, { indent: '+1' }], 
+		[{ indent: '-1' }, { indent: '+1' }],
 		[{ color: [] }, { background: [] }],
 		['clean']
 	];
@@ -27,7 +33,23 @@
 				}
 			},
 			theme: 'snow',
-			placeholder: 'Ketik disini'
+			placeholder: placeholder
+		});
+
+        quill.enable(!disabled)
+
+		if (value) {
+			quill.clipboard.dangerouslyPasteHTML(value);
+		}
+
+		quill.on('text-change', (delta, oldDelta, source) => {
+			value = quill.getSemanticHTML();
+
+			if (rules) {
+                const input = quill.getText().trim()
+				const check = validateInput(input, rules);
+				error = check.length ? check[0] : '';
+			}
 		});
 	});
 </script>

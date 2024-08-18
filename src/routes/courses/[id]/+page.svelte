@@ -361,5 +361,12 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
+
+		.avatar {
+			aspect-ratio: 1/1;
+			border-radius: .25rem;
+			object-fit: cover;
+			object-position: center;
+		}
 	</style>
 </svelte:head>

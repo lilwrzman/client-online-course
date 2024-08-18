@@ -114,7 +114,7 @@
                                     </div>                          
                                 </div>
                                 {#if course.isPublished}
-                                <Button type="link" href="/courses/{ course.id }" classList="btn btn-main">Lihat Detail</Button>
+                                <Button type="link" href="/courses/{ course.id }#description" classList="btn btn-main">Lihat Detail</Button>
                                 {:else}
                                 <Button disabled={true} classList="btn btn-main">Akan Datang</Button>
                                 {/if}

@@ -1,10 +1,7 @@
 <script>
-    import { PUBLIC_TINYMCE_KEY } from "$env/static/public"
-    
     import { validateInput } from "$lib/Input"
-
+    import Quill from "./Quill.svelte"
     import Button from "@components/Button.svelte"
-    import Editor from '@tinymce/tinymce-svelte'
     import Eye from "svelte-bootstrap-icons/lib/Eye.svelte"
     import EyeSlash from "svelte-bootstrap-icons/lib/EyeSlash.svelte"
 
@@ -16,18 +13,12 @@
     export let error = ""
     export let rules = null
     export let value = ''
-
     export let containerClass = ""
     export let inputClass = ""
-
     export let disabled = false
-
     export let labelClass = "body-large-reguler"
-
     export let prefix = ''
-
     export let option = []
-
     export let onInput = () => {}
 
     let showPassword = false
@@ -37,10 +28,6 @@
     }
 
     const inputHandler = (evt) => onInput(evt)
-
-    const tinyHandlerChanges = (tiny) => {
-        handleChange(tiny.detail.event.target.getContent())
-    }
 
     const handleChange = (event) => {
         if(rules){
@@ -88,16 +75,7 @@
         <input type="file" id="{id}" name="{name ? name : id}" class='{inputClass}'>
     
     {:else if type == "tinymce"}
-        <Editor bind:value={value} on:input={tinyHandlerChanges} on:change={tinyHandlerChanges}
-            apiKey="{PUBLIC_TINYMCE_KEY}"
-            id="{id}"
-            disabled={disabled}
-            conf={{
-                menubar: 'tools',
-                plugins: 'lists',
-                toolbar: 'undo redo | bold italic bullist | styles'
-            }}
-        />
+        <Quill bind:value={value} placeholder={placeholder} rules={rules} bind:disabled={disabled} bind:error={error} />
     
     {:else if type == 'select-option'}
         <select id="{id}" name="{name ? name : id}" class="{inputClass}" {disabled} on:change={inputHandler} bind:value={value}>

@@ -195,7 +195,7 @@
                                         rules={[{ required: true }]} error={errors ? errors.title ? errors.title : '' : '' }/>
 
                                     <InputField labelClass="body-medium-semi-bold" type="tinymce" bind:value={description}
-                                        label="Deskripsi" id="description" rules={[{ required: true }]} 
+                                        label="Deskripsi" id="description" rules={[{ required: true }]} placeholder="Masukkan deskripsi alur belajar"
                                         error={errors ? errors.description ? errors.description : '' : '' }/>
                                 </div>
 
